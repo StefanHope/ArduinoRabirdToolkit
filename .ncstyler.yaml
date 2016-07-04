@@ -1,0 +1,85 @@
+#
+# Arduino Library Name Styles
+#
+# String starts with $$ is an internal behavior
+#
+
+_base_:
+  re: ^[a-z0-9_]+$
+
+# argument:
+#   re: ^[a-z0-9_]+$
+#   word_sep: _
+
+variant:
+  re: ^[a-z]+[A-Z]+[a-zA-Z0-9]*$
+  error: "must lower camel case, for example : thisIsAnExample."
+
+global_variant:
+  re: ^g[A-Z]+[a-zA-Z0-9]*$
+  error: "must lower camel case and prefix with 'g', for example : gThisIsAnExample."
+
+static_variant:
+  re: ^s[A-Z]+[a-zA-Z0-9]*$
+  error: "must lower camel case and prefix with 's', for example : sThisIsAnExample."
+
+function:
+  re: ^[a-z]+[A-Z]+[a-zA-Z0-9]*$
+
+# function_argument:
+#   re: ^[a-z0-9_]+$
+
+# enum:
+#   re: ^[a-z0-9_]+_t$
+#   word_sep: _
+
+enum_value:
+  re: ^[A-Z]+[a-zA-Z0-9]*$
+  error: "must upper camel case, for example : ThisIsAnExample."
+
+class:
+  re: ^[A-Z]+[a-zA-Z0-9]*$
+  error: "must upper camel case, for example : ThisIsAnExample."
+
+class_variant:
+  re: ^m[A-Z]+[a-zA-Z0-9]*$
+  error: "must lower camel case and prefix with 'm', for example : mThisIsAnExample."
+  
+# class_method:
+#   re: ^[a-z0-9_]+$
+
+# class_method_argument:
+#   re: ^[a-z0-9_]+$
+
+# struct:
+#   re: ^[a-z0-9_]+_t$
+
+struct_variant:
+  re: ^(?!m)[a-z]+[A-Z]+[a-zA-Z0-9]*$
+  error: "must lower camel case and must not prefix with 'm_', for example : thisIsAnExample."
+
+# struct_method:
+#   re: ^[a-z0-9_]+$
+
+# struct_method_argument:
+#   re: ^[a-z0-9_]+$
+
+define:
+  re: ^[A-Z0-9_]+$
+  error: "must upper case with underscores, for example : THIS_IS_AN_EXAMPLE."
+
+define_function:
+  re: ^[A-Z0-9_]+$
+
+# define_function_argument:
+#   re: ^[a-z0-9_]+$
+
+# namespace:
+#   re: ^[a-z0-9_]+$
+
+# typdef:
+#   re: ^[a-z0-9_]+$
+
+filename:
+  re: ^[A-Z]+[a-zA-Z0-9]*\..*$
+  error: "must lower case with underscores, for example : ThisIsAnExample.cpp ."

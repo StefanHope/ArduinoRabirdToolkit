@@ -1,0 +1,3 @@
+[submodule ".coding-styler"]
+	path = .coding-styler
+	url = git@github.com:starofrainnight/coding-styler.git

@@ -1,4 +1,4 @@
 format-style: .uncrustify.cfg
 name-style: .ncstyler.yaml
-patterns: *.cpp, *.c, *.ino
+patterns: *.cpp, *.cxx, *.c, *.ino, *.h, *.hpp
 cppcheck: true

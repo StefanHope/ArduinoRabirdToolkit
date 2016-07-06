@@ -5,14 +5,14 @@
 #
 
 _base_:
-  re: ^[a-z0-9_]+$
+  re: ^[a-zA-Z0-9]+$
 
 # argument:
 #   re: ^[a-z0-9_]+$
 #   word_sep: _
 
 variant:
-  re: ^[a-z]+[A-Z]+[a-zA-Z0-9]*$
+  re: ^[a-z0-9]+(?:[A-Z]+[a-zA-Z0-9]*)?$
   error: "must lower camel case, for example : thisIsAnExample."
 
 global_variant:
@@ -24,7 +24,7 @@ static_variant:
   error: "must lower camel case and prefix with 's', for example : sThisIsAnExample."
 
 function:
-  re: ^[a-z]+[A-Z]+[a-zA-Z0-9]*$
+  re: ^[a-z0-9]+(?:[A-Z]+[a-zA-Z0-9]*)?$
 
 # function_argument:
 #   re: ^[a-z0-9_]+$

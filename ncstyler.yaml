@@ -44,7 +44,7 @@ class:
 class_variant:
   re: ^m[A-Z]+[a-zA-Z0-9]*$
   error: "must lower camel case and prefix with 'm', for example : mThisIsAnExample."
-  
+
 # class_method:
 #   re: ^[a-z0-9_]+$
 

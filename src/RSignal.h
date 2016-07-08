@@ -17,6 +17,7 @@
 #define __INCLUDED_C5173AA242B211E6AA6EA088B4D1658C
 
 #include "RDelegate.h"
+#include "RDelegateList.h"
 
 namespace RabirdTookit {
 
@@ -26,7 +27,7 @@ public:
   typedef Delegate0<void> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -95,7 +96,7 @@ public:
   typedef Delegate1<Param1> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -164,7 +165,7 @@ public:
   typedef Delegate2<Param1, Param2> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -233,7 +234,7 @@ public:
   typedef Delegate3<Param1, Param2, Param3> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -302,7 +303,7 @@ public:
   typedef Delegate4<Param1, Param2, Param3, Param4> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -320,9 +321,7 @@ public:
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3,
                                   Param4 p4) const) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
@@ -341,9 +340,7 @@ public:
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3,
                                      Param4 p4) const) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
@@ -378,7 +375,7 @@ public:
   typedef Delegate5<Param1, Param2, Param3, Param4, Param5> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -390,20 +387,14 @@ public:
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
                                   Param5 p5)) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
                                   Param5 p5) const) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
@@ -415,20 +406,14 @@ public:
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
                                      Param5 p5)) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
                                      Param5 p5) const) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
@@ -464,7 +449,7 @@ public:
   typedef Delegate6<Param1, Param2, Param3, Param4, Param5, Param6> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -476,23 +461,15 @@ public:
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
-                                  Param5 p5,
-                                  Param6 p6)) {
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                  Param5 p5, Param6 p6)) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
-                                  Param5 p5,
-                                  Param6 p6) const) {
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                  Param5 p5, Param6 p6) const) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
 
@@ -503,23 +480,15 @@ public:
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
-                                     Param5 p5,
-                                     Param6 p6)) {
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                     Param5 p5, Param6 p6)) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
-                                     Param5 p5,
-                                     Param6 p6) const) {
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                     Param5 p5, Param6 p6) const) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
 
@@ -556,7 +525,7 @@ public:
                     Param7> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -568,25 +537,15 @@ public:
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
-                                  Param5 p5,
-                                  Param6 p6,
-                                  Param7 p7)) {
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                  Param5 p5, Param6 p6, Param7 p7)) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
-                                  Param5 p5,
-                                  Param6 p6,
-                                  Param7 p7) const) {
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                  Param5 p5, Param6 p6, Param7 p7) const) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
 
@@ -597,25 +556,15 @@ public:
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
-                                     Param5 p5,
-                                     Param6 p6,
-                                     Param7 p7)) {
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                     Param5 p5, Param6 p6, Param7 p7)) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
-                                     Param5 p5,
-                                     Param6 p6,
-                                     Param7 p7) const) {
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                     Param5 p5, Param6 p6, Param7 p7) const) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
 
@@ -625,12 +574,7 @@ public:
   }
 
   void
-  emit(Param1 p1,
-       Param2 p2,
-       Param3 p3,
-       Param4 p4,
-       Param5 p5,
-       Param6 p6,
+  emit(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6,
        Param7 p7) const {
     for(DelegateIterator i = mDelegateList.begin(); i != mDelegateList.end();
         ) {
@@ -639,12 +583,7 @@ public:
   }
 
   void
-  operator ()(Param1 p1,
-              Param2 p2,
-              Param3 p3,
-              Param4 p4,
-              Param5 p5,
-              Param6 p6,
+  operator ()(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6,
               Param7 p7) const {
     emit(p1, p2, p3, p4, p5, p6, p7);
   }
@@ -663,7 +602,7 @@ public:
                     Param8> _Delegate;
 
 private:
-  typedef std::set<_Delegate>                   DelegateList;
+  typedef RDelegateList<_Delegate>              DelegateList;
   typedef typename DelegateList::const_iterator DelegateIterator;
   DelegateList mDelegateList;
 
@@ -675,26 +614,15 @@ public:
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
-                                  Param5 p5,
-                                  Param6 p6,
-                                  Param7 p7,
-                                  Param8 p8)) {
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                  Param5 p5, Param6 p6, Param7 p7, Param8 p8)) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(Param1 p1,
-                                  Param2 p2,
-                                  Param3 p3,
-                                  Param4 p4,
-                                  Param5 p5,
-                                  Param6 p6,
-                                  Param7 p7,
+  connect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                  Param5 p5, Param6 p6, Param7 p7,
                                   Param8 p8) const) {
     mDelegateList.insert(MakeDelegate(obj, func));
   }
@@ -706,26 +634,16 @@ public:
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
-                                     Param5 p5,
-                                     Param6 p6,
-                                     Param7 p7,
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                     Param5 p5, Param6 p6, Param7 p7,
                                      Param8 p8)) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(Param1 p1,
-                                     Param2 p2,
-                                     Param3 p3,
-                                     Param4 p4,
-                                     Param5 p5,
-                                     Param6 p6,
-                                     Param7 p7,
+  disconnect(Y *obj, void (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4,
+                                     Param5 p5, Param6 p6, Param7 p7,
                                      Param8 p8) const) {
     mDelegateList.erase(MakeDelegate(obj, func));
   }
@@ -736,14 +654,8 @@ public:
   }
 
   void
-  emit(Param1 p1,
-       Param2 p2,
-       Param3 p3,
-       Param4 p4,
-       Param5 p5,
-       Param6 p6,
-       Param7 p7,
-       Param8 p8) const {
+  emit(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6,
+       Param7 p7, Param8 p8) const {
     for(DelegateIterator i = mDelegateList.begin(); i != mDelegateList.end();
         ) {
       (*(i++))(p1, p2, p3, p4, p5, p6, p7, p8);
@@ -751,14 +663,8 @@ public:
   }
 
   void
-  operator ()(Param1 p1,
-              Param2 p2,
-              Param3 p3,
-              Param4 p4,
-              Param5 p5,
-              Param6 p6,
-              Param7 p7,
-              Param8 p8) const {
+  operator ()(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6,
+              Param7 p7, Param8 p8) const {
     emit(p1, p2, p3, p4, p5, p6, p7, p8);
   }
 

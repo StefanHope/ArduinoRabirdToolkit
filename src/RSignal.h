@@ -10,7 +10,7 @@
 
 // 5/7/16 Hong-She Liang:
 //  Renamed to RSignal.h for suitable for the library name.
-//  Changed namespace to "RabirdToolkit"
+//  Changed namespace to "Rt"
 //  Changed guarder macro
 
 #ifndef __INCLUDED_C5173AA242B211E6AA6EA088B4D1658C
@@ -19,7 +19,7 @@
 #include "RDelegate.h"
 #include "RDelegateList.h"
 
-namespace RabirdTookit {
+namespace Rt {
 
 template <class Param0 = void>
 class RSignal0 {

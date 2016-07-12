@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 
+namespace Rt {
 template <class T>
 struct RDelegateListNode {
   T data;
@@ -89,5 +90,7 @@ public:
     mRoot = NULL;
   }
 };
+
+}  // namespace
 
 #endif // #ifndef __INCLUDED_8E00360044CF11E6804600F1F38F93EF

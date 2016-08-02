@@ -77,7 +77,7 @@
 	#pragma once
 #endif // _MSC_VER > 1000
 
-#include <memory.h> // to allow <,> comparisons
+//#include <memory.h> // to allow <,> comparisons
 
 ////////////////////////////////////////////////////////////////////////////////
 //						Configuration options

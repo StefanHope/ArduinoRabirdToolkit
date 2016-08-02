@@ -38,7 +38,7 @@ enum_value:
   error: "must upper camel case, for example : ThisIsAnExample."
 
 class:
-  re: ^[A-Z]+[a-zA-Z0-9]*$
+  re: ^[A-Z]+[a-zA-Z0-9]*(?:<.*)?$
   error: "must upper camel case, for example : ThisIsAnExample."
 
 class_variant:

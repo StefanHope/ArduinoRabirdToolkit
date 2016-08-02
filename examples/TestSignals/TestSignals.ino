@@ -1,10 +1,17 @@
+#include <Arduino.h>
+#include <Arduino_FreeRTOS.h>
+#include <StandardCplusplus.h>
+#include <RabirdToolkit.h>
 
-void setup()
-{
+#include <RSignal.h>
+
+Rt::RSignal0<> a;
+
+void setup() {
+  a.clear();
 }
 
-void loop()
-{
+void loop() {
 }
 
 

@@ -10,7 +10,7 @@
 #include "RDelegate.h"
 #include "RDelegateList.h"
 
-// Declare delegate as a class template.  It will be specialized
+// Declare RSignal as a class template.  It will be specialized
 // later for all number of arguments.
 template <typename Signature>
 class RSignal;

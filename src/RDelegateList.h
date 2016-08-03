@@ -50,7 +50,7 @@ public:
     NodeType *nodeNext = NULL;
     NodeType *nodePrev = NULL;
 
-    for(; node != NULL; nodePrev = node, node = nodeNext) {
+    for(; node != NULL; (nodePrev = node), (node = nodeNext)) {
       nodeNext = node->mNext;
 
       if(node->data != value) {
@@ -208,11 +208,6 @@ public:
 
     mNode = mNode->mNext;
     return temp;
-  }
-
-  NodeType *
-  link_struct() {
-    return mNode;
   }
 
   IteratorType &

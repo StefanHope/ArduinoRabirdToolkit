@@ -43,8 +43,8 @@ public:
   }
 
   void
-  connect(R (*function_to_bind)(ParamTypes...)) {
-    mDelegateList.insert(Rt::Delegate<R (ParamTypes...)>(function_to_bind));
+  connect(R (*functionToBind)(ParamTypes...)) {
+    mDelegateList.insert(Rt::Delegate<R (ParamTypes...)>(functionToBind));
   }
 
   void

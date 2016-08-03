@@ -15,75 +15,88 @@
 template <typename Signature>
 class RSignal;
 
-template <class R, class... ParamTypes>
-class RSignal<R (ParamTypes...)> {
+template <class R, class ... ParamTypes>
+class RSignal<R(ParamTypes ...)>
+{
 public:
-  typedef Rt::Delegate<R (ParamTypes...) > _Delegate;
+  typedef Rt::Delegate<R(ParamTypes ...)> _Delegate;
 
 private:
-  typedef Rt::RDelegateList<_Delegate>          DelegateList;
+  typedef Rt::RDelegateList<_Delegate> DelegateList;
   DelegateList mDelegateList;
 
 public:
   void
-  connect(_Delegate delegate) {
+  connect(_Delegate delegate)
+  {
     mDelegateList.insert(delegate);
   }
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(ParamTypes...)) {
+  connect(Y *obj, void (X::*func)(ParamTypes ...))
+  {
     mDelegateList.insert(Rt::MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  connect(Y *obj, void (X::*func)(ParamTypes...) const) {
+  connect(Y *obj, void (X::*func)(ParamTypes ...) const)
+  {
     mDelegateList.insert(Rt::MakeDelegate(obj, func));
   }
 
   void
-  connect(R (*functionToBind)(ParamTypes...)) {
-    mDelegateList.insert(Rt::Delegate<R (ParamTypes...)>(functionToBind));
+  connect(R (*functionToBind)(ParamTypes ...))
+  {
+    mDelegateList.insert(Rt::Delegate<R(ParamTypes ...)>(functionToBind));
   }
 
   void
-  disconnect(_Delegate delegate) {
+  disconnect(_Delegate delegate)
+  {
     mDelegateList.erase(delegate);
   }
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(ParamTypes...)) {
+  disconnect(Y *obj, void (X::*func)(ParamTypes ...))
+  {
     mDelegateList.erase(Rt::MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
-  disconnect(Y *obj, void (X::*func)(ParamTypes...) const) {
+  disconnect(Y *obj, void (X::*func)(ParamTypes ...) const)
+  {
     mDelegateList.erase(Rt::MakeDelegate(obj, func));
   }
 
   void
-  clear() {
+  clear()
+  {
     mDelegateList.clear();
   }
 
   void
-  emit(ParamTypes... params) const {
+  emit(ParamTypes ... params) const
+  {
     for(auto i = mDelegateList.begin(); i != mDelegateList.end();
-        ) {
-      (*(i++))(params...);
+        )
+    {
+      (*(i++))(params ...);
     }
   }
 
   void
-  operator ()(ParamTypes... params) const {
-    emit(params...);
+  operator ()(ParamTypes ... params) const
+  {
+    emit(params ...);
   }
 
   bool
-  empty() const {
+  empty() const
+  {
     return mDelegateList.empty();
   }
 };

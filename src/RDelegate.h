@@ -68,7 +68,7 @@
 //				  * Changed namespace to "Gallant"
 // 05-Jul-16 1.5b Hong-She Liang:
 //				  * Bundled with Signals.h for signals and slots library
-//				  * Changed namespace to "RabirdToolkit"
+//				  * Changed namespace to "Rt"
 
 #ifndef _Delegate_H_
 #define _Delegate_H_
@@ -77,7 +77,7 @@
 	#pragma once
 #endif // _MSC_VER > 1000
 
-#include <memory.h> // to allow <,> comparisons
+//#include <memory.h> // to allow <,> comparisons
 
 ////////////////////////////////////////////////////////////////////////////////
 //						Configuration options
@@ -165,7 +165,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-namespace RabirdToolkit {
+namespace Rt {
 
 namespace detail {	// we'll hide the implementation details in a nested namespace.
 

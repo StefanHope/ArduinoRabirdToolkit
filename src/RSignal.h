@@ -43,6 +43,11 @@ public:
   }
 
   void
+  connect(R (*function_to_bind)(ParamTypes...)) {
+    mDelegateList.insert(Rt::Delegate<R (ParamTypes...)>(function_to_bind));
+  }
+
+  void
   disconnect(_Delegate delegate) {
     mDelegateList.erase(delegate);
   }

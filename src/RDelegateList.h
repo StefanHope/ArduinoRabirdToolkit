@@ -34,7 +34,7 @@ public:
     NodeType *node = new NodeType(value);
 
     if(mRoot != NULL) {
-      node->next = mRoot;
+      node->mNext = mRoot;
     }
 
     mRoot = node;
@@ -51,7 +51,7 @@ public:
     NodeType *nodePrev = NULL;
 
     for(; node != NULL; nodePrev = node, node = nodeNext) {
-      nodeNext = node->next;
+      nodeNext = node->mNext;
 
       if(node->data != value) {
         continue;
@@ -63,7 +63,7 @@ public:
         mRoot = nodeNext;
         node  = NULL;
       } else {
-        nodePrev->next = nodeNext;
+        nodePrev->mNext= nodeNext;
         node           = nodePrev;
       }
     }
@@ -218,7 +218,7 @@ public:
   IteratorType &
   operator +=(unsigned int n) {
     for(unsigned int i = 0; i < n; ++i) {
-      mNode = mNode->next;
+      mNode = mNode->mNext;
     }
 
     return *this;

@@ -6,9 +6,6 @@
 template <class T>
 class RRawPointer
 {
-protected:
-  uintptr_t mPtr;
-
 public:
   RRawPointer(): mPtr(0)
   {
@@ -81,6 +78,9 @@ public:
     mPtr = other.mPtr;
     return *this;
   }
+
+private:
+  uintptr_t mPtr;
 };
 
 #endif // #ifdef __INCLUDED_B0C76BDC59FD11E6BE6F00F1F38F93EF

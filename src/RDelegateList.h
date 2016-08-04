@@ -172,7 +172,6 @@ class RDelegateList<T, Allocator>::IteratorType
 {
 private:
   typedef typename RDelegateList<T, Allocator>::NodeType NodeType;
-  NodeType *mNode;
 
 public:
   IteratorType() : mNode(NULL)
@@ -260,6 +259,9 @@ public:
 
     return *this;
   }
+
+private:
+  NodeType *mNode;
 };
 }  // namespace
 

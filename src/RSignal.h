@@ -23,7 +23,6 @@ public:
 
 private:
   typedef Rt::RDelegateList<_Delegate> DelegateList;
-  DelegateList mDelegateList;
 
 public:
   void
@@ -99,6 +98,9 @@ public:
   {
     return mDelegateList.empty();
   }
+
+private:
+  DelegateList mDelegateList;
 };
 
 #endif //__INCLUDED_C5173AA242B211E6AA6EA088B4D1658C

@@ -9,7 +9,6 @@ class RFlashString
 {
 private:
   typedef class __FlashStringHelper ValueType;
-  RRawPointer<ValueType> mStr;
 
 public:
   RFlashString();
@@ -38,6 +37,9 @@ public:
   {
     return mStr;
   }
+
+private:
+  RRawPointer<ValueType> mStr;
 };
 
 #endif // __INCLUDED_675A3F04598211E6AA6EA088B4D1658C

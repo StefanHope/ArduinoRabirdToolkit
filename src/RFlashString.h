@@ -1,26 +1,27 @@
 #ifndef __INCLUDED_675A3F04598211E6AA6EA088B4D1658C
 #define __INCLUDED_675A3F04598211E6AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RRawPointer.h"
 #include <WString.h>
 #include <Printable.h>
 
 class RFlashString
 {
 private:
-  uintptr_t mStr;
+  typedef class __FlashStringHelper ValueType;
+  RRawPointer<ValueType> mStr;
 
 public:
-  RFlashString(const class __FlashStringHelper *flashStr);
+  RFlashString(const ValueType *flashStr);
   ~RFlashString();
 
-  __FlashStringHelper *
+  ValueType *
   data()
   {
-    return rLengthenPtr<__FlashStringHelper *>(mStr);
+    return mStr.data();
   }
 
-  operator __FlashStringHelper*()
+  operator ValueType*()
   {
       return data();
   }
@@ -28,7 +29,7 @@ public:
   /// Support if(flashStr) style
   operator bool()
   {
-    return mStr != 0;
+    return mStr;
   }
 };
 

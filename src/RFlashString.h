@@ -12,6 +12,7 @@ private:
   RRawPointer<ValueType> mStr;
 
 public:
+  RFlashString();
   RFlashString(const ValueType *flashStr);
   ~RFlashString();
 
@@ -19,6 +20,12 @@ public:
   data()
   {
     return mStr.data();
+  }
+
+  bool
+  isNull()
+  {
+    return mStr.isNull();
   }
 
   operator ValueType*()

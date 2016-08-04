@@ -19,4 +19,11 @@ rLengthenPtr(uintptr_t shortPtr)
   return reinterpret_cast<PtrType>(static_cast<int>((shortPtr)));
 }
 
+/**
+ * Calculate how much elements in the array
+ *
+ * @param array Target array variant to calculate
+ */
+#define RSIZE_OF_ARRAY(array) (sizeof((array))/sizeof((array)[0]))
+
 #endif // __INCLUDED_C140043A425411E6A04700F1F38F93EF

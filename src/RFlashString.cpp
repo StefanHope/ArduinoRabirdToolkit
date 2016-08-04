@@ -1,5 +1,6 @@
 #include "RFlashString.h"
 
-RFlashString::RFlashString(class __FlashStringHelper *flashStr): mStr(flashStr)
+RFlashString::RFlashString(const class __FlashStringHelper *flashStr)
+  : mStr(rShortenPtr(flashStr))
 {
 }

@@ -24,6 +24,12 @@ public:
   {
       return data();
   }
+
+  /// Support if(flashStr) style
+  operator bool()
+  {
+    return mStr != 0;
+  }
 };
 
 #endif // __INCLUDED_675A3F04598211E6AA6EA088B4D1658C

@@ -24,7 +24,7 @@ rLengthenPtr(uintptr_t shortPtr)
  *
  * @param array Target array variant to calculate
  */
-#define RSIZE_OF_ARRAY(array) (sizeof((array))/sizeof((array)[0]))
+#define R_SIZE_OF_ARRAY(array) (sizeof((array))/sizeof((array)[0]))
 
 /**
  * Disable copy constructor and assign operations.

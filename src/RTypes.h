@@ -26,4 +26,12 @@ rLengthenPtr(uintptr_t shortPtr)
  */
 #define RSIZE_OF_ARRAY(array) (sizeof((array))/sizeof((array)[0]))
 
+/**
+ * Disable copy constructor and assign operations.
+ *
+ */
+#define R_DISABLE_COPY(Class) \
+  Class(const Class &); \
+  Class &operator=(const Class &);
+
 #endif // __INCLUDED_C140043A425411E6A04700F1F38F93EF

@@ -15,6 +15,10 @@ public:
   {
   }
 
+  RRawPointer(const RRawPointer<T> &other): mPtr(other.mPtr)
+  {
+  }
+
   ~RRawPointer()
   {
   }

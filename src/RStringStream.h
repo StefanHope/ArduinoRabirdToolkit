@@ -31,6 +31,8 @@ public:
 
 private:
   RRawPointer<String> mStrPtr;
+
+  R_DISABLE_COPY(RStringStream);
 };
 
 #endif // __INCLUDED_1145BD925A1411E69BAF00F1F38F93EF

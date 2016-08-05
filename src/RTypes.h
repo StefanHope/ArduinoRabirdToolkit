@@ -1,7 +1,87 @@
 #ifndef __INCLUDED_C140043A425411E6A04700F1F38F93EF
 #define __INCLUDED_C140043A425411E6A04700F1F38F93EF
 
+#include <stddef.h>
 #include <stdint.h>
+
+namespace Rt
+{
+template<class T>
+struct RTypeSignTraits;
+
+template<>
+struct RTypeSignTraits<char>
+{
+  typedef signed char Signed;
+  typedef unsigned char Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<unsigned char>
+{
+  typedef signed char Signed;
+  typedef unsigned char Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<short>
+{
+  typedef signed short Signed;
+  typedef unsigned short Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<unsigned short>
+{
+  typedef signed short Signed;
+  typedef unsigned short Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<int>
+{
+  typedef signed int Signed;
+  typedef unsigned int Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<unsigned int>
+{
+  typedef signed int Signed;
+  typedef unsigned int Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<long>
+{
+  typedef signed long Signed;
+  typedef unsigned long Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<unsigned long>
+{
+  typedef signed long Signed;
+  typedef unsigned long Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<long long>
+{
+  typedef signed long long Signed;
+  typedef unsigned long long Unsigned;
+};
+
+template<>
+struct RTypeSignTraits<unsigned long long>
+{
+  typedef signed long long Signed;
+  typedef unsigned long long Unsigned;
+};
+
+}
+
+typedef Rt::RTypeSignTraits<size_t>::Signed rsize_t;
 
 template <class Type>
 inline

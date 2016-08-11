@@ -3,10 +3,11 @@
 
 RSpinLock::RSpinLock()
 {
+  mOldRegisters = SREG;
   noInterrupts();
 }
 
 RSpinLock::~RSpinLock()
 {
-  interrupts();
+  SREG = mOldRegisters;
 }

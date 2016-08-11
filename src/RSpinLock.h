@@ -15,6 +15,9 @@ public:
   ~RSpinLock();
 
 private:
+  uint8_t mOldRegisters;
+
+private:
   R_DISABLE_COPY(RSpinLock);
 };
 

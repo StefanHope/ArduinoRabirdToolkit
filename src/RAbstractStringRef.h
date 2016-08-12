@@ -4,7 +4,13 @@
 class RAbstractStringRef
 {
 public:
-  RAbstractStringRef();
+  RAbstractStringRef()
+  {
+  }
+
+  virtual ~RAbstractStringRef()
+  {
+  }
 
 //  virtual unsigned int length(void) const = 0;
 //  virtual int compareTo(const RAbstractStringRef &s) const = 0;

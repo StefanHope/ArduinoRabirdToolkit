@@ -95,7 +95,22 @@ RAbstractStringRef::getBytes(unsigned char *buf, unsigned int bufsize,
     return;
   }
 
-  // FIXME: Not implemented!
+  unsigned int copySize = 0;
+
+  copySize = length() - index - 1;
+  if(bufsize < copySize)
+  {
+    copySize = bufsize;
+  }
+
+  // Very slow way to copy bytes, you have better override this copy method!
+  unsigned char *bufEnd = buf + copySize;
+
+  for(; buf < bufEnd; ++buf, ++index)
+  {
+    *buf = static_cast<unsigned char>(charAt(index));
+  }
+  *buf = 0;
 }
 
 void

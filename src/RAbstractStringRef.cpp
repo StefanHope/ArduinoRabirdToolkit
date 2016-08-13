@@ -125,9 +125,60 @@ int RAbstractStringRef::indexOf(char ch) const
   return indexOf(ch, 0);
 }
 
+int RAbstractStringRef::indexOf(char ch, unsigned int fromIndex) const
+{
+  if(fromIndex >= length())
+  {
+    return -1;
+  }
+
+  for(unsigned int i = 0; i < length(); ++i)
+  {
+    if(charAt(i) == ch)
+    {
+      return static_cast<int>(i);
+    }
+  }
+
+  return -1;
+}
+
 int RAbstractStringRef::indexOf(const RAbstractStringRef &str) const
 {
   return indexOf(str, 0);
+}
+
+int RAbstractStringRef::indexOf(const RAbstractStringRef &str, unsigned int fromIndex) const
+{
+  if((fromIndex >= length())
+     || (str.length() <= 0)
+     || (str.length() > (length() - fromIndex)))
+  {
+    return -1;
+  }
+
+  for(; fromIndex < length(); ++fromIndex)
+  {
+    unsigned int i = fromIndex;
+    unsigned int j = 0;
+    bool isSuccessed = true;
+
+    for(; j < str.length(); ++j, ++i)
+    {
+      if(charAt(i) != str.charAt(j))
+      {
+        isSuccessed = false;
+        break;
+      }
+    }
+
+    if(isSuccessed)
+    {
+      return static_cast<int>(fromIndex);
+    }
+  }
+
+  return -1;
 }
 
 int RAbstractStringRef::lastIndexOf(char ch) const
@@ -148,13 +199,13 @@ int RAbstractStringRef::lastIndexOf(char ch, unsigned int fromIndex) const
   }
 
   // Very slow way, you have better override this method!
-  for(unsigned int i = fromIndex + 1; i > 0; )
+  for(++fromIndex; fromIndex > 0;)
   {
-    -- i;
+    -- fromIndex;
 
-    if(charAt(i) == ch)
+    if(charAt(fromIndex) == ch)
     {
-      return static_cast<int>(i);
+      return static_cast<int>(fromIndex);
     }
   }
 
@@ -168,37 +219,34 @@ int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str) const
 
 int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str, unsigned int fromIndex) const
 {
-  if((fromIndex >= length()) || (str.length() <= 0))
+  if((fromIndex >= length())
+     || (str.length() <= 0)
+     || (str.length() > (fromIndex + 1)))
   {
     return -1;
   }
 
   // Very slow way, you have better override this method!
-  unsigned int i = fromIndex + 1;
-
-  for(; i > str.length() - 1; )
+  for(++ fromIndex; fromIndex > str.length(); )
   {
-    -- i;
+    -- fromIndex;
 
-    if(charAt(i) != str.charAt(i))
+    unsigned int i = fromIndex - (str.length() - 1);
+    unsigned int j = 0;
+    bool isSuccessed = true;
+
+    for(; j < str.length(); ++j, ++i)
     {
-      continue;
-    }
-
-    unsigned int j = i;
-    unsigned int lastJ = i - str.length() - 1;
-
-    for(; j <= lastJ; ++j)
-    {
-      if(charAt(j) != str.charAt(j))
+      if(charAt(i) != str.charAt(j))
       {
+        isSuccessed = false;
         break;
       }
     }
 
-    if(j > lastJ)
+    if(isSuccessed)
     {
-      return static_cast<int>(i - str.length());
+      return static_cast<int>(fromIndex);
     }
   }
 

@@ -36,7 +36,7 @@ public:
   unsigned char
   operator >=(const RAbstractStringRef &rhs) const;
   virtual unsigned char
-  equalsIgnoreCase(const RAbstractStringRef &s) const = 0;
+  equalsIgnoreCase(const RAbstractStringRef &s) const;
   unsigned char
   startsWith(const RAbstractStringRef &prefix) const;
   virtual unsigned char

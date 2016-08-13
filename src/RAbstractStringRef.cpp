@@ -1,4 +1,7 @@
 #include "RAbstractStringRef.h"
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 RAbstractStringRef::RAbstractStringRef()
 {
@@ -147,6 +150,35 @@ unsigned char
 RAbstractStringRef::operator >=(const RAbstractStringRef &rhs) const
 {
   return compareTo(rhs) >= 0;
+}
+
+unsigned char
+RAbstractStringRef::equalsIgnoreCase(const RAbstractStringRef &s) const
+{
+  if(this == &s)
+  {
+    return true;
+  }
+
+  if(length() != s.length())
+  {
+    return false;
+  }
+
+  if(length() == 0)
+  {
+    return true;
+  }
+
+  for(unsigned int i = 0; i < length(); ++ i)
+  {
+    if(tolower(charAt(i)) != tolower(s.charAt(i)))
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 unsigned char

@@ -11,7 +11,7 @@ RAbstractStringRef::~RAbstractStringRef()
 unsigned char
 RAbstractStringRef::equals(const RAbstractStringRef &s) const
 {
-  return ((length() == s.length()) && (compareTo(s) == 0));
+  return compareTo(s) == 0;
 }
 
 unsigned char

@@ -40,9 +40,9 @@ public:
   unsigned char
   startsWith(const RAbstractStringRef &prefix) const;
   virtual unsigned char
-  startsWith(const RAbstractStringRef &prefix, unsigned int offset) const = 0;
+  startsWith(const RAbstractStringRef &prefix, unsigned int offset) const;
   virtual unsigned char
-  endsWith(const RAbstractStringRef &suffix) const = 0;
+  endsWith(const RAbstractStringRef &suffix) const;
 
   // character acccess
   virtual char

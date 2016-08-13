@@ -74,6 +74,38 @@ RAbstractStringRef::startsWith(const RAbstractStringRef &prefix) const
   return startsWith(prefix, 0);
 }
 
+unsigned char
+RAbstractStringRef::endsWith(const RAbstractStringRef &suffix) const
+{
+  if((suffix.length() <= 0) || (suffix.length() > length()))
+  {
+    return false;
+  }
+
+  return startsWith(suffix, length() - suffix.length());
+}
+
+unsigned char
+RAbstractStringRef::startsWith(const RAbstractStringRef &prefix, unsigned int offset) const
+{
+  if((offset >= length())
+     || (prefix.length() <= 0)
+     || (prefix.length() > (length() - offset)))
+  {
+    return false;
+  }
+
+  for(unsigned int i = 0; i < prefix.length(); ++ i, ++ offset)
+  {
+    if(charAt(offset) != prefix.charAt(i))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 char
 RAbstractStringRef::operator [](unsigned int index) const
 {

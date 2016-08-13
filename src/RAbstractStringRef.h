@@ -12,9 +12,9 @@ public:
   virtual unsigned int
   length(void) const = 0;
   virtual int
-  compareTo(const RAbstractStringRef &s) const = 0;
+  compareTo(const RAbstractStringRef &s) const;
   virtual int
-  compareTo(const char *s) const = 0;
+  compareTo(const char *s) const;
   unsigned char
   equals(const RAbstractStringRef &s) const;
   virtual unsigned char

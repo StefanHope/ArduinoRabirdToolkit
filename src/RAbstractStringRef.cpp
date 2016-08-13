@@ -8,6 +8,87 @@ RAbstractStringRef::~RAbstractStringRef()
 {
 }
 
+int
+RAbstractStringRef::compareTo(const RAbstractStringRef &s) const
+{
+  unsigned int i = 0;
+  auto minLength = (length() > s.length() ? length() : s.length());
+
+  for(; i < minLength; ++ i)
+  {
+    char iChar = charAt(i);
+    char jChar = s.charAt(i);
+
+    if(iChar == jChar)
+    {
+      continue;
+    }
+    else if(iChar > jChar)
+    {
+      return 1;
+    }
+    else
+    {
+      return -1;
+    }
+  }
+
+  if(length() == s.length())
+  {
+    return 0;
+  }
+  else if(length() > minLength)
+  {
+    return 1;
+  }
+  else
+  {
+    return -1;
+  }
+}
+
+int RAbstractStringRef::compareTo(const char *s) const
+{
+  unsigned int i = 0;
+
+  for(; *s != '\0'; ++s, ++i)
+  {
+    if(i >= length())
+    {
+      return -1;
+    }
+
+    char iChar = charAt(i);
+    char jChar = *s;
+
+    if(iChar == jChar)
+    {
+      continue;
+    }
+    else if(iChar > jChar)
+    {
+      return 1;
+    }
+    else
+    {
+      return -1;
+    }
+  }
+
+  if(length() == i)
+  {
+    return 0;
+  }
+  else if(length() > i)
+  {
+    return 1;
+  }
+  else
+  {
+    return -1;
+  }
+}
+
 unsigned char
 RAbstractStringRef::equals(const RAbstractStringRef &s) const
 {

@@ -119,3 +119,88 @@ RAbstractStringRef::toCharArray(char *buf, unsigned int bufsize,
 {
   getBytes(reinterpret_cast<unsigned char *>(buf), bufsize, index);
 }
+
+int RAbstractStringRef::indexOf(char ch) const
+{
+  return indexOf(ch, 0);
+}
+
+int RAbstractStringRef::indexOf(const RAbstractStringRef &str) const
+{
+  return indexOf(str, 0);
+}
+
+int RAbstractStringRef::lastIndexOf(char ch) const
+{
+  if(length() == 0)
+  {
+    return -1;
+  }
+
+  return lastIndexOf(ch, length() - 1);
+}
+
+int RAbstractStringRef::lastIndexOf(char ch, unsigned int fromIndex) const
+{
+  if(fromIndex >= length())
+  {
+    return -1;
+  }
+
+  // Very slow way, you have better override this method!
+  for(unsigned int i = fromIndex + 1; i > 0; )
+  {
+    -- i;
+
+    if(charAt(i) == ch)
+    {
+      return static_cast<int>(i);
+    }
+  }
+
+  return -1;
+}
+
+int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str) const
+{
+  return lastIndexOf(str, 0);
+}
+
+int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str, unsigned int fromIndex) const
+{
+  if((fromIndex >= length()) || (str.length() <= 0))
+  {
+    return -1;
+  }
+
+  // Very slow way, you have better override this method!
+  unsigned int i = fromIndex + 1;
+
+  for(; i > str.length() - 1; )
+  {
+    -- i;
+
+    if(charAt(i) != str.charAt(i))
+    {
+      continue;
+    }
+
+    unsigned int j = i;
+    unsigned int lastJ = i - str.length() - 1;
+
+    for(; j <= lastJ; ++j)
+    {
+      if(charAt(j) != str.charAt(j))
+      {
+        break;
+      }
+    }
+
+    if(j > lastJ)
+    {
+      return static_cast<int>(i - str.length());
+    }
+  }
+
+  return -1;
+}

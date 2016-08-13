@@ -93,6 +93,8 @@ typedef Rt::RTypeSignTraits<size_t>::Signed rsize_t;
  */
 typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber_t;
 
+typedef unsigned char rbool_t;
+
 template <class Type>
 inline
 uintptr_t

@@ -109,6 +109,18 @@ test(TestAbstractStringRef)
   assertTrue(BasicStringRef(normalString3).charAt(2) == 'c');
   assertTrue(BasicStringRef(normalString3).charAt(3) == '\0');
 
+  // indexOf
+  assertEqual(BasicStringRef(normalString3).indexOf('a'), 0);
+  assertEqual(BasicStringRef(normalString3).indexOf('b'), 1);
+  assertEqual(BasicStringRef(normalString3).indexOf('c'), 2);
+  assertEqual(BasicStringRef(normalString3).indexOf('d'), -1);
+
+  // lastIndexOf
+  assertEqual(BasicStringRef(normalString3).lastIndexOf('a'), 0);
+  assertEqual(BasicStringRef(normalString3).lastIndexOf('b'), 1);
+  assertEqual(BasicStringRef(normalString3).lastIndexOf('c'), 2);
+  assertEqual(BasicStringRef(normalString3).lastIndexOf('d'), -1);
+
   // operator ==
   assertTrue(BasicStringRef(normalString3) == BasicStringRef(normalString3));
   assertTrue(BasicStringRef(normalString3) == normalString3);

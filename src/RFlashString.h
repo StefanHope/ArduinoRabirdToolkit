@@ -15,7 +15,7 @@ public:
   RFlashString(const ValueType *flashStr);
   ~RFlashString();
 
-  ValueType *
+  const ValueType *
   data()
   {
     return mStr;
@@ -43,7 +43,7 @@ private:
    * __FlashStringHelper is a special type with pointer value may large than
    * normal pointer, so we must not use uintptr_t to express it.
    */
-  ValueType *mStr;
+  const ValueType *mStr;
 };
 
 #endif // __INCLUDED_675A3F04598211E6AA6EA088B4D1658C

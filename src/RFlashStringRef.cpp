@@ -37,6 +37,11 @@ RFlashStringRef::length() const
 char
 RFlashStringRef::charAt(unsigned int index) const
 {
+  if(index >= length())
+  {
+    return '\0';
+  }
+
   return pgm_read_byte_far(reinterpret_cast<const char *>(mStr) + index);
 }
 

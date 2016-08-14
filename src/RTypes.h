@@ -111,6 +111,39 @@ rLengthenPtr(uintptr_t shortPtr)
   return reinterpret_cast<PtrType>(static_cast<int>((shortPtr)));
 }
 
+
+template <class T>
+inline
+const typename Rt::RTypeSignTraits<T>::Signed &
+rSignedCast(const T &value)
+{
+  return static_cast<typename Rt::RTypeSignTraits<T>::Signed>(value);
+}
+
+template <class T>
+inline
+typename Rt::RTypeSignTraits<T>::Signed &
+rSignedCast(T &value)
+{
+  return static_cast<typename Rt::RTypeSignTraits<T>::Signed>(value);
+}
+
+template <class T>
+inline
+const typename Rt::RTypeSignTraits<T>::Unsigned &
+rUnsignedCast(const T &value)
+{
+  return static_cast<typename Rt::RTypeSignTraits<T>::Unsigned>(value);
+}
+
+template <class T>
+inline
+typename Rt::RTypeSignTraits<T>::Unsigned  &
+rUnsignedCast(T &value)
+{
+  return static_cast<typename Rt::RTypeSignTraits<T>::Unsigned>(value);
+}
+
 /**
  * Calculate how much elements in the array
  *

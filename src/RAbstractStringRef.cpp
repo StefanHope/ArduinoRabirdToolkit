@@ -190,12 +190,18 @@ RAbstractStringRef::startsWith(const RAbstractStringRef &prefix) const
 unsigned char
 RAbstractStringRef::endsWith(const RAbstractStringRef &suffix) const
 {
-  if((suffix.length() <= 0) || (suffix.length() > length()))
+  return endsWith(suffix, length() - 1);
+}
+
+unsigned char
+RAbstractStringRef::endsWith(const RAbstractStringRef &suffix, unsigned int fromIndex) const
+{
+  if((suffix.length() <= 0) || (suffix.length() > (fromIndex + 1)))
   {
     return false;
   }
 
-  return startsWith(suffix, length() - suffix.length());
+  return startsWith(suffix, fromIndex + 1 - suffix.length());
 }
 
 unsigned char
@@ -304,22 +310,9 @@ int RAbstractStringRef::indexOf(const RAbstractStringRef &str, unsigned int from
 
   for(; fromIndex < length(); ++fromIndex)
   {
-    unsigned int i = fromIndex;
-    unsigned int j = 0;
-    bool isSuccessed = true;
-
-    for(; j < str.length(); ++j, ++i)
+    if(startsWith(str, fromIndex))
     {
-      if(charAt(i) != str.charAt(j))
-      {
-        isSuccessed = false;
-        break;
-      }
-    }
-
-    if(isSuccessed)
-    {
-      return static_cast<int>(fromIndex);
+      return rSignedCast(fromIndex);
     }
   }
 

@@ -1,6 +1,8 @@
 #ifndef _INCLUDED_CEFD8F1A5D4C11E68E7800F1F38F93EF
 #define _INCLUDED_CEFD8F1A5D4C11E68E7800F1F38F93EF
 
+#include "RTypes.h"
+
 class RAbstractStringRef
 {
 public:
@@ -41,8 +43,10 @@ public:
   startsWith(const RAbstractStringRef &prefix) const;
   virtual unsigned char
   startsWith(const RAbstractStringRef &prefix, unsigned int offset) const;
-  virtual unsigned char
+  unsigned char
   endsWith(const RAbstractStringRef &suffix) const;
+  virtual unsigned char
+  endsWith(const RAbstractStringRef &suffix, unsigned int fromIndex) const;
 
   // character acccess
   virtual char

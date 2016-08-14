@@ -369,22 +369,9 @@ int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str, unsigned int 
   {
     -- fromIndex;
 
-    unsigned int i = fromIndex - (str.length() - 1);
-    unsigned int j = 0;
-    bool isSuccessed = true;
-
-    for(; j < str.length(); ++j, ++i)
+    if(endsWith(str, fromIndex))
     {
-      if(charAt(i) != str.charAt(j))
-      {
-        isSuccessed = false;
-        break;
-      }
-    }
-
-    if(isSuccessed)
-    {
-      return static_cast<int>(fromIndex);
+      return rSignedCast(fromIndex);
     }
   }
 

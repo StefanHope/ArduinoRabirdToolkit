@@ -2,18 +2,27 @@
 #define __INCLUDED_675A3F04598211E6AA6EA088B4D1658C
 
 #include "RRawPointer.h"
+#include "RAbstractStringRef.h"
 #include <WString.h>
 #include <Printable.h>
 
-class RFlashString
+class RFlashStringRef: public RAbstractStringRef
 {
 private:
   typedef class __FlashStringHelper ValueType;
 
 public:
-  RFlashString();
-  RFlashString(const ValueType *flashStr);
-  ~RFlashString();
+  RFlashStringRef();
+  RFlashStringRef(const ValueType *flashStr);
+  RFlashStringRef(const RFlashStringRef &stringRef);
+  ~RFlashStringRef();
+
+  // RAbstractStringRef interfaces:
+  unsigned int
+  length() const;
+
+  char
+  charAt(unsigned int index) const;
 
   const ValueType *
   data()
@@ -27,7 +36,7 @@ public:
     return NULL == mStr;
   }
 
-  operator ValueType*()
+  operator const ValueType*()
   {
       return mStr;
   }
@@ -44,6 +53,7 @@ private:
    * normal pointer, so we must not use uintptr_t to express it.
    */
   const ValueType *mStr;
+  size_t mLength;
 };
 
 #endif // __INCLUDED_675A3F04598211E6AA6EA088B4D1658C

@@ -6,7 +6,7 @@
 #include <WString.h>
 #include <Printable.h>
 
-class RFlashStringRef: public RAbstractStringRef
+class RFlashStringRef : public RAbstractStringRef
 {
 private:
   typedef class __FlashStringHelper ValueType;
@@ -36,9 +36,9 @@ public:
     return NULL == mStr;
   }
 
-  operator const ValueType*()
+  operator const ValueType *()
   {
-      return mStr;
+    return mStr;
   }
 
   /// Support if(flashStr) style
@@ -53,7 +53,7 @@ private:
    * normal pointer, so we must not use uintptr_t to express it.
    */
   const ValueType *mStr;
-  size_t mLength;
+  size_t           mLength;
 };
 
 #endif // __INCLUDED_675A3F04598211E6AA6EA088B4D1658C

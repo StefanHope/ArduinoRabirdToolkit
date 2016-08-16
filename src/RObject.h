@@ -8,7 +8,7 @@
 class RObject : protected Printable
 {
 public:
-  RObject(): Printable()
+  RObject() : Printable()
   {
   }
 
@@ -17,7 +17,7 @@ public:
   }
 
   size_t
-  printTo(Print& p) const;
+  printTo(Print&p) const;
 };
 
 #endif // __INCLUDED_CB5671DA425011E6932B00F1F38F93EF

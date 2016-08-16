@@ -6,7 +6,7 @@
 template <class T>
 class RAtomicInteger
 {
-public:  
+public:
   RAtomicInteger(T value=0)
   {
     RSpinLock();
@@ -25,7 +25,7 @@ public:
   deref()
   {
     RSpinLock();
-    -- mValue;
+    --mValue;
     return mValue != 0;
   }
 
@@ -33,7 +33,7 @@ public:
   ref()
   {
     RSpinLock();
-    ++ mValue;
+    ++mValue;
     return mValue != 0;
   }
 
@@ -44,7 +44,8 @@ public:
     mValue = newValue;
   }
 
-  T load() const
+  T
+  load() const
   {
     RSpinLock();
     return mValue;
@@ -57,7 +58,7 @@ public:
   }
 
   T
-  operator&=(T valueToAnd)
+  operator &=(T valueToAnd)
   {
     RSpinLock();
     mValue &= valueToAnd;
@@ -65,49 +66,49 @@ public:
   }
 
   T
-  operator++()
+  operator ++()
   {
     RSpinLock();
-    return ++ mValue;
+    return ++mValue;
   }
 
   T
-  operator++(int)
+  operator ++(int)
   {
     RSpinLock();
-    return mValue ++;
+    return mValue++;
   }
 
   T
-  operator+=(T valueToAdd)
+  operator +=(T valueToAdd)
   {
     RSpinLock();
     return mValue += valueToAdd;
   }
 
   T
-  operator--()
+  operator --()
   {
     RSpinLock();
-    return -- mValue;
+    return --mValue;
   }
 
   T
-  operator--(int)
+  operator --(int)
   {
     RSpinLock();
-    return mValue --;
+    return mValue--;
   }
 
   T
-  operator-=(T valueToSub)
+  operator -=(T valueToSub)
   {
     RSpinLock();
     return mValue -= valueToSub;
   }
 
   RAtomicInteger &
-  operator=(const RAtomicInteger &other)
+  operator =(const RAtomicInteger &other)
   {
     RSpinLock();
     mValue = other.mValue;
@@ -115,7 +116,7 @@ public:
   }
 
   RAtomicInteger &
-  operator=(T newValue)
+  operator =(T newValue)
   {
     RSpinLock();
     mValue = newValue;
@@ -123,14 +124,14 @@ public:
   }
 
   T
-  operator^=(T valueToXor)
+  operator ^=(T valueToXor)
   {
     RSpinLock();
     return mValue ^= valueToXor;
   }
 
   T
-  operator|=(T valueToOr)
+  operator |=(T valueToOr)
   {
     RSpinLock();
     return mValue |= valueToOr;

@@ -17,8 +17,8 @@ public:
   charAt(unsigned int index) const;
 
 private:
-  const char * mStr;
-  size_t mLength;
+  const char *mStr;
+  size_t      mLength;
 };
 
 #endif // __INCLUDED_223FADE0620711E6AA6EA088B4D1658C

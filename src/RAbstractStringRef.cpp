@@ -14,10 +14,10 @@ RAbstractStringRef::~RAbstractStringRef()
 int
 RAbstractStringRef::compareTo(const RAbstractStringRef &s) const
 {
-  unsigned int i = 0;
-  auto minLength = (length() > s.length() ? length() : s.length());
+  unsigned int i         = 0;
+  auto         minLength = (length() > s.length() ? length() : s.length());
 
-  for(; i < minLength; ++ i)
+  for(; i < minLength; ++i)
   {
     char iChar = charAt(i);
     char jChar = s.charAt(i);
@@ -50,7 +50,8 @@ RAbstractStringRef::compareTo(const RAbstractStringRef &s) const
   }
 }
 
-int RAbstractStringRef::compareTo(const char *s) const
+int
+RAbstractStringRef::compareTo(const char *s) const
 {
   unsigned int i = 0;
 
@@ -170,7 +171,7 @@ RAbstractStringRef::equalsIgnoreCase(const RAbstractStringRef &s) const
     return true;
   }
 
-  for(unsigned int i = 0; i < length(); ++ i)
+  for(unsigned int i = 0; i < length(); ++i)
   {
     if(tolower(charAt(i)) != tolower(s.charAt(i)))
     {
@@ -194,7 +195,8 @@ RAbstractStringRef::endsWith(const RAbstractStringRef &suffix) const
 }
 
 unsigned char
-RAbstractStringRef::endsWith(const RAbstractStringRef &suffix, unsigned int fromIndex) const
+RAbstractStringRef::endsWith(const RAbstractStringRef &suffix,
+                             unsigned int fromIndex) const
 {
   if((suffix.length() <= 0) || (suffix.length() > (fromIndex + 1)))
   {
@@ -205,7 +207,8 @@ RAbstractStringRef::endsWith(const RAbstractStringRef &suffix, unsigned int from
 }
 
 unsigned char
-RAbstractStringRef::startsWith(const RAbstractStringRef &prefix, unsigned int offset) const
+RAbstractStringRef::startsWith(const RAbstractStringRef &prefix,
+                               unsigned int offset) const
 {
   if((offset >= length())
      || (prefix.length() <= 0)
@@ -214,7 +217,7 @@ RAbstractStringRef::startsWith(const RAbstractStringRef &prefix, unsigned int of
     return false;
   }
 
-  for(unsigned int i = 0; i < prefix.length(); ++ i, ++ offset)
+  for(unsigned int i = 0; i < prefix.length(); ++i, ++offset)
   {
     if(charAt(offset) != prefix.charAt(i))
     {
@@ -249,6 +252,7 @@ RAbstractStringRef::getBytes(unsigned char *buf, unsigned int bufsize,
   unsigned int copySize = 0;
 
   copySize = length() - index - 1;
+
   if(bufsize < copySize)
   {
     copySize = bufsize;
@@ -261,6 +265,7 @@ RAbstractStringRef::getBytes(unsigned char *buf, unsigned int bufsize,
   {
     *buf = static_cast<unsigned char>(charAt(index));
   }
+
   *buf = 0;
 }
 
@@ -271,12 +276,14 @@ RAbstractStringRef::toCharArray(char *buf, unsigned int bufsize,
   getBytes(reinterpret_cast<unsigned char *>(buf), bufsize, index);
 }
 
-int RAbstractStringRef::indexOf(char ch) const
+int
+RAbstractStringRef::indexOf(char ch) const
 {
   return indexOf(ch, 0);
 }
 
-int RAbstractStringRef::indexOf(char ch, unsigned int fromIndex) const
+int
+RAbstractStringRef::indexOf(char ch, unsigned int fromIndex) const
 {
   if(fromIndex >= length())
   {
@@ -294,12 +301,15 @@ int RAbstractStringRef::indexOf(char ch, unsigned int fromIndex) const
   return -1;
 }
 
-int RAbstractStringRef::indexOf(const RAbstractStringRef &str) const
+int
+RAbstractStringRef::indexOf(const RAbstractStringRef &str) const
 {
   return indexOf(str, 0);
 }
 
-int RAbstractStringRef::indexOf(const RAbstractStringRef &str, unsigned int fromIndex) const
+int
+RAbstractStringRef::indexOf(const RAbstractStringRef &str,
+                            unsigned int fromIndex) const
 {
   if((fromIndex >= length())
      || (str.length() <= 0)
@@ -319,7 +329,8 @@ int RAbstractStringRef::indexOf(const RAbstractStringRef &str, unsigned int from
   return -1;
 }
 
-int RAbstractStringRef::lastIndexOf(char ch) const
+int
+RAbstractStringRef::lastIndexOf(char ch) const
 {
   if(length() == 0)
   {
@@ -329,7 +340,8 @@ int RAbstractStringRef::lastIndexOf(char ch) const
   return lastIndexOf(ch, length() - 1);
 }
 
-int RAbstractStringRef::lastIndexOf(char ch, unsigned int fromIndex) const
+int
+RAbstractStringRef::lastIndexOf(char ch, unsigned int fromIndex) const
 {
   if(fromIndex >= length())
   {
@@ -337,9 +349,9 @@ int RAbstractStringRef::lastIndexOf(char ch, unsigned int fromIndex) const
   }
 
   // Very slow way, you have better override this method!
-  for(++fromIndex; fromIndex > 0;)
+  for(++fromIndex; fromIndex > 0; )
   {
-    -- fromIndex;
+    --fromIndex;
 
     if(charAt(fromIndex) == ch)
     {
@@ -350,12 +362,15 @@ int RAbstractStringRef::lastIndexOf(char ch, unsigned int fromIndex) const
   return -1;
 }
 
-int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str) const
+int
+RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str) const
 {
   return lastIndexOf(str, 0);
 }
 
-int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str, unsigned int fromIndex) const
+int
+RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str,
+                                unsigned int fromIndex) const
 {
   if((fromIndex >= length())
      || (str.length() <= 0)
@@ -365,9 +380,9 @@ int RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str, unsigned int 
   }
 
   // Very slow way, you have better override this method!
-  for(++ fromIndex; fromIndex > str.length(); )
+  for(++fromIndex; fromIndex > str.length(); )
   {
-    -- fromIndex;
+    --fromIndex;
 
     if(endsWith(str, fromIndex))
     {

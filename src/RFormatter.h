@@ -37,27 +37,30 @@ class RFormatter
 public:
   RFormatter(Print *print);
 
-  RFormatter &parse(const char * format);
-
-  template <class... ParamTypes>
   RFormatter &
-  arg(ParamTypes... params)
+  parse(const char *format);
+
+  template <class ... ParamTypes>
+  RFormatter &
+  arg(ParamTypes ... params)
   {
     if(printBeforeNextMark())
     {
-      mPrint->print(params...);
+      mPrint->print(params ...);
       mFormat += 2;
       printBeforeNextMark();
     }
+
     return *this;
   }
 
 private:
-  bool printBeforeNextMark();
+  bool
+  printBeforeNextMark();
 
 private:
-  Print *      mPrint;
-  const char * mFormat;
+  Print *     mPrint;
+  const char *mFormat;
 
 private:
   R_DISABLE_COPY(RFormatter);

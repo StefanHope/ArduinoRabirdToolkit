@@ -44,4 +44,3 @@ RFlashStringRef::charAt(unsigned int index) const
 
   return pgm_read_byte_far(reinterpret_cast<const char *>(mStr) + index);
 }
-

@@ -18,7 +18,7 @@ public:
   charAt(unsigned int index) const;
 
 private:
-  const String * mStr;
+  const String *mStr;
 };
 
 #endif // __INCLUDED_0D4A5BE6605511E683A100F1F38F93EF

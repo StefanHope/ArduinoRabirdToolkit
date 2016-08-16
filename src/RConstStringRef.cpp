@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-RConstStringRef::RConstStringRef(): mStr(NULL), mLength(0)
+RConstStringRef::RConstStringRef() : mStr(NULL), mLength(0)
 {
 }
 
-RConstStringRef::RConstStringRef(const char *str): mStr(str), mLength(0)
+RConstStringRef::RConstStringRef(const char *str) : mStr(str), mLength(0)
 {
   if(NULL != str)
   {

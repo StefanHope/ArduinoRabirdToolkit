@@ -7,15 +7,15 @@ template <class T>
 class RRawPointer
 {
 public:
-  RRawPointer(): mPtr(0)
+  RRawPointer() : mPtr(0)
   {
   }
 
-  RRawPointer(const T *ptr): mPtr(rShortenPtr(ptr))
+  RRawPointer(const T *ptr) : mPtr(rShortenPtr(ptr))
   {
   }
 
-  RRawPointer(const RRawPointer<T> &other): mPtr(other.mPtr)
+  RRawPointer(const RRawPointer<T> &other) : mPtr(other.mPtr)
   {
   }
 
@@ -65,19 +65,19 @@ public:
   }
 
   bool
-  operator!() const
+  operator !() const
   {
     return isNull();
   }
 
   T &
-  operator*() const
+  operator *() const
   {
     return *data();
   }
 
   RRawPointer<T> &
-  operator=(const RRawPointer<T> &other)
+  operator =(const RRawPointer<T> &other)
   {
     mPtr = other.mPtr;
     return *this;

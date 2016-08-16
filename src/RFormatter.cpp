@@ -1,4 +1,3 @@
-
 #include "RFormatter.h"
 #include <Print.h>
 
@@ -7,7 +6,8 @@ RFormatter::RFormatter(Print *print)
 {
 }
 
-RFormatter &RFormatter::parse(const char * format)
+RFormatter &
+RFormatter::parse(const char *format)
 {
   mFormat = format;
   // If this message does not have any format mark, we just print the
@@ -16,43 +16,57 @@ RFormatter &RFormatter::parse(const char * format)
   return *this;
 }
 
-bool RFormatter::printBeforeNextMark()
+bool
+RFormatter::printBeforeNextMark()
 {
   char c;
   char nextChar;
 
-  while(1) {
+  while(1)
+  {
     c = *mFormat;
-    if ('\0' == c) {
+
+    if('\0' == c)
+    {
       break;
     }
 
-    if ('%' == c) {
-      ++ mFormat;
+    if('%' == c)
+    {
+      ++mFormat;
 
       nextChar = *mFormat;
-      if ('%' == nextChar) {
+
+      if('%' == nextChar)
+      {
         // '%%' means one '%'
         mPrint->write(nextChar);
-        ++ mFormat;
-      } else if ('s' == nextChar) {
+        ++mFormat;
+      }
+      else if('s' == nextChar)
+      {
         // Found replacement mark : "%s"
-        -- mFormat; // Jump to forward "%"
+        --mFormat;  // Jump to forward "%"
         return true;
-      } else if ('\0' == nextChar) {
+      }
+      else if('\0' == nextChar)
+      {
         mPrint->write(c);
         break;
-      } else {
+      }
+      else
+      {
         mPrint->write(c);
         mPrint->write(nextChar);
-        ++ mFormat;
+        ++mFormat;
       }
-    } else {
+    }
+    else
+    {
       mPrint->write(c);
-      ++ mFormat;
+      ++mFormat;
     }
   }
 
   return false;
 }
-

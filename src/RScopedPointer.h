@@ -46,6 +46,11 @@ public:
   typedef RScopedPointer<T, CleanupType>          ThisType;
   typedef RBasicPointer<ThisType, T, StorageType> BaseType;
 
+protected:
+  // Don't allow create RScopedPointer without any argument!
+  RScopedPointer();
+
+public:
   RScopedPointer(T *ptr=0) : BaseType(ptr)
   {
   }

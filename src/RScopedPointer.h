@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_B9852640644F11E6878D00F1F38F93EF
 #define __INCLUDED_B9852640644F11E6878D00F1F38F93EF
 
-#include "RBasicPointer.h"
+#include "RRawPointer.h"
 
 template <class T>
 class RScopedPointerDeleter
@@ -36,30 +36,30 @@ public:
   }
 };
 
-template <class T, class CleanupType = RScopedPointerDeleter<T> >
-class RScopedPointer
-  : public RBasicPointer<RScopedPointer<T, CleanupType>, T, uintptr_t>
+template <class DerivedType, class T, class CleanupType>
+class RBasicScopedPointer
+  : public RBasicRawPointer<DerivedType, T>
 {
 public:
-  typedef uintptr_t StorageType;
+  typedef RBasicRawPointer<DerivedType, T> BaseType;
 
-  typedef RScopedPointer<T, CleanupType>          ThisType;
-  typedef RBasicPointer<ThisType, T, StorageType> BaseType;
+  typedef typename BaseType::StorageType StorageType;
+  typedef typename BaseType::ThisType    ThisType;
 
 protected:
-  // Don't allow create RScopedPointer without any argument!
-  RScopedPointer();
+  // Don't allow create RBasicScopedPointer without any argument!
+  RBasicScopedPointer();
 
 public:
-  RScopedPointer(T *ptr=0) : BaseType(ptr)
+  RBasicScopedPointer(const T *ptr) : BaseType(ptr)
   {
   }
 
-  RScopedPointer(ThisType &other) : BaseType(other)
+  RBasicScopedPointer(ThisType &other) : BaseType(other.take())
   {
   }
 
-  ~RScopedPointer()
+  ~RBasicScopedPointer()
   {
     BaseType::getThis()->clear();
   }
@@ -90,21 +90,33 @@ public:
   }
 
 protected:
-  inline
-  StorageType
-  toStorageType(const T *ptr)
-  {
-    return rShortenPtr(ptr);
-  }
-
-  inline
-  T *
-  fromStorageType(StorageType ptr)
-  {
-    return rLengthenPtr<T *>(ptr);
-  }
-
   friend BaseType;
+};
+
+template <class T, class CleanupType = RScopedPointerDeleter<T> >
+class RScopedPointer
+  : public RBasicScopedPointer<RScopedPointer<T, CleanupType>, T, CleanupType>
+{
+public:
+  typedef RBasicScopedPointer<RScopedPointer<T, CleanupType>, T,
+                              CleanupType> BaseType;
+  typedef typename BaseType::StorageType
+                                           StorageType;
+  typedef typename BaseType::ThisType
+                                           ThisType;
+
+protected:
+  // Don't allow create RScopedPointer without any argument!
+  RScopedPointer();
+
+public:
+  RScopedPointer(const T *ptr) : BaseType(ptr)
+  {
+  }
+
+  RScopedPointer(ThisType &other) : BaseType(other)
+  {
+  }
 };
 
 #endif // __INCLUDED_B9852640644F11E6878D00F1F38F93EF

@@ -3,21 +3,21 @@
 
 #include "RBasicPointer.h"
 
-template <class DerivedType, class T>
+template <class DerivedType_, class T>
 class RBasicRawPointer
-  : public RBasicPointer<DerivedType, T, uintptr_t>
+  : public RBasicPointer<DerivedType_, T, uintptr_t>
 {
 public:
-  typedef RBasicPointer<DerivedType, T, uintptr_t> BaseType;
-  typedef typename BaseType::StorageType           StorageType;
-  typedef typename BaseType::ThisType              ThisType;
+  typedef RBasicPointer<DerivedType_, T, uintptr_t> BaseType;
+  typedef typename BaseType::StorageType            StorageType;
+  typedef typename BaseType::DerivedType            DerivedType;
 
 public:
   RBasicRawPointer(const T *ptr) : BaseType(ptr)
   {
   }
 
-  RBasicRawPointer(const ThisType &other) : BaseType(other)
+  RBasicRawPointer(const DerivedType &other) : BaseType(other)
   {
   }
 
@@ -46,14 +46,14 @@ class RRawPointer
 public:
   typedef RBasicRawPointer<RRawPointer<T>, T> BaseType;
   typedef typename BaseType::StorageType      StorageType;
-  typedef typename BaseType::ThisType         ThisType;
+  typedef typename BaseType::DerivedType      DerivedType;
 
 public:
   RRawPointer(const T *ptr) : BaseType(ptr)
   {
   }
 
-  RRawPointer(const ThisType &other) : BaseType(other)
+  RRawPointer(const DerivedType &other) : BaseType(other)
   {
   }
 };

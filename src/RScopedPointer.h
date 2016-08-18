@@ -36,15 +36,15 @@ public:
   }
 };
 
-template <class DerivedType, class T, class CleanupType>
+template <class DerivedType_, class T, class CleanupType>
 class RBasicScopedPointer
-  : public RBasicRawPointer<DerivedType, T>
+  : public RBasicRawPointer<DerivedType_, T>
 {
 public:
-  typedef RBasicRawPointer<DerivedType, T> BaseType;
+  typedef RBasicRawPointer<DerivedType_, T> BaseType;
 
   typedef typename BaseType::StorageType StorageType;
-  typedef typename BaseType::ThisType    ThisType;
+  typedef typename BaseType::DerivedType DerivedType;
 
 protected:
   // Don't allow create RBasicScopedPointer without any argument!
@@ -55,19 +55,19 @@ public:
   {
   }
 
-  RBasicScopedPointer(ThisType &other) : BaseType(other.take())
+  RBasicScopedPointer(DerivedType &other) : BaseType(other.take())
   {
   }
 
   ~RBasicScopedPointer()
   {
-    BaseType::getThis()->clear();
+    BaseType::getDerived()->clear();
   }
 
   void
   clear()
   {
-    T *ptr = BaseType::getThis()->data();
+    T *ptr = BaseType::getDerived()->data();
     BaseType::clear();
     CleanupType::cleanup(ptr);
   }
@@ -75,16 +75,16 @@ public:
   T *
   take()
   {
-    T *ret = BaseType::getThis()->data();
-    BaseType::getThis()->clear();
+    T *ret = BaseType::getDerived()->data();
+    BaseType::getDerived()->clear();
 
     return ret;
   }
 
-  ThisType &
-  operator =(const ThisType &other)
+  DerivedType &
+  operator =(const DerivedType &other)
   {
-    BaseType::getThis()->reset(other.take());
+    BaseType::getDerived()->reset(other.take());
 
     return *this;
   }
@@ -100,10 +100,8 @@ class RScopedPointer
 public:
   typedef RBasicScopedPointer<RScopedPointer<T, CleanupType>, T,
                               CleanupType> BaseType;
-  typedef typename BaseType::StorageType
-                                           StorageType;
-  typedef typename BaseType::ThisType
-                                           ThisType;
+  typedef typename BaseType::StorageType StorageType;
+  typedef typename BaseType::DerivedType DerivedType;
 
 protected:
   // Don't allow create RScopedPointer without any argument!
@@ -114,7 +112,7 @@ public:
   {
   }
 
-  RScopedPointer(ThisType &other) : BaseType(other)
+  RScopedPointer(DerivedType &other) : BaseType(other)
   {
   }
 };

@@ -3,11 +3,11 @@
 
 #include <RTypes.h>
 
-template <class DerivedType, class T, class StorageType_ = T *>
+template <class DerivedType_, class T, class StorageType_ = T *>
 class RBasicPointer
 {
 public:
-  typedef DerivedType  ThisType;
+  typedef DerivedType_ DerivedType;
   typedef T            ValueType;
   typedef StorageType_ StorageType;
 
@@ -15,29 +15,29 @@ public:
   {
   }
 
-  RBasicPointer(const T *ptr) : mPtr(getThis()->toStorageType(ptr))
+  RBasicPointer(const T *ptr) : mPtr(getDerived()->toStorageType(ptr))
   {
   }
 
-  RBasicPointer(const ThisType &other) : mPtr(other.mPtr)
+  RBasicPointer(const DerivedType &other) : mPtr(other.mPtr)
   {
   }
 
   ~RBasicPointer()
   {
-    getThis()->clear();
+    getDerived()->clear();
   }
 
   T *
   data() const
   {
-    return getThis()->fromStorageType(mPtr);
+    return getDerived()->fromStorageType(mPtr);
   }
 
   bool
   isNull() const
   {
-    return (0 == getThis()->data());
+    return (0 == getDerived()->data());
   }
 
   void
@@ -49,14 +49,14 @@ public:
   void
   reset(T *ptr=0)
   {
-    getThis()->clear();
-    mPtr = getThis()->toStorageType(ptr);
+    getDerived()->clear();
+    mPtr = getDerived()->toStorageType(ptr);
   }
 
   void
-  swap(ThisType &other)
+  swap(DerivedType &other)
   {
-    ThisType temp;
+    DerivedType temp;
 
     temp  = other;
     other = *this;
@@ -66,30 +66,30 @@ public:
   T *
   operator ->() const
   {
-    return getThis()->data();
+    return getDerived()->data();
   }
 
   operator bool() const
   {
-    return !getThis()->isNull();
+    return !getDerived()->isNull();
   }
 
   bool
   operator !() const
   {
-    return getThis()->isNull();
+    return getDerived()->isNull();
   }
 
   T &
   operator *() const
   {
-    return *getThis()->data();
+    return *getDerived()->data();
   }
 
-  ThisType &
-  operator =(const ThisType &other)
+  DerivedType &
+  operator =(const DerivedType &other)
   {
-    getThis()->reset(other.data());
+    getDerived()->reset(other.data());
     return *this;
   }
 
@@ -110,14 +110,14 @@ protected:
 
   inline
   DerivedType *
-  getThis()
+  getDerived()
   {
     return static_cast<DerivedType *>(this);
   }
 
   inline
   const DerivedType *
-  getThis() const
+  getDerived() const
   {
     return static_cast<const DerivedType *>(this);
   }

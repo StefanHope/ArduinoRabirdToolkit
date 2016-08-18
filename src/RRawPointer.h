@@ -1,90 +1,61 @@
 #ifndef __INCLUDED_B0C76BDC59FD11E6BE6F00F1F38F93EF
 #define __INCLUDED_B0C76BDC59FD11E6BE6F00F1F38F93EF
 
-#include "RTypes.h"
+#include "RBasicPointer.h"
+
+template <class DerivedType, class T>
+class RBasicRawPointer
+  : public RBasicPointer<DerivedType, T, uintptr_t>
+{
+public:
+  typedef RBasicPointer<DerivedType, T, uintptr_t> BaseType;
+  typedef typename BaseType::StorageType           StorageType;
+  typedef typename BaseType::ThisType              ThisType;
+
+public:
+  RBasicRawPointer(const T *ptr) : BaseType(ptr)
+  {
+  }
+
+  RBasicRawPointer(const ThisType &other) : BaseType(other)
+  {
+  }
+
+protected:
+  inline
+  StorageType
+  toStorageType(const T *ptr)
+  {
+    return rShortenPtr(ptr);
+  }
+
+  inline
+  T *
+  fromStorageType(StorageType ptr)
+  {
+    return rLengthenPtr<T *>(ptr);
+  }
+
+  friend BaseType;
+};
 
 template <class T>
 class RRawPointer
+  : public RBasicRawPointer<RRawPointer<T>, T>
 {
 public:
-  RRawPointer() : mPtr(0)
+  typedef RBasicRawPointer<RRawPointer<T>, T> BaseType;
+  typedef typename BaseType::StorageType      StorageType;
+  typedef typename BaseType::ThisType         ThisType;
+
+public:
+  RRawPointer(const T *ptr) : BaseType(ptr)
   {
   }
 
-  RRawPointer(const T *ptr) : mPtr(rShortenPtr(ptr))
+  RRawPointer(const ThisType &other) : BaseType(other)
   {
   }
-
-  RRawPointer(const RRawPointer<T> &other) : mPtr(other.mPtr)
-  {
-  }
-
-  ~RRawPointer()
-  {
-  }
-
-  T *
-  data() const
-  {
-    return rLengthenPtr<T *>(mPtr);
-  }
-
-  bool
-  isNull() const
-  {
-    return (mPtr == 0);
-  }
-
-  void
-  clear()
-  {
-    mPtr = 0;
-  }
-
-  void
-  reset()
-  {
-    clear();
-  }
-
-  void
-  reset(T *ptr)
-  {
-    mPtr = rShortenPtr(ptr);
-  }
-
-  T *
-  operator ->() const
-  {
-    return data();
-  }
-
-  operator bool() const
-  {
-    return !isNull();
-  }
-
-  bool
-  operator !() const
-  {
-    return isNull();
-  }
-
-  T &
-  operator *() const
-  {
-    return *data();
-  }
-
-  RRawPointer<T> &
-  operator =(const RRawPointer<T> &other)
-  {
-    mPtr = other.mPtr;
-    return *this;
-  }
-
-private:
-  uintptr_t mPtr;
 };
 
 #endif // #ifdef __INCLUDED_B0C76BDC59FD11E6BE6F00F1F38F93EF

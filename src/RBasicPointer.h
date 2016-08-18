@@ -3,13 +3,19 @@
 
 #include <RTypes.h>
 
-template <class DerivedType, class T, class StorageType = T *>
+template <class DerivedType, class T, class StorageType_ = T *>
 class RBasicPointer
 {
 public:
-  typedef DerivedType ThisType;
+  typedef DerivedType  ThisType;
+  typedef T            ValueType;
+  typedef StorageType_ StorageType;
 
   RBasicPointer() : mPtr(0)
+  {
+  }
+
+  RBasicPointer(const T *ptr) : mPtr(getThis()->toStorageType(ptr))
   {
   }
 

@@ -3,16 +3,54 @@
 
 #include "RBasicPointer.h"
 
+template <class T>
+class RPointerDeleter
+{
+public:
+  static void
+  cleanup(T *ptr)
+  {
+    delete ptr;
+  }
+};
+
+template <class T>
+class RPointerPodDeleter
+{
+public:
+  static void
+  cleanup(T *ptr)
+  {
+    free(ptr);
+  }
+};
+
+template <class T>
+class RPointerArrayDeleter
+{
+public:
+  static void
+  cleanup(T *ptr)
+  {
+    delete[] ptr;
+  }
+};
+
 template <class DerivedType_, class T>
 class RBasicRawPointer
   : public RBasicPointer<DerivedType_, T, uintptr_t>
 {
 public:
   typedef RBasicPointer<DerivedType_, T, uintptr_t> BaseType;
-  typedef typename BaseType::StorageType            StorageType;
-  typedef typename BaseType::DerivedType            DerivedType;
+
+  typedef typename BaseType::StorageType StorageType;
+  typedef typename BaseType::DerivedType DerivedType;
 
 public:
+  RBasicRawPointer() : BaseType()
+  {
+  }
+
   RBasicRawPointer(const T *ptr) : BaseType(ptr)
   {
   }
@@ -49,6 +87,10 @@ public:
   typedef typename BaseType::DerivedType      DerivedType;
 
 public:
+  RRawPointer() : BaseType()
+  {
+  }
+
   RRawPointer(const T *ptr) : BaseType(ptr)
   {
   }

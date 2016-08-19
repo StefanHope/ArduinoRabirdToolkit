@@ -15,8 +15,9 @@ public:
   {
   }
 
-  RBasicPointer(const T *ptr) : mPtr(getDerived()->toStorageType(ptr))
+  RBasicPointer(const T *ptr) : mPtr(0)
   {
+    getDerived()->reset(ptr);
   }
 
   RBasicPointer(const DerivedType &other) : mPtr(other.mPtr)

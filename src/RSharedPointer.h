@@ -5,155 +5,120 @@
 #include "RRawPointer.h"
 #include "RAtomicInteger.h"
 
-template <class T>
-class RSharedPointer
+template <class DerivedType_, class T>
+class RBasicSharedPointer
+  : public RBasicRawPointer<DerivedType_, T>
 {
 public:
-  typedef void                      (*Deleter)(T *ptr);
-  typedef RAtomicInteger<rnumber_t> Counter;
+  typedef RBasicRawPointer<DerivedType_, T> BaseType;
+  typedef typename BaseType::StorageType    StorageType;
+  typedef typename BaseType::DerivedType    DerivedType;
+  typedef void                              (*Deleter)(T *ptr);
+  typedef RAtomicInteger<rnumber_t>         Counter;
+  typedef RPointerDeleter<T>                DefaultDeleterType;
 
-  RSharedPointer()
+public:
+  RBasicSharedPointer()
   {
+    BaseType::getDerived()->reset(NULL, &DefaultDeleterType::cleanup);
   }
 
-  RSharedPointer(T *ptr)
+  RBasicSharedPointer(T *ptr)
   {
-    reset(ptr);
+    BaseType::getDerived()->reset(ptr, &DefaultDeleterType::cleanup);
   }
 
-  RSharedPointer(T *ptr, Deleter deleter)
+  RBasicSharedPointer(T *ptr, Deleter deleter)
   {
-    reset(ptr, deleter);
+    BaseType::getDerived()->reset(ptr, deleter);
   }
 
-  RSharedPointer(const RSharedPointer<T> &other)
+  RBasicSharedPointer(const DerivedType &other) : BaseType(other)
   {
-    reset(other.mPtr, other.mDeleter, other.mCounter);
+    mDeleter = other.mDeleter;
+    mCounter = other.mCounter;
 
-    if(mPtr)
+    if(BaseType::getDerived()->data())
     {
       ++*mCounter;
     }
   }
 
-  ~RSharedPointer()
+  ~RBasicSharedPointer()
   {
-    clear();
+    BaseType::getDerived()->clear();
   }
 
   void
   clear()
   {
-    if(mPtr && mDeleter)
-    {
-      (*mDeleter)(mPtr.data());
-    }
-    else
-    {
-      delete mPtr.data();
-    }
+    T *ptr = BaseType::getDerived()->data();
 
-    if((--*mCounter) <= 0)
+    if(NULL != ptr)
     {
-      delete mCounter.data();
+      if((--*mCounter) <= 0)
+      {
+        mDeleter(ptr);
+
+        delete mCounter.data();
+      }
     }
 
-    mPtr.reset();
-    mDeleter.reset();
-    mCounter.reset();
-  }
-
-  T *
-  data() const
-  {
-    return mPtr.data();
-  }
-
-  bool
-  isNull() const
-  {
-    return mPtr.isNull();
-  }
-
-  void
-  reset()
-  {
-    clear();
-  }
-
-  void
-  reset(T *ptr)
-  {
-    clear();
-
-    mPtr     = ptr;
     mDeleter = NULL;
-    mCounter = new Counter();
+    mCounter.reset();
 
-    if(mPtr)
+    BaseType::clear();
+  }
+
+  void
+  reset(T *ptr=NULL, Deleter deleter=&DefaultDeleterType::cleanup)
+  {
+    BaseType::reset(ptr);
+
+    if(ptr)
     {
+      if(NULL == deleter)
+      {
+        deleter = &DefaultDeleterType::cleanup;
+      }
+
+      mDeleter = deleter;
+      mCounter.reset(new Counter());
       ++*mCounter;
     }
   }
 
-  void
-  reset(T *ptr, Deleter deleter)
-  {
-    reset(ptr);
-
-    mDeleter = deleter;
-  }
-
-  void
-  swap(RSharedPointer<T> &other)
-  {
-    RSharedPointer<T> temp;
-
-    temp  = other;
-    other = *this;
-    *this = temp;
-  }
-
-  operator bool() const
-  {
-    return mPtr;
-  }
-
-  bool
-  operator !() const
-  {
-    return !mPtr;
-  }
-
-  T &
-  operator *() const
-  {
-    return *mPtr;
-  }
-
-  T *
-  operator ->() const
-  {
-    return mPtr.data();
-  }
-
-  RSharedPointer<T> &
-  operator =(const RSharedPointer<T> &other)
-  {
-    if(this == &other)
-    {
-      return *this;
-    }
-
-    reset(other.mPtr, other.mDeleter);
-    return *this;
-  }
-
 private:
-  RRawPointer<T> mPtr;
-
-  RRawPointer<Deleter> mDeleter;
   RRawPointer<Counter> mCounter;
+  Deleter mDeleter;
+};
+
+template <class T>
+class RSharedPointer
+  : public RBasicSharedPointer<RSharedPointer<T>, T>
+{
+public:
+  typedef RBasicSharedPointer<RSharedPointer<T>, T> BaseType;
+  typedef typename BaseType::StorageType            StorageType;
+  typedef typename BaseType::DerivedType            DerivedType;
+  typedef typename BaseType::Deleter                Deleter;
+
+public:
+  RSharedPointer() : BaseType()
+  {
+  }
+
+  RSharedPointer(T *ptr) : BaseType(ptr)
+  {
+  }
+
+  RSharedPointer(T *ptr, Deleter deleter) : BaseType(ptr, deleter)
+  {
+  }
+
+  RSharedPointer(const DerivedType &other) : BaseType(other)
+  {
+  }
 };
 
 #endif // __INCLUDED_B56797CC644611E6933700F1F38F93EF

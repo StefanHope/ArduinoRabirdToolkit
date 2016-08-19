@@ -3,55 +3,21 @@
 
 #include "RRawPointer.h"
 
-template <class T>
-class RScopedPointerDeleter
-{
-public:
-  static void
-  cleanup(T *ptr)
-  {
-    delete ptr;
-  }
-};
-
-template <class T>
-class RScopedPointerPodDeleter
-{
-public:
-  static void
-  cleanup(T *ptr)
-  {
-    free(ptr);
-  }
-};
-
-template <class T>
-class RScopedPointerArrayDeleter
-{
-public:
-  static void
-  cleanup(T *ptr)
-  {
-    delete[] ptr;
-  }
-};
-
 template <class DerivedType_, class T, class CleanupType>
 class RBasicScopedPointer
   : public RBasicRawPointer<DerivedType_, T>
 {
 public:
   typedef RBasicRawPointer<DerivedType_, T> BaseType;
-
-  typedef typename BaseType::StorageType StorageType;
-  typedef typename BaseType::DerivedType DerivedType;
+  typedef typename BaseType::StorageType    StorageType;
+  typedef typename BaseType::DerivedType    DerivedType;
 
 protected:
   // Don't allow create RBasicScopedPointer without any argument!
   RBasicScopedPointer();
 
 public:
-  RBasicScopedPointer(const T *ptr) : BaseType(ptr)
+  RBasicScopedPointer(T *ptr) : BaseType(ptr)
   {
   }
 
@@ -93,7 +59,7 @@ protected:
   friend BaseType;
 };
 
-template <class T, class CleanupType = RScopedPointerDeleter<T> >
+template <class T, class CleanupType = RPointerDeleter<T> >
 class RScopedPointer
   : public RBasicScopedPointer<RScopedPointer<T, CleanupType>, T, CleanupType>
 {
@@ -108,7 +74,7 @@ protected:
   RScopedPointer();
 
 public:
-  RScopedPointer(const T *ptr) : BaseType(ptr)
+  RScopedPointer(T *ptr) : BaseType(ptr)
   {
   }
 

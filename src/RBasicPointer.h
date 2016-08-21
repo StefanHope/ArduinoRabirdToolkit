@@ -17,7 +17,7 @@ public:
 
   RBasicPointer(const T *ptr) : mPtr(0)
   {
-    getDerived()->reset(ptr);
+    getDerived()->reset(const_cast<T *>(ptr));
   }
 
   RBasicPointer(const DerivedType &other) : mPtr(other.mPtr)

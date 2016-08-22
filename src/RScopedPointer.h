@@ -34,6 +34,7 @@ public:
   clear()
   {
     T *ptr = BaseType::getDerived()->data();
+
     BaseType::clear();
     CleanupType::cleanup(ptr);
   }
@@ -42,6 +43,7 @@ public:
   take()
   {
     T *ret = BaseType::getDerived()->data();
+
     BaseType::getDerived()->clear();
 
     return ret;

@@ -5,25 +5,27 @@
 
 #include <RSignal.h>
 
-void Received(int value)
+void
+received(int value)
 {
   Serial.print("Received ");
   Serial.print(value);
   Serial.println();
 }
 
-static RSignal<void (int)> sReceived;
+static RSignal<void(int)> sReceived;
 static int sValue = 0;
 
-void setup() {
+void
+setup()
+{
   Serial.begin(9600);
-  sReceived.connect(Received);
+  sReceived.connect(received);
 }
 
-void loop() {
+void
+loop()
+{
   delay(3000);
   sReceived.emit(sValue++);
 }
-
-
-

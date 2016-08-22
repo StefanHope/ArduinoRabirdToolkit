@@ -57,13 +57,15 @@ private:
 class RTest : public RObject
 {
 public:
-  RTest(const class __FlashStringHelper *aName);
-
   enum Status
   {
     Passed = 0,
     Failed,
   };
+
+public:
+  RTest(const class __FlashStringHelper *aName);
+
   virtual void
   run() = 0;
 

@@ -7,9 +7,10 @@ template <class DerivedType_, class T, class StorageType_ = T *>
 class RBasicPointer
 {
 public:
-  typedef DerivedType_ DerivedType;
-  typedef T            ValueType;
-  typedef StorageType_ StorageType;
+  typedef DerivedType_                                       DerivedType;
+  typedef T                                                  ValueType;
+  typedef StorageType_                                       StorageType;
+  typedef RBasicPointer<DerivedType, ValueType, StorageType> ThisType;
 
   RBasicPointer() : mPtr(0)
   {
@@ -32,7 +33,8 @@ public:
   T *
   data() const
   {
-    return getDerived()->fromStorageType(mPtr);
+    return const_cast<T *>(const_cast<DerivedType *>(getDerived())->
+                            fromStorageType(mPtr));
   }
 
   bool
@@ -113,14 +115,14 @@ protected:
   DerivedType *
   getDerived()
   {
-    return static_cast<DerivedType *>(this);
+    return static_cast<DerivedType *>(const_cast<ThisType *>(this));
   }
 
   inline
   const DerivedType *
   getDerived() const
   {
-    return static_cast<const DerivedType *>(this);
+    return static_cast<DerivedType *>(const_cast<ThisType *>(this));
   }
 
 private:

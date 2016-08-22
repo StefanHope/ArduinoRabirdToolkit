@@ -254,7 +254,7 @@ class TestConstStringRef
 {
 public:
   typedef RConstStringRef
-                                                                     StringRefType;
+    StringRefType;
   typedef BasicTestStringRef < TestConstStringRef, RConstStringRef > BaseType;
 
   TestConstStringRef()

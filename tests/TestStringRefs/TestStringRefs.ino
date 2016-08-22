@@ -11,8 +11,8 @@
 #include <RTest.h>
 #include <string.h>
 
-class BasicStringRef:
-public RAbstractStringRef
+class BasicStringRef :
+  public RAbstractStringRef
 {
 public:
   BasicStringRef(const char *str);
@@ -21,7 +21,7 @@ public:
   unsigned int
   length(void) const
   {
-    return static_cast < unsigned int > (mLength);
+    return static_cast<unsigned int>(mLength);
   }
 
   char
@@ -53,14 +53,15 @@ BasicStringRef::~BasicStringRef()
 {
 }
 
-template < class DerivedType, class StringRefType >
-class BasicTestStringRef:
-public RTest
+template <class DerivedType, class StringRefType>
+class BasicTestStringRef :
+  public RTest
 {
 public:
-  typedef BasicTestStringRef < DerivedType, StringRefType > ThisType;
+  typedef BasicTestStringRef<DerivedType, StringRefType> ThisType;
 
-  BasicTestStringRef(const __FlashStringHelper * str)
+  BasicTestStringRef(const __FlashStringHelper *str)
+
     : RTest(str)
     , mNormalString0("")
     , mNormalString1("a")
@@ -195,14 +196,14 @@ protected:
   DerivedType *
   getDerived()
   {
-    return static_cast < DerivedType * > (const_cast < ThisType * > (this));
+    return static_cast<DerivedType *>(const_cast<ThisType *>(this));
   }
 
   inline
   const DerivedType *
   getDerived() const
   {
-    return static_cast < DerivedType * > (const_cast < ThisType * > (this));
+    return static_cast<DerivedType *>(const_cast<ThisType *>(this));
   }
 
 public:
@@ -211,27 +212,27 @@ public:
   const char *mNormalString2;
   const char *mNormalString3;
   const char *mNormalString4;
-
   const __FlashStringHelper *mFlashString0;
   const __FlashStringHelper *mFlashString1;
   const __FlashStringHelper *mFlashString2;
   const __FlashStringHelper *mFlashString3;
   const __FlashStringHelper *mFlashString4;
-
   String mString0;
   String mString1;
   String mString2;
   String mString3;
   String mString4;
 };
+
 class TestBasicStringRef
-: public BasicTestStringRef < TestBasicStringRef, BasicStringRef >
+  : public BasicTestStringRef<TestBasicStringRef, BasicStringRef>
 {
 public:
-  typedef BasicStringRef                                           StringRefType;
-  typedef BasicTestStringRef < TestBasicStringRef, StringRefType > BaseType;
+  typedef BasicStringRef                                        StringRefType;
+  typedef BasicTestStringRef<TestBasicStringRef, StringRefType> BaseType;
 
   TestBasicStringRef()
+
     : BaseType(F("TestBasicStringRef"))
     , mStringRef0(mNormalString0)
     , mStringRef1(mNormalString1)
@@ -250,14 +251,15 @@ public:
 }
 
 class TestConstStringRef
-: public BasicTestStringRef < TestConstStringRef, RConstStringRef >
+  : public BasicTestStringRef<TestConstStringRef, RConstStringRef>
 {
 public:
   typedef RConstStringRef
     StringRefType;
-  typedef BasicTestStringRef < TestConstStringRef, RConstStringRef > BaseType;
+  typedef BasicTestStringRef<TestConstStringRef, RConstStringRef> BaseType;
 
   TestConstStringRef()
+
     : BaseType(F("TestConstStringRef"))
     , mStringRef0(mNormalString0)
     , mStringRef1(mNormalString1)
@@ -276,13 +278,14 @@ public:
 }
 
 class TestFlashStringRef
-: public BasicTestStringRef < TestFlashStringRef, RFlashStringRef >
+  : public BasicTestStringRef<TestFlashStringRef, RFlashStringRef>
 {
 public:
-  typedef RFlashStringRef                                          StringRefType;
-  typedef BasicTestStringRef < TestFlashStringRef, StringRefType > BaseType;
+  typedef RFlashStringRef                                       StringRefType;
+  typedef BasicTestStringRef<TestFlashStringRef, StringRefType> BaseType;
 
   TestFlashStringRef()
+
     : BaseType(F("TestFlashStringRef"))
     , mStringRef0(mFlashString0)
     , mStringRef1(mFlashString1)
@@ -301,13 +304,14 @@ public:
 }
 
 class TestStringRef
-: public BasicTestStringRef < TestStringRef, RStringRef >
+  : public BasicTestStringRef<TestStringRef, RStringRef>
 {
 public:
-  typedef RStringRef                                          StringRefType;
-  typedef BasicTestStringRef < TestStringRef, StringRefType > BaseType;
+  typedef RStringRef                                       StringRefType;
+  typedef BasicTestStringRef<TestStringRef, StringRefType> BaseType;
 
   TestStringRef()
+
     : BaseType(F("TestStringRef"))
     , mStringRef0(&mString0)
     , mStringRef1(&mString1)

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <Print.h>
 
 RAbstractStringRef::RAbstractStringRef()
 {
@@ -14,7 +15,8 @@ RAbstractStringRef::~RAbstractStringRef()
 int
 RAbstractStringRef::compareTo(const RAbstractStringRef &s) const
 {
-  unsigned int i         = 0;
+  unsigned int i = 0;
+
   auto         minLength = (length() > s.length() ? length() : s.length());
 
   for(; i < minLength; ++i)
@@ -391,4 +393,17 @@ RAbstractStringRef::lastIndexOf(const RAbstractStringRef &str,
   }
 
   return -1;
+}
+
+size_t
+RAbstractStringRef::printTo(Print &p) const
+{
+  size_t i;
+
+  for(i = 0; i < this->length(); ++i)
+  {
+    p.print(this->charAt(i));
+  }
+
+  return this->length();
 }

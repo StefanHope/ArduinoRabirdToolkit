@@ -8,7 +8,7 @@
 
 // helper define for the operators below
 #define RASSERT_OP(arg1, op, opName, arg2) \
-  if(!assertion<decltype(arg2)>( \
+  if(!assertion<decltype(arg1), decltype(arg2)>( \
        F(__FILE__), __LINE__, F(#arg1), (arg1), F(opName), op, F(#arg2), \
        (arg2))) \
   { \
@@ -89,60 +89,60 @@ public:
   name();
 
   /** Template binary operator== to assist with assertions */
-  template <typename T>
+  template <class LeftType, class RightType>
   static bool
-  isEqual(const T&a, const T&b)
+  isEqual(const LeftType&a, const RightType&b)
   {
     return a == b;
   }
 
   /** Template binary operator!= to assist with assertions */
-  template <typename T>
+  template <class LeftType, class RightType>
   static bool
-  isNotEqual(const T&a, const T&b)
+  isNotEqual(const LeftType&a, const RightType&b)
   {
     return !(a == b);
   }
 
   /** Template binary operator< to assist with assertions */
-  template <typename T>
+  template <class LeftType, class RightType>
   static bool
-  isLess(const T&a, const T&b)
+  isLess(const LeftType&a, const RightType&b)
   {
     return a < b;
   }
 
   /** Template binary operator> to assist with assertions */
-  template <typename T>
+  template <class LeftType, class RightType>
   static bool
-  isMore(const T&a, const T&b)
+  isMore(const LeftType&a, const RightType&b)
   {
     return b < a;
   }
 
   /** Template binary operator<= to assist with assertions */
-  template <typename T>
+  template <class LeftType, class RightType>
   static bool
-  isLessOrEqual(const T&a, const T&b)
+  isLessOrEqual(const LeftType&a, const RightType&b)
   {
     return !(b < a);
   }
 
   /** Template binary operator>= to assist with assertions */
-  template <typename T>
+  template <class LeftType, class RightType>
   static bool
-  isMoreOrEqual(const T&a, const T&b)
+  isMoreOrEqual(const LeftType&a, const RightType&b)
   {
     return !(a < b);
   }
 
-  template <class T>
+  template <class LeftType, class RightType>
   bool
   assertion(const __FlashStringHelper *file, uint16_t line,
-            const __FlashStringHelper *lhss, const T&lhs,
-            const __FlashStringHelper *ops, bool (*op)(const T&lhs,
-                                                       const T&rhs), const __FlashStringHelper *rhss,
-            const T&rhs)
+            const __FlashStringHelper *lhss, const LeftType &lhs,
+            const __FlashStringHelper *ops, bool (*op)(const LeftType&lhs,
+                                                       const RightType&rhs), const __FlashStringHelper *rhss,
+            const RightType&rhs)
   {
     bool ok = op(lhs, rhs);
 
@@ -190,32 +190,38 @@ private:
 /** Template specialization for asserting const char * types */
 template <>
 bool
-RTest::isLess<const char *>(const char *const &a, const char *const &b);
+RTest::isLess<const char *, const char *>(const char *const &a,
+                                          const char *const &b);
 
 /** Template specialization for asserting const char * types */
 template <>
 bool
-RTest::isLessOrEqual<const char *>(const char *const &a, const char *const &b);
+RTest::isLessOrEqual<const char *, const char *>(const char *const &a,
+                                                 const char *const &b);
 
 /** Template specialization for asserting const char * types */
 template <>
 bool
-RTest::isEqual<const char *>(const char *const &a, const char *const &b);
+RTest::isEqual<const char *, const char *>(const char *const &a,
+                                           const char *const &b);
 
 /** Template specialization for asserting const char * types */
 template <>
 bool
-RTest::isNotEqual<const char *>(const char *const &a, const char *const &b);
+RTest::isNotEqual<const char *, const char *>(const char *const &a,
+                                              const char *const &b);
 
 /** Template specialization for asserting const char * types */
 template <>
 bool
-RTest::isMore<const char *>(const char *const &a, const char *const &b);
+RTest::isMore<const char *, const char *>(const char *const &a,
+                                          const char *const &b);
 
 /** Template specialization for asserting const char * types */
 template <>
 bool
-RTest::isMoreOrEqual<const char *>(const char *const &a, const char *const &b);
+RTest::isMoreOrEqual<const char *, const char *>(const char *const &a,
+                                                 const char *const &b);
 
 class RTestApplication : public RTestAbstractApplication
 {
@@ -239,6 +245,7 @@ private:
   // Static statistics for tests
   size_t mPassed;
   size_t mFailed;
+
   std::list<RTest *> mTests;
   Print *mPrint;
 

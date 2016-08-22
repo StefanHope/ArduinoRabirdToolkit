@@ -110,7 +110,7 @@ public:
     RASSERT_LESS(stringRef0.compareTo(stringRef3), 0);
     RASSERT_LESS(stringRef0.compareTo(stringRef2), 0);
     RASSERT_LESS(stringRef0.compareTo(stringRef1), 0);
-    RASSERT_LESS(stringRef0.compareTo(stringRef0), 0);
+    RASSERT_EQUAL(stringRef0.compareTo(stringRef0), 0);
 
     RASSERT_EQUAL(stringRef3.compareTo((mNormalString3)), 0);
     RASSERT_MORE(stringRef3.compareTo((mNormalString2)), 0);
@@ -120,7 +120,7 @@ public:
     RASSERT_LESS(stringRef0.compareTo((mNormalString3)), 0);
     RASSERT_LESS(stringRef0.compareTo((mNormalString2)), 0);
     RASSERT_LESS(stringRef0.compareTo((mNormalString1)), 0);
-    RASSERT_LESS(stringRef0.compareTo((mNormalString0)), 0);
+    RASSERT_EQUAL(stringRef0.compareTo((mNormalString0)), 0);
 
     // equals
     RASSERT_TRUE(stringRef3.equals(stringRef3));
@@ -145,10 +145,10 @@ public:
     RASSERT_FALSE(stringRef3.endsWith(BasicStringRef("")));
 
     // charAt
-    RASSERT_TRUE(stringRef3.charAt(0) == 'a');
-    RASSERT_TRUE(stringRef3.charAt(1) == 'b');
-    RASSERT_TRUE(stringRef3.charAt(2) == 'c');
-    RASSERT_TRUE(stringRef3.charAt(3) == '\0');
+    RASSERT_EQUAL(stringRef3.charAt(0), 'a');
+    RASSERT_EQUAL(stringRef3.charAt(1), 'b');
+    RASSERT_EQUAL(stringRef3.charAt(2), 'c');
+    RASSERT_EQUAL(stringRef3.charAt(3), '\0');
 
     // indexOf
     RASSERT_EQUAL(stringRef3.indexOf('a'), 0);
@@ -163,32 +163,35 @@ public:
     RASSERT_EQUAL(stringRef3.lastIndexOf('d'), -1);
 
     // operator ==
-    RASSERT_TRUE(stringRef3 == stringRef3);
-    RASSERT_TRUE(stringRef3 == mNormalString3);
+    RASSERT_EQUAL(stringRef3, stringRef3);
+    RASSERT_EQUAL(stringRef3, mNormalString3);
 
     // operator !=
-    RASSERT_TRUE(stringRef3 != stringRef3);
-    RASSERT_TRUE(stringRef3 != stringRef0);
+    RASSERT_NOT_EQUAL(stringRef3, stringRef0);
+    RASSERT_NOT_EQUAL(stringRef3, stringRef1);
+    RASSERT_NOT_EQUAL(stringRef3, stringRef2);
+    RASSERT_NOT_EQUAL(stringRef3, stringRef4);
+    RASSERT_NOT_EQUAL(stringRef3, mNormalString0);
+    RASSERT_NOT_EQUAL(stringRef3, mNormalString1);
+    RASSERT_NOT_EQUAL(stringRef3, mNormalString2);
+    RASSERT_NOT_EQUAL(stringRef3, mNormalString4);
 
     // operator >
-    RASSERT_TRUE(stringRef3 > stringRef2);
-    RASSERT_TRUE(stringRef3 > stringRef0);
+    RASSERT_MORE(stringRef3, stringRef2);
+    RASSERT_MORE(stringRef3, stringRef0);
 
     // operator <
-    RASSERT_TRUE(stringRef1 < stringRef3);
-    RASSERT_TRUE(stringRef1 < stringRef2);
+    RASSERT_LESS(stringRef1, stringRef3);
+    RASSERT_LESS(stringRef1, stringRef2);
 
     // operator <=
-    RASSERT_TRUE(stringRef2 <= stringRef3);
-    RASSERT_TRUE(stringRef2 <= stringRef2);
-    RASSERT_TRUE(stringRef2 <= stringRef1);
-    RASSERT_FALSE(stringRef2 <= stringRef0);
+    RASSERT_LESS_OR_EQUAL(stringRef2, stringRef3);
+    RASSERT_LESS_OR_EQUAL(stringRef2, stringRef2);
 
     // operator >=
-    RASSERT_FALSE(stringRef2 >= stringRef3);
-    RASSERT_TRUE(stringRef2 >= stringRef2);
-    RASSERT_TRUE(stringRef2 >= stringRef1);
-    RASSERT_TRUE(stringRef2 >= stringRef0);
+    RASSERT_MORE_OR_EQUAL(stringRef2, stringRef2);
+    RASSERT_MORE_OR_EQUAL(stringRef2, stringRef1);
+    RASSERT_MORE_OR_EQUAL(stringRef2, stringRef0);
   }
 
 protected:
@@ -248,7 +251,7 @@ public:
   StringRefType mStringRef2;
   StringRefType mStringRef3;
   StringRefType mStringRef4;
-}
+};
 
 class TestConstStringRef
   : public BasicTestStringRef<TestConstStringRef, RConstStringRef>
@@ -275,7 +278,7 @@ public:
   StringRefType mStringRef2;
   StringRefType mStringRef3;
   StringRefType mStringRef4;
-}
+};
 
 class TestFlashStringRef
   : public BasicTestStringRef<TestFlashStringRef, RFlashStringRef>
@@ -301,7 +304,7 @@ public:
   StringRefType mStringRef2;
   StringRefType mStringRef3;
   StringRefType mStringRef4;
-}
+};
 
 class TestStringRef
   : public BasicTestStringRef<TestStringRef, RStringRef>
@@ -327,7 +330,7 @@ public:
   StringRefType mStringRef2;
   StringRefType mStringRef3;
   StringRefType mStringRef4;
-}
+};
 
 void
 setup()

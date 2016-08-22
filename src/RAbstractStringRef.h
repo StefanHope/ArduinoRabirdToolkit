@@ -2,8 +2,9 @@
 #define _INCLUDED_CEFD8F1A5D4C11E68E7800F1F38F93EF
 
 #include "RTypes.h"
+#include <Printable.h>
 
-class RAbstractStringRef
+class RAbstractStringRef : public Printable
 {
 public:
   RAbstractStringRef();
@@ -86,6 +87,10 @@ public:
 
   virtual int
   lastIndexOf(const RAbstractStringRef &str, unsigned int fromIndex) const;
+
+  // Printable interface:
+  size_t
+  printTo(Print&p) const;
 };
 
 #endif // _INCLUDED_CEFD8F1A5D4C11E68E7800F1F38F93EF

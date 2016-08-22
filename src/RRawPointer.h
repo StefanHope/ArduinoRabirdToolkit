@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_B0C76BDC59FD11E6BE6F00F1F38F93EF
 #define __INCLUDED_B0C76BDC59FD11E6BE6F00F1F38F93EF
 
-#include "RBasicPointer.h"
+#include "RPointer.h"
 
 template <class T>
 class RPointerDeleter

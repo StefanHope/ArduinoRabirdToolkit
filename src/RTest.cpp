@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 RTest::RTest(const __FlashStringHelper *aName)
-  : mStatus(Failed), mName(aName)
+  : mStatus(Passed), mName(aName)
 {
 }
 
@@ -22,6 +22,54 @@ void
 RTest::setStatus(RTest::Status aStatus)
 {
   mStatus = aStatus;
+}
+
+void
+RTest::setManager(RTestAbstractApplication *manager)
+{
+  mManager = manager;
+}
+
+template <>
+bool
+RTest::isLess<const char *>(const char *const &a, const char *const &b)
+{
+  return (strcmp(a, b) < 0);
+}
+
+template <>
+bool
+RTest::isLessOrEqual<const char *>(const char *const &a, const char *const &b)
+{
+  return (strcmp(a, b) <= 0);
+}
+
+template <>
+bool
+RTest::isEqual<const char *>(const char *const &a, const char *const &b)
+{
+  return (strcmp(a, b) == 0);
+}
+
+template <>
+bool
+RTest::isNotEqual<const char *>(const char *const &a, const char *const &b)
+{
+  return (strcmp(a, b) != 0);
+}
+
+template <>
+bool
+RTest::isMoreOrEqual<const char *>(const char *const &a, const char *const &b)
+{
+  return (strcmp(a, b) >= 0);
+}
+
+template <>
+bool
+RTest::isMore<const char *>(const char *const &a, const char *const &b)
+{
+  return (strcmp(a, b) > 0);
 }
 
 RTestApplication::RTestApplication()
@@ -55,6 +103,7 @@ RTestApplication::addTest(RTest *test)
     return;
   }
 
+  test->setManager(this);
   mTests.push_back(test);
 }
 
@@ -93,4 +142,10 @@ RTestApplication::run()
   mPrint->print(mFailed);
   mPrint->print(F(" failed"));
   mPrint->println();
+}
+
+Print *
+RTestApplication::printer()
+{
+  return mPrint;
 }

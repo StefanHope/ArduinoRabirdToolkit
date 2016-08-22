@@ -41,6 +41,19 @@
 /** macro generates optional output and calls fail() followed by a return if false. */
 #define RASSERT_FALSE(arg) RASSERT_EQUAL(arg, false)
 
+#define RTEST_INSTANCE(testName) s##testName
+#define RTEST(testName)          class testName : public RTest \
+{ \
+public: \
+    testName(); \
+    void run(); \
+}; \
+  testName::testName() : RTest(F(#testName)) \
+  { \
+  }; \
+  static testName RTEST_INSTANCE(testName); \
+  void testName::run()
+
 class RTest;
 class RTestApplication;
 

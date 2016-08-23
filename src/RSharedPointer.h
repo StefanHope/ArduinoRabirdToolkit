@@ -44,11 +44,6 @@ public:
     }
   }
 
-  ~RBasicSharedPointer()
-  {
-    BaseType::getDerived()->clear();
-  }
-
   void
   clear()
   {

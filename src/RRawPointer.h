@@ -59,7 +59,6 @@ public:
   {
   }
 
-protected:
   inline
   StorageType
   toStorageType(const T *ptr)
@@ -73,8 +72,6 @@ protected:
   {
     return rLengthenPtr<T *>(ptr);
   }
-
-  friend BaseType;
 };
 
 template <class T>
@@ -83,8 +80,9 @@ class RRawPointer
 {
 public:
   typedef RBasicRawPointer<RRawPointer<T>, T> BaseType;
-  typedef typename BaseType::StorageType      StorageType;
-  typedef typename BaseType::DerivedType      DerivedType;
+
+  typedef typename BaseType::StorageType StorageType;
+  typedef typename BaseType::DerivedType DerivedType;
 
 public:
   RRawPointer() : BaseType()

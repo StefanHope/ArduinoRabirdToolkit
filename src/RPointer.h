@@ -96,7 +96,6 @@ public:
     return *this;
   }
 
-protected:
   inline
   StorageType
   toStorageType(const T *ptr)
@@ -111,6 +110,7 @@ protected:
     return reinterpret_cast<T *>(ptr);
   }
 
+protected:
   inline
   DerivedType *
   getDerived()
@@ -123,6 +123,12 @@ protected:
   getDerived() const
   {
     return static_cast<DerivedType *>(const_cast<ThisType *>(this));
+  }
+
+  StorageType &
+  internalStorage()
+  {
+    return mPtr;
   }
 
 private:

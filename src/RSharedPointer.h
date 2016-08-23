@@ -5,17 +5,34 @@
 #include "RRawPointer.h"
 #include "RAtomicInteger.h"
 
+namespace Rt
+{
+template <class T, class Counter, class Deleter>
+struct RSharedPointerContext
+{
+public:
+  RSharedPointerContext() : ptr(NULL)
+  {
+  }
+
+  T *     ptr;
+  Deleter deleter;
+  Counter counter;
+};
+}
+
 template <class DerivedType_, class T>
 class RBasicSharedPointer
   : public RBasicRawPointer<DerivedType_, T>
 {
 public:
-  typedef RBasicRawPointer<DerivedType_, T> BaseType;
-  typedef typename BaseType::StorageType    StorageType;
-  typedef typename BaseType::DerivedType    DerivedType;
-  typedef void                              (*Deleter)(T *ptr);
-  typedef RAtomicInteger<rnumber_t>         Counter;
-  typedef RPointerDeleter<T>                DefaultDeleterType;
+  typedef RBasicRawPointer<DerivedType_, T>              BaseType;
+  typedef typename BaseType::StorageType                 StorageType;
+  typedef typename BaseType::DerivedType                 DerivedType;
+  typedef void                                           (*Deleter)(T *ptr);
+  typedef RAtomicInteger<rnumber_t>                      Counter;
+  typedef RPointerDeleter<T>                             DefaultDeleterType;
+  typedef Rt::RSharedPointerContext<T, Counter, Deleter> Context;
 
 public:
   RBasicSharedPointer()
@@ -35,32 +52,31 @@ public:
 
   RBasicSharedPointer(const DerivedType &other) : BaseType(other)
   {
-    mDeleter = other.mDeleter;
-    mCounter = other.mCounter;
+    auto context = getContext();
 
-    if(BaseType::getDerived()->data())
+    if(context && context->ptr)
     {
-      ++*mCounter;
+      ++context->counter;
     }
   }
 
   void
   clear()
   {
-    T *ptr = BaseType::getDerived()->data();
+    auto context = getContext();
 
-    if(NULL != ptr)
+    if(context && context->ptr)
     {
-      if((--*mCounter) <= 0)
+      if((--context->counter) <= 0)
       {
-        mDeleter(ptr);
+        if(context->deleter)
+        {
+          context->deleter(context->ptr);
+        }
 
-        delete mCounter.data();
+        delete context;
       }
     }
-
-    mDeleter = NULL;
-    mCounter.reset();
 
     BaseType::clear();
   }
@@ -72,20 +88,55 @@ public:
 
     if(ptr)
     {
-      if(NULL == deleter)
+      if(deleter)
       {
         deleter = &DefaultDeleterType::cleanup;
       }
 
-      mDeleter = deleter;
-      mCounter.reset(new Counter());
-      ++*mCounter;
+      auto context = getContext();
+
+      context->deleter = deleter;
     }
   }
 
+  inline
+  StorageType
+  toStorageType(const T *ptr)
+  {
+    if(NULL == ptr)
+    {
+      return 0;
+    }
+
+    auto context = new Context();
+
+    context->ptr = ptr;
+    context->counter++;
+
+    return BaseType::toStorageType(reinterpret_cast<T *>(context));
+  }
+
+  inline
+  T *
+  fromStorageType(StorageType ptr)
+  {
+    auto context = reinterpret_cast<Context *>(BaseType::fromStorageType(ptr));
+
+    if(NULL == context)
+    {
+      return NULL;
+    }
+
+    return context->ptr;
+  }
+
 private:
-  RRawPointer<Counter> mCounter;
-  Deleter mDeleter;
+  Context *
+  getContext()
+  {
+    return reinterpret_cast<Context *>(
+      BaseType::fromStorageType(BaseType::internalStorage()));
+  }
 };
 
 template <class T>
@@ -94,9 +145,10 @@ class RSharedPointer
 {
 public:
   typedef RBasicSharedPointer<RSharedPointer<T>, T> BaseType;
-  typedef typename BaseType::StorageType            StorageType;
-  typedef typename BaseType::DerivedType            DerivedType;
-  typedef typename BaseType::Deleter                Deleter;
+
+  typedef typename BaseType::StorageType StorageType;
+  typedef typename BaseType::DerivedType DerivedType;
+  typedef typename BaseType::Deleter     Deleter;
 
 public:
   RSharedPointer() : BaseType()

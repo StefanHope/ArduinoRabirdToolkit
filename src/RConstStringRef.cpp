@@ -14,6 +14,11 @@ RConstStringRef::RConstStringRef(const char *str) : mStr(str), mLength(0)
   }
 }
 
+RConstStringRef::RConstStringRef(const RConstStringRef &stringRef) : mStr(
+    stringRef.mStr), mLength(stringRef.mLength)
+{
+}
+
 unsigned int
 RConstStringRef::length() const
 {

@@ -8,6 +8,7 @@ class RConstStringRef : public RAbstractStringRef
 public:
   RConstStringRef();
   RConstStringRef(const char *str);
+  RConstStringRef(const RConstStringRef &stringRef);
 
   // RAbstractStringRef interfaces:
   unsigned int

@@ -1,5 +1,6 @@
 # 2 "TestStringRefs.ino"
 
+#include "BasicStringRef.h"
 #include <Arduino.h>
 #include <Arduino_FreeRTOS.h>
 #include <StandardCplusplus.h>
@@ -10,48 +11,6 @@
 #include <RFlashStringRef.h>
 #include <RTest.h>
 #include <string.h>
-
-class BasicStringRef :
-  public RAbstractStringRef
-{
-public:
-  BasicStringRef(const char *str);
-  ~BasicStringRef();
-
-  unsigned int
-  length(void) const
-  {
-    return static_cast<unsigned int>(mLength);
-  }
-
-  char
-  charAt(unsigned int index) const
-  {
-    if((NULL == mStr) || (index >= length()))
-    {
-      return '\0';
-    }
-
-    return mStr[index];
-  }
-
-private:
-  const char *mStr;
-  rnumber_t   mLength;
-};
-
-BasicStringRef::BasicStringRef(const char *str) : RAbstractStringRef(),
-  mStr(str), mLength(0)
-{
-  if(NULL != str)
-  {
-    mLength = rSignedCast(strlen(str));
-  }
-}
-
-BasicStringRef::~BasicStringRef()
-{
-}
 
 template <class DerivedType, class StringRefType>
 class BasicTestStringRef :

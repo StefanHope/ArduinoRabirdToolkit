@@ -10,6 +10,11 @@ RStringRef::RStringRef(const String *str)
 {
 }
 
+RStringRef::RStringRef(const RStringRef &stringRef)
+  : mStr(stringRef.mStr)
+{
+}
+
 unsigned int
 RStringRef::length() const
 {

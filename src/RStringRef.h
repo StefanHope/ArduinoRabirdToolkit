@@ -9,6 +9,7 @@ class RStringRef : public RAbstractStringRef
 public:
   RStringRef();
   RStringRef(const String *str);
+  RStringRef(const RStringRef &stringRef);
 
   // RAbstractStringRef interfaces:
   unsigned int

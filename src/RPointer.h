@@ -89,6 +89,30 @@ public:
     return *getDerived()->data();
   }
 
+  bool
+  operator ==(const DerivedType &other) const
+  {
+    return getDerived()->data() == other.data();
+  }
+
+  bool
+  operator !=(const DerivedType &other) const
+  {
+    return getDerived()->data() != other.data();
+  }
+
+  bool
+  operator ==(const void *ptr) const
+  {
+    return getDerived()->data() == ptr;
+  }
+
+  bool
+  operator !=(const void *ptr) const
+  {
+    return getDerived()->data() != ptr;
+  }
+
   DerivedType &
   operator =(const DerivedType &other)
   {

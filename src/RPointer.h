@@ -89,26 +89,16 @@ public:
     return *getDerived()->data();
   }
 
+  template <class OtherType>
   bool
-  operator ==(const DerivedType &other) const
-  {
-    return getDerived()->data() == other.data();
-  }
-
-  bool
-  operator !=(const DerivedType &other) const
-  {
-    return getDerived()->data() != other.data();
-  }
-
-  bool
-  operator ==(const void *ptr) const
+  operator ==(const OtherType *ptr) const
   {
     return getDerived()->data() == ptr;
   }
 
+  template <class OtherType>
   bool
-  operator !=(const void *ptr) const
+  operator !=(const OtherType *ptr) const
   {
     return getDerived()->data() != ptr;
   }

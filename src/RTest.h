@@ -8,12 +8,17 @@
 
 // helper define for the operators below
 #define RASSERT_OP(arg1, op, opName, arg2) \
-  if(!assertion<decltype(arg1), decltype(arg2)>( \
-       F(__FILE__), __LINE__, F(#arg1), (arg1), F(opName), op, F(#arg2), \
-       (arg2))) \
+  do \
   { \
-    return; \
-  };
+    auto tempArg1 = (arg1); \
+    auto tempArg2 = (arg2); \
+    if(!assertion<decltype(tempArg1), decltype(tempArg2)>( \
+         F(__FILE__), __LINE__, F(#arg1), (tempArg1), F(opName), op, F(#arg2), \
+         (tempArg2))) \
+    { \
+      return; \
+    }; \
+  } while(true);
 
 /** macro generates optional output and calls fail() followed by a return if false. */
 #define RASSERT_EQUAL(arg1, arg2) RASSERT_OP(arg1, isEqual, "==", arg2)

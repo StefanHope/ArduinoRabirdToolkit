@@ -86,6 +86,12 @@ public:
 protected:
   virtual void
   run();
+  static void
+  msleep(unsigned long msecs);
+  static void
+  sleep(unsigned long secs);
+  static void
+  usleep(unsigned long usecs);
 
 private:
   size_t       mStackSize;

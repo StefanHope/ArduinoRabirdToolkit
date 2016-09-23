@@ -204,3 +204,58 @@ RThread::run()
 {
   // TODO: We sould run event loop here!
 }
+
+void
+RThread::msleep(unsigned long msecs)
+{
+  unsigned long blockTime = std::numeric_limits<unsigned long>::max() / 1000;
+
+  while(msecs > 0)
+  {
+    if(msecs <= std::numeric_limits<unsigned long>::max())
+    {
+      usleep(msecs);
+      return;
+    }
+
+    usleep(std::numeric_limits<unsigned long>::max());
+    msecs -= blockTime;
+  }
+}
+
+void
+RThread::sleep(unsigned long secs)
+{
+  unsigned long blockTime = std::numeric_limits<unsigned long>::max() /
+                            1000000l;
+
+  while(secs > 0)
+  {
+    if(secs <= std::numeric_limits<unsigned long>::max())
+    {
+      usleep(secs);
+      return;
+    }
+
+    usleep(std::numeric_limits<unsigned long>::max());
+    secs -= blockTime;
+  }
+}
+
+void
+RThread::usleep(unsigned long usecs)
+{
+  unsigned long ticks = usecs / (1000 * portTICK_PERIOD_MS);
+
+  while(ticks > 0)
+  {
+    if(ticks <= static_cast<decltype(usecs)>(portMAX_DELAY))
+    {
+      vTaskDelay(static_cast<decltype(portMAX_DELAY)>(ticks));
+      return;
+    }
+
+    vTaskDelay(portMAX_DELAY);
+    ticks -= static_cast<decltype(usecs)>(portMAX_DELAY);
+  }
+}

@@ -84,19 +84,16 @@ struct RTypeSignTraits<unsigned long long>
 };
 }
 
-typedef Rt::RTypeSignTraits<size_t>::Signed rsize;
-
+typedef Rt::RTypeSignTraits<size_t>::Signed    rsize;
+typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber;
 /**
  * A number type use for limited reference counter.
  *
- * It's designed for fewer memory size (equal to the pointer size) and
- * signed type.
- *
- * @brief rnumber
+ * It's designed for fewer memory size and signed type.
  */
-typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber;
-typedef char                                   rbool;
-typedef unsigned int                           ruint;
+typedef signed char  rcounter;
+typedef char         rbool;
+typedef unsigned int ruint;
 
 template <class Type>
 inline

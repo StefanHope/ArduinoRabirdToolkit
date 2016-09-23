@@ -92,7 +92,7 @@ typedef Rt::RTypeSignTraits<size_t>::Signed rsize;
  * It's designed for fewer memory size (equal to the pointer size) and
  * signed type.
  *
- * @brief rnumber_t
+ * @brief rnumber
  */
 typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber;
 typedef char                                   rbool;

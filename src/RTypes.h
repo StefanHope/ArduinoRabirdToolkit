@@ -91,7 +91,7 @@ typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber;
  *
  * It's designed for fewer memory size and signed type.
  */
-typedef BaseType_t   rcounter;
+typedef BaseType_t   rcount;
 typedef signed char  rbool;
 typedef unsigned int ruint;
 

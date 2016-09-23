@@ -6,23 +6,23 @@
 class RSemaphore
 {
 public:
-  RSemaphore(int n=0);
+  RSemaphore(rcount n=0);
   ~RSemaphore();
 
   void
-  acquire(int n=1);
+  acquire(rcount n=1);
 
   int
   available() const;
 
   void
-  release(int n=1);
+  release(rcount n=1);
 
   bool
-  tryAcquire(int n=1);
+  tryAcquire(rcount n=1);
 
   bool
-  tryAcquire(int n, int timeout);
+  tryAcquire(rcount n, int ms);
 
 private:
   SemaphoreHandle_t mHandle;

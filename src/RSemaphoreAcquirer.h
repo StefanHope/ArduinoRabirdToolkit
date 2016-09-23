@@ -7,12 +7,12 @@ class RSemaphore;
 class RSemaphoreAcquirer
 {
 public:
-  RSemaphoreAcquirer(RSemaphore *semaphore, int n=1);
+  RSemaphoreAcquirer(RSemaphore *semaphore, rcount n=1);
   ~RSemaphoreAcquirer();
 
 private:
   RSemaphore *mSemaphore;
-  int         mCount;
+  rcount      mCount;
 
   R_DISABLE_COPY(RSemaphoreAcquirer)
 };

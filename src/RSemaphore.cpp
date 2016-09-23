@@ -1,6 +1,6 @@
 #include "RSemaphore.h"
 
-RSemaphore::RSemaphore(int n)
+RSemaphore::RSemaphore(rcount n)
   : mHandle(xSemaphoreCreateCounting(n, 0))
 {
 }
@@ -10,7 +10,7 @@ RSemaphore::~RSemaphore()
 }
 
 void
-RSemaphore::acquire(int n)
+RSemaphore::acquire(rcount n)
 {
   tryAcquire(n, portMAX_DELAY);
 }
@@ -21,7 +21,7 @@ RSemaphore::available() const
 }
 
 void
-RSemaphore::release(int n)
+RSemaphore::release(rcount n)
 {
   for(auto i = 0; i < n; ++i)
   {
@@ -30,15 +30,15 @@ RSemaphore::release(int n)
 }
 
 bool
-RSemaphore::tryAcquire(int n)
+RSemaphore::tryAcquire(rcount n)
 {
   return tryAcquire(n, 0);
 }
 
 bool
-RSemaphore::tryAcquire(int n, int timeout)
+RSemaphore::tryAcquire(rcount n, int ms)
 {
-  auto ticks = timeout / portTICK_PERIOD_MS;
+  auto ticks = ms / portTICK_PERIOD_MS;
 
   for(auto i = 0; i < n; ++i)
   {

@@ -30,7 +30,7 @@ public:
   typedef typename BaseType::StorageType                 StorageType;
   typedef typename BaseType::DerivedType                 DerivedType;
   typedef void                                           (*Deleter)(T *ptr);
-  typedef RAtomicInteger<rnumber>                        Counter;
+  typedef RAtomicInteger<rcount>                         Counter;
   typedef RPointerDeleter<T>                             DefaultDeleterType;
   typedef Rt::RSharedPointerContext<T, Counter, Deleter> Context;
 

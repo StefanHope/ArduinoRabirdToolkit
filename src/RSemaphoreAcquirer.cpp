@@ -1,7 +1,7 @@
 #include "RSemaphoreAcquirer.h"
 #include "RSemaphore.h"
 
-RSemaphoreAcquirer::RSemaphoreAcquirer(RSemaphore *semaphore, int n)
+RSemaphoreAcquirer::RSemaphoreAcquirer(RSemaphore *semaphore, rcount n)
   : mSemaphore(semaphore), mCount(n)
 {
   if(mSemaphore)

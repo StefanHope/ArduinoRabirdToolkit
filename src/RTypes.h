@@ -4,6 +4,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Include all FreeRTOS stuffs
+#include <Arduino_FreeRTOS.h>
+#include <semphr.h>
+
 namespace Rt
 {
 template <class T>
@@ -92,6 +96,7 @@ typedef Rt::RTypeSignTraits<size_t>::Signed rsize_t;
  */
 typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber_t;
 typedef unsigned char                          rbool_t;
+typedef unsigned int                           uint_t;
 
 template <class Type>
 inline

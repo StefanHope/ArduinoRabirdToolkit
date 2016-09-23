@@ -2,7 +2,6 @@
 #define __INCLUDED_3ACAB96A807D11E6AA6EA088B4D1658C
 
 #include "RTypes.h"
-#include <semphr.h>
 
 class RMutex
 {

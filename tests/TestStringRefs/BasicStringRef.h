@@ -29,7 +29,7 @@ public:
 
 private:
   const char *mStr;
-  rnumber_t   mLength;
+  rnumber     mLength;
 };
 
 #endif // __INCLUDED_03496C6668CC11E6AA6E0021CC66E280

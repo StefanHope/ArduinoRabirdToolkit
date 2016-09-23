@@ -84,7 +84,7 @@ struct RTypeSignTraits<unsigned long long>
 };
 }
 
-typedef Rt::RTypeSignTraits<size_t>::Signed rsize_t;
+typedef Rt::RTypeSignTraits<size_t>::Signed rsize;
 
 /**
  * A number type use for limited reference counter.
@@ -94,9 +94,9 @@ typedef Rt::RTypeSignTraits<size_t>::Signed rsize_t;
  *
  * @brief rnumber_t
  */
-typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber_t;
-typedef unsigned char                          rbool_t;
-typedef unsigned int                           uint_t;
+typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber;
+typedef char                                   rbool;
+typedef unsigned int                           ruint;
 
 template <class Type>
 inline

@@ -12,6 +12,8 @@ public:
 
 private:
   RMutex *mMutex;
+
+  R_DISABLE_COPY(RMutexLocker)
 };
 
 #endif // __INCLUDED_4D7C908880E611E6AA6EA088B4D1658C

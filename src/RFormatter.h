@@ -63,7 +63,7 @@ private:
   const char *mFormat;
 
 private:
-  R_DISABLE_COPY(RFormatter);
+  R_DISABLE_COPY(RFormatter)
 };
 
 #endif /* __INCLUDED_DB42F20C7AF911E5AA6EA088B4D1658C */

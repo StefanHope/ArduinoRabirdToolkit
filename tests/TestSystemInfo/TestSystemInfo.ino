@@ -11,45 +11,14 @@
 
 RTEST(TestSystemInfo)
 {
-  auto printer = mManager->printer();
+  auto printer   = mManager->printer();
+  auto formatter = RFormatter(printer);
 
-  // This pointer will not be free forever
-  uint8_t *ptr  = new uint8_t(0xFA);
-  uint8_t *ptr2 = new uint8_t(0xEB);
-
-  RRawPointer<uint8_t> rawPtr;
-  RRawPointer<uint8_t> rawPtr2(ptr);
-  RRawPointer<uint8_t> rawPtr3(rawPtr2);
-
-  RASSERT_TRUE(rawPtr.data() == 0);
-  RASSERT_TRUE(rawPtr2.data() == ptr);
-  RASSERT_TRUE(rawPtr3.data() == ptr);
-  RASSERT_TRUE(rawPtr3.data() == rawPtr2.data());
-  RASSERT_TRUE(rawPtr == 0);
-  RASSERT_TRUE(rawPtr2 == ptr);
-  RASSERT_TRUE(rawPtr3 == ptr);
-  RASSERT_TRUE(rawPtr3 == rawPtr2.data());
-  RASSERT_EQUAL(rawPtr3, rawPtr2);
-
-  rawPtr.reset(ptr2);
-
-  RASSERT_TRUE(rawPtr.data() == ptr2);
-  RASSERT_EQUAL(*rawPtr, 0xEB);
-  RASSERT_EQUAL(*rawPtr3, 0xFA);
-
-  rawPtr = rawPtr3;
-
-  RASSERT_TRUE(rawPtr.data() == ptr);
-  RASSERT_TRUE(rawPtr.data() == rawPtr2.data());
-
-  rawPtr.reset();
-  rawPtr3.reset();
-
-  RASSERT_TRUE(rawPtr.data() == NULL);
-  RASSERT_TRUE(rawPtr3.data() == NULL);
-  RASSERT_TRUE(rawPtr == NULL);
-  RASSERT_TRUE(rawPtr3 == NULL);
-  RASSERT_TRUE(rawPtr2 == ptr);
+  formatter("Size of int : %s").arg(sizeof(int));
+  formatter("Size of uintptr_t : %s").arg(sizeof(uintptr_t));
+  formatter("Size of rsize : %s").arg(sizeof(rsize));
+  formatter("Size of rnumber : %s").arg(sizeof(rnumber));
+  formatter("Size of ruint : %s").arg(sizeof(ruint));
 };
 
 void

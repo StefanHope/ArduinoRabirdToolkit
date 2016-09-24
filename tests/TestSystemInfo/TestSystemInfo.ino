@@ -11,8 +11,7 @@
 
 RTEST(TestSystemInfo)
 {
-  auto printer   = mManager->printer();
-  auto formatter = RFormatter(printer);
+  auto formatter = RFormatter(mManager->printer());
 
   formatter("Size of int : %s").arg(sizeof(int));
   formatter("Size of uintptr_t : %s").arg(sizeof(uintptr_t));

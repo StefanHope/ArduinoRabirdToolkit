@@ -4,7 +4,7 @@
 RSemaphoreAcquirer::RSemaphoreAcquirer(RSemaphore *semaphore, rcount n)
   : mSemaphore(semaphore), mCount(n)
 {
-  if(mSemaphore)
+  if(mSemaphore && (mCount > 0))
   {
     mSemaphore->acquire(mCount);
   }
@@ -12,7 +12,7 @@ RSemaphoreAcquirer::RSemaphoreAcquirer(RSemaphore *semaphore, rcount n)
 
 RSemaphoreAcquirer::~RSemaphoreAcquirer()
 {
-  if(mSemaphore)
+  if(mSemaphore && (mCount > 0))
   {
     mSemaphore->release(mCount);
   }

@@ -179,7 +179,7 @@ public:
 
 protected:
   void
-  setStatus(Status aStatus);
+  setStatus(Status status);
 
   void
   setManager(RTestAbstractApplication *manager);

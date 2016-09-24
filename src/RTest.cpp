@@ -19,9 +19,9 @@ RTest::name()
 }
 
 void
-RTest::setStatus(RTest::Status aStatus)
+RTest::setStatus(RTest::Status status)
 {
-  mStatus = aStatus;
+  mStatus = status;
 }
 
 void

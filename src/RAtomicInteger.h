@@ -9,14 +9,14 @@ class RAtomicInteger
 public:
   RAtomicInteger(T value=0)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
 
     mValue = value;
   }
 
   RAtomicInteger(const RAtomicInteger &other)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
 
     mValue = other.mValue;
   }
@@ -24,7 +24,7 @@ public:
   bool
   deref()
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     --mValue;
     return mValue != 0;
   }
@@ -32,7 +32,7 @@ public:
   bool
   ref()
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     ++mValue;
     return mValue != 0;
   }
@@ -40,27 +40,27 @@ public:
   void
   store(T newValue)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     mValue = newValue;
   }
 
   T
   load() const
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue;
   }
 
   operator T() const
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue;
   }
 
   T
   operator &=(T valueToAnd)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     mValue &= valueToAnd;
     return mValue;
   }
@@ -68,49 +68,49 @@ public:
   T
   operator ++()
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return ++mValue;
   }
 
   T
   operator ++(int)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue++;
   }
 
   T
   operator +=(T valueToAdd)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue += valueToAdd;
   }
 
   T
   operator --()
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return --mValue;
   }
 
   T
   operator --(int)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue--;
   }
 
   T
   operator -=(T valueToSub)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue -= valueToSub;
   }
 
   RAtomicInteger &
   operator =(const RAtomicInteger &other)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     mValue = other.mValue;
     return *this;
   }
@@ -118,7 +118,7 @@ public:
   RAtomicInteger &
   operator =(T newValue)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     mValue = newValue;
     return *this;
   }
@@ -126,14 +126,14 @@ public:
   T
   operator ^=(T valueToXor)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue ^= valueToXor;
   }
 
   T
   operator |=(T valueToOr)
   {
-    RSpinLocker();
+    R_MAKE_SPINLOCKER();
     return mValue |= valueToOr;
   }
 

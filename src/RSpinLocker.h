@@ -19,4 +19,9 @@ private:
   R_DISABLE_COPY(RSpinLocker)
 };
 
+#define _R_MAKE_SPINLOCKER(lineNumber) \
+  RSpinLocker __rTempSpinLocker##lineNumber;
+
+#define R_MAKE_SPINLOCKER() _R_MAKE_SPINLOCKER(__LINE__)
+
 #endif // __INCLUDED_288D29285F8911E68BCF00F1F38F93EF

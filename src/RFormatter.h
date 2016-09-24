@@ -9,6 +9,8 @@
 #define __INCLUDED_DB42F20C7AF911E5AA6EA088B4D1658C
 
 #include "RTypes.h"
+#include "RAbstractStringRef.h"
+#include "RScopedPointer.h"
 #include <Print.h>
 
 /**
@@ -38,7 +40,11 @@ public:
   RFormatter(Print *print);
 
   RFormatter &
-  parse(const char *format);
+  operator ()(const char *format);
+  RFormatter &
+  operator ()(const __FlashStringHelper *format);
+  RFormatter &
+  operator ()(const String *format);
 
   template <class ... ParamTypes>
   RFormatter &
@@ -47,7 +53,7 @@ public:
     if(printBeforeNextMark())
     {
       mPrint->print(params ...);
-      mFormat += 2;
+      mFormatIndex += 2;
       printBeforeNextMark();
     }
 
@@ -59,8 +65,10 @@ private:
   printBeforeNextMark();
 
 private:
-  Print *     mPrint;
-  const char *mFormat;
+  Print *mPrint;
+
+  RScopedPointer<RAbstractStringRef> mFormat;
+  unsigned int mFormatIndex;
 
 private:
   R_DISABLE_COPY(RFormatter)

@@ -1,15 +1,38 @@
 #include "RFormatter.h"
+#include "RFlashStringRef.h"
+#include "RStringRef.h"
+#include "RConstStringRef.h"
 #include <Print.h>
 
 RFormatter::RFormatter(Print *print)
-  : mPrint(print), mFormat("")
+  : mPrint(print), mFormat(NULL), mFormatIndex(0)
 {
 }
 
 RFormatter &
-RFormatter::parse(const char *format)
+RFormatter::operator ()(const char *format)
 {
-  mFormat = format;
+  mFormat.reset(new RConstStringRef(format));
+  // If this message does not have any format mark, we just print the
+  // whole string.
+  printBeforeNextMark();
+  return *this;
+}
+
+RFormatter &
+RFormatter::operator ()(const __FlashStringHelper *format)
+{
+  mFormat.reset(new RFlashStringRef(format));
+  // If this message does not have any format mark, we just print the
+  // whole string.
+  printBeforeNextMark();
+  return *this;
+}
+
+RFormatter &
+RFormatter::operator ()(const String *format)
+{
+  mFormat.reset(new RStringRef(format));
   // If this message does not have any format mark, we just print the
   // whole string.
   printBeforeNextMark();
@@ -24,7 +47,7 @@ RFormatter::printBeforeNextMark()
 
   while(1)
   {
-    c = *mFormat;
+    c = mFormat->charAt(mFormatIndex);
 
     if('\0' == c)
     {
@@ -33,20 +56,20 @@ RFormatter::printBeforeNextMark()
 
     if('%' == c)
     {
-      ++mFormat;
+      ++mFormatIndex;
 
-      nextChar = *mFormat;
+      nextChar = mFormat->charAt(mFormatIndex);
 
       if('%' == nextChar)
       {
         // '%%' means one '%'
         mPrint->write(nextChar);
-        ++mFormat;
+        ++mFormatIndex;
       }
       else if('s' == nextChar)
       {
         // Found replacement mark : "%s"
-        --mFormat;  // Jump to forward "%"
+        --mFormatIndex;  // Jump to forward "%"
         return true;
       }
       else if('\0' == nextChar)
@@ -58,13 +81,13 @@ RFormatter::printBeforeNextMark()
       {
         mPrint->write(c);
         mPrint->write(nextChar);
-        ++mFormat;
+        ++mFormatIndex;
       }
     }
     else
     {
       mPrint->write(c);
-      ++mFormat;
+      ++mFormatIndex;
     }
   }
 

@@ -1,13 +1,13 @@
-#include "RSpinLock.h"
+#include "RSpinLocker.h"
 #include <Arduino.h>
 
-RSpinLock::RSpinLock()
+RSpinLocker::RSpinLocker()
 {
   mOldRegisters = SREG;
   noInterrupts();
 }
 
-RSpinLock::~RSpinLock()
+RSpinLocker::~RSpinLocker()
 {
   SREG = mOldRegisters;
 }

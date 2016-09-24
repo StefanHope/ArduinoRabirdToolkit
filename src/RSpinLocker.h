@@ -5,20 +5,18 @@
 
 /**
  * A simple class to wrap around the interrupt disable/enable pairs.
- *
- * @brief The RSpinLock class
  */
-class RSpinLock
+class RSpinLocker
 {
 public:
-  RSpinLock();
-  ~RSpinLock();
+  RSpinLocker();
+  ~RSpinLocker();
 
 private:
   uint8_t mOldRegisters;
 
 private:
-  R_DISABLE_COPY(RSpinLock);
+  R_DISABLE_COPY(RSpinLocker)
 };
 
 #endif // __INCLUDED_288D29285F8911E68BCF00F1F38F93EF

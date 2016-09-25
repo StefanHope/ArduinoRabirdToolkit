@@ -82,7 +82,7 @@ public:
   }
 
   void
-  erase(const T &value)
+  remove(const T &value)
   {
     if(empty())
     {

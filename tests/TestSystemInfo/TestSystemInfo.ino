@@ -8,10 +8,11 @@
 #include <RTest.h>
 #include <RRawPointer.h>
 #include <RSharedPointer.h>
+#include <RFormatter.h>
 
 RTEST(TestSystemInfo)
 {
-  auto formatter = RFormatter(mManager->printer());
+  RFormatter formatter(manager()->printer());
 
   formatter("Size of int : %s").arg(sizeof(int));
   formatter("Size of uintptr_t : %s").arg(sizeof(uintptr_t));

@@ -30,6 +30,12 @@ RTest::setManager(RTestAbstractApplication *manager)
   mManager = manager;
 }
 
+RTestAbstractApplication *
+RTest::manager()
+{
+  return mManager;
+}
+
 template <>
 bool
 RTest::isLess<const char *>(const char *const &a, const char *const &b)

@@ -64,7 +64,7 @@ class RTestApplication;
 
 class RTestAbstractApplication : public RObject
 {
-protected:
+public:
   virtual Print *
   printer() = 0;
 
@@ -184,6 +184,9 @@ protected:
   void
   setManager(RTestAbstractApplication *manager);
 
+  RTestAbstractApplication *
+  manager();
+
 private:
   Status mStatus;
   const __FlashStringHelper *mName;
@@ -242,7 +245,6 @@ public:
   void
   run();
 
-protected:
   Print *
   printer();
 

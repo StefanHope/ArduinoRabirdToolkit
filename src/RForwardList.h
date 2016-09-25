@@ -17,9 +17,6 @@ public:
   typedef IteratorType iterator;
   typedef IteratorType const_iterator;
 
-protected:
-  NodeType *mRoot;
-
 public:
   RForwardList() : mRoot(NULL)
   {
@@ -28,6 +25,47 @@ public:
   ~RForwardList()
   {
     clear();
+  }
+
+  iterator
+  beforeBegin()
+  {
+    return iterator(reinterpret_cast<NodeType *>(&mRoot));
+  }
+
+  const_iterator
+  beforeBegin() const
+  {
+    return const_iterator(reinterpret_cast<NodeType *>(&mRoot));
+  }
+
+  iterator
+  eraseAfter(const_iterator position)
+  {
+    auto wantErasePosition = position + 1;
+
+    if(wantErasePosition.mNode)
+    {
+      position.mNode->mNext = wantErasePosition.mNode->mNext;
+      delete wantErasePosition.mNode;
+
+      return iterator(position.mNode->mNext);
+    }
+
+    return end();
+  }
+
+  iterator
+  eraseAfter(const_iterator position, const_iterator last)
+  {
+    auto currentPosition = position;
+
+    while(currentPosition != last)
+    {
+      currentPosition = eraseAfter(position);
+    }
+
+    return last;
   }
 
   bool
@@ -46,35 +84,21 @@ public:
   void
   erase(const T &value)
   {
-    if(mRoot == NULL)
+    if(empty())
     {
       return;
     }
 
-    NodeType *node     = mRoot;
-    NodeType *nodeNext = NULL;
-    NodeType *nodePrev = NULL;
+    auto it     = beforeBegin();
+    auto nextIt = it;
 
-    for(; node != NULL; (nodePrev = node), (node = nodeNext))
+    for(; it != end(); it = nextIt)
     {
-      nodeNext = node->mNext;
+      nextIt = it + 1;
 
-      if(node->data != value)
+      if(*nextIt == value)
       {
-        continue;
-      }
-
-      delete node;
-
-      if(node == mRoot)
-      {
-        mRoot = nodeNext;
-        node  = NULL;
-      }
-      else
-      {
-        nodePrev->mNext = nodeNext;
-        node = nodePrev;
+        nextIt = eraseAfter(it);
       }
     }
   }
@@ -82,22 +106,12 @@ public:
   void
   clear()
   {
-    if(mRoot == NULL)
+    if(empty())
     {
       return;
     }
 
-    NodeType *node     = mRoot;
-    NodeType *nodeNext = NULL;
-
-    for(; node != NULL; node = nodeNext)
-    {
-      nodeNext = node->mNext;
-
-      delete node;
-    }
-
-    mRoot = NULL;
+    eraseAfter(beforeBegin(), end());
   }
 
   bool
@@ -129,6 +143,9 @@ public:
   {
     return const_iterator();
   }
+
+protected:
+  NodeType *mRoot;
 };
 
 // List node
@@ -136,24 +153,25 @@ template <class T, class Allocator>
 class RForwardList<T, Allocator>::NodeType
 {
 public:
-  T         mValue;
-  NodeType *mNext;
-
   NodeType() : mNext(NULL)
   {
   }
 
-  NodeType(const T &value) : mValue(value), mNext(NULL)
+  NodeType(const T &value) : mNext(NULL), mValue(value)
   {
   }
 
-  NodeType(const T &value, NodeType * next) : mValue(value), mNext(next)
+  NodeType(const T &value, NodeType * next) : mNext(next), mValue(value)
   {
   }
 
   ~NodeType()
   {
   }
+
+public:
+  NodeType *mNext;
+  T         mValue;
 };
 
 // List iterator
@@ -168,7 +186,8 @@ class RForwardList<T, Allocator>::IteratorType
     >
 {
 private:
-  typedef typename RForwardList<T, Allocator>::NodeType NodeType;
+  typedef RForwardList<T, Allocator>  ListType;
+  typedef typename ListType::NodeType NodeType;
 
 public:
   IteratorType() : mNode(NULL)
@@ -221,7 +240,7 @@ public:
   bool
   operator ==(const IteratorType &right) const
   {
-    return (mNode == right.mNode);
+    return mNode == right.mNode;
   }
 
   bool
@@ -233,7 +252,11 @@ public:
   IteratorType &
   operator ++()
   {
-    mNode = mNode->mNext;
+    if(mNode)
+    {
+      mNode = mNode->mNext;
+    }
+
     return *this;
   }
 
@@ -242,7 +265,11 @@ public:
   {
     IteratorType temp(mNode);
 
-    mNode = mNode->mNext;
+    if(mNode)
+    {
+      mNode = mNode->mNext;
+    }
+
     return temp;
   }
 
@@ -251,14 +278,33 @@ public:
   {
     for(unsigned int i = 0; i < n; ++i)
     {
-      mNode = mNode->mNext;
+      if(mNode)
+      {
+        mNode = mNode->mNext;
+      }
+      else
+      {
+        break;
+      }
     }
 
     return *this;
   }
 
+  IteratorType
+  operator +(unsigned int n)
+  {
+    IteratorType otherIt = *this;
+
+    otherIt += n;
+
+    return otherIt;
+  }
+
 private:
   NodeType *mNode;
+
+  friend ListType;
 };
 
 #endif // #ifndef __INCLUDED_8E00360044CF11E6804600F1F38F93EF

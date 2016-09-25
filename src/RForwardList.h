@@ -74,6 +74,12 @@ public:
     insertAfter(beforeBegin(), value);
   }
 
+  void
+  popFront()
+  {
+    eraseAfter(beforeBegin());
+  }
+
   iterator
   insertAfter(const_iterator position, const T &value)
   {

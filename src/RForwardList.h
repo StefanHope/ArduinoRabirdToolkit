@@ -68,8 +68,8 @@ public:
     return last;
   }
 
-  iterator
-  insert(const T &value)
+  void
+  pushFront(const T &value)
   {
     insertAfter(beforeBegin(), value);
   }

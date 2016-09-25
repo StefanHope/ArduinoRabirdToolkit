@@ -68,17 +68,26 @@ public:
     return last;
   }
 
-  bool
+  iterator
   insert(const T &value)
   {
-    NodeType *node = new NodeType(value);
+    insertAfter(beforeBegin(), value);
+  }
 
-    if(mRoot != NULL)
+  iterator
+  insertAfter(const_iterator position, const T &value)
+  {
+    if(position.mNode)
     {
-      node->mNext = mRoot;
-    }
+      NodeType *node = new NodeType(value);
 
-    mRoot = node;
+      node->mNext           = position.mNode->mNext;
+      position.mNode->mNext = node;
+    }
+    else
+    {
+      return position;
+    }
   }
 
   void

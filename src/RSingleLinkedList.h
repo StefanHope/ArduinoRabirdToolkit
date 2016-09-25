@@ -6,11 +6,8 @@
 #include <iterator>
 #include <algorithm>
 
-namespace Rt
-{
-
 template <class T, class Allocator = std::allocator<T> >
-class RDelegateList
+class RSingleLinkedList
 {
 protected:
   class IteratorType;
@@ -24,11 +21,11 @@ protected:
   NodeType *mRoot;
 
 public:
-  RDelegateList() : mRoot(NULL)
+  RSingleLinkedList() : mRoot(NULL)
   {
   }
 
-  ~RDelegateList()
+  ~RSingleLinkedList()
   {
     clear();
   }
@@ -136,7 +133,7 @@ public:
 
 // List node
 template <class T, class Allocator>
-class RDelegateList<T, Allocator>::NodeType
+class RSingleLinkedList<T, Allocator>::NodeType
 {
 public:
   T         mValue;
@@ -161,7 +158,7 @@ public:
 
 // List iterator
 template <class T, class Allocator>
-class RDelegateList<T, Allocator>::IteratorType
+class RSingleLinkedList<T, Allocator>::IteratorType
   : public std::iterator<
     std::forward_iterator_tag,
     T,
@@ -171,7 +168,7 @@ class RDelegateList<T, Allocator>::IteratorType
     >
 {
 private:
-  typedef typename RDelegateList<T, Allocator>::NodeType NodeType;
+  typedef typename RSingleLinkedList<T, Allocator>::NodeType NodeType;
 
 public:
   IteratorType() : mNode(NULL)
@@ -263,6 +260,5 @@ public:
 private:
   NodeType *mNode;
 };
-}  // namespace
 
 #endif // #ifndef __INCLUDED_8E00360044CF11E6804600F1F38F93EF

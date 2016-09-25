@@ -28,47 +28,47 @@ public:
   void
   connect(_Delegate delegate)
   {
-    mDelegateList.insert(delegate);
+    mDelegateList.pushFront(delegate);
   }
 
   template <class X, class Y>
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...))
   {
-    mDelegateList.insert(Rt::MakeDelegate(obj, func));
+    mDelegateList.pushFront(Rt::MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
-    mDelegateList.insert(Rt::MakeDelegate(obj, func));
+    mDelegateList.pushFront(Rt::MakeDelegate(obj, func));
   }
 
   void
   connect(R (*functionToBind)(ParamTypes ...))
   {
-    mDelegateList.insert(Rt::Delegate<R(ParamTypes ...)>(functionToBind));
+    mDelegateList.pushFront(Rt::Delegate<R(ParamTypes ...)>(functionToBind));
   }
 
   void
   disconnect(_Delegate delegate)
   {
-    mDelegateList.erase(delegate);
+    mDelegateList.remove(delegate);
   }
 
   template <class X, class Y>
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...))
   {
-    mDelegateList.erase(Rt::MakeDelegate(obj, func));
+    mDelegateList.remove(Rt::MakeDelegate(obj, func));
   }
 
   template <class X, class Y>
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
-    mDelegateList.erase(Rt::MakeDelegate(obj, func));
+    mDelegateList.remove(Rt::MakeDelegate(obj, func));
   }
 
   void

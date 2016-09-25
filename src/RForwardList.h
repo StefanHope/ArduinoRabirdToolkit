@@ -7,7 +7,7 @@
 #include <algorithm>
 
 template <class T, class Allocator = std::allocator<T> >
-class RSingleLinkedList
+class RForwardList
 {
 protected:
   class IteratorType;
@@ -21,11 +21,11 @@ protected:
   NodeType *mRoot;
 
 public:
-  RSingleLinkedList() : mRoot(NULL)
+  RForwardList() : mRoot(NULL)
   {
   }
 
-  ~RSingleLinkedList()
+  ~RForwardList()
   {
     clear();
   }
@@ -133,7 +133,7 @@ public:
 
 // List node
 template <class T, class Allocator>
-class RSingleLinkedList<T, Allocator>::NodeType
+class RForwardList<T, Allocator>::NodeType
 {
 public:
   T         mValue;
@@ -158,7 +158,7 @@ public:
 
 // List iterator
 template <class T, class Allocator>
-class RSingleLinkedList<T, Allocator>::IteratorType
+class RForwardList<T, Allocator>::IteratorType
   : public std::iterator<
     std::forward_iterator_tag,
     T,
@@ -168,7 +168,7 @@ class RSingleLinkedList<T, Allocator>::IteratorType
     >
 {
 private:
-  typedef typename RSingleLinkedList<T, Allocator>::NodeType NodeType;
+  typedef typename RForwardList<T, Allocator>::NodeType NodeType;
 
 public:
   IteratorType() : mNode(NULL)

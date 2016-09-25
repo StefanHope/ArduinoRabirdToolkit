@@ -8,7 +8,7 @@
 #define __INCLUDED_C5173AA242B211E6AA6EA088B4D1658C
 
 #include "RDelegate.h"
-#include "RSingleLinkedList.h"
+#include "RForwardList.h"
 
 // Declare RSignal as a class template.  It will be specialized
 // later for all number of arguments.
@@ -22,7 +22,7 @@ public:
   typedef Rt::Delegate<R(ParamTypes ...)> _Delegate;
 
 private:
-  typedef RSingleLinkedList<_Delegate> DelegateList;
+  typedef RForwardList<_Delegate> DelegateList;
 
 public:
   void

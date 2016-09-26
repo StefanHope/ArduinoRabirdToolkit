@@ -8,20 +8,25 @@
 #include <RTest.h>
 #include <RSignal.h>
 
-static int sVar0 = 0x1;
-static int sVar1 = 0x2;
-static int sVar2 = 0x3;
+static int sVar0           = 0x1;
+static int sVar1           = 0x2;
+static int sVar2           = 0x3;
+static int sExecutedCount0 = 0;
+static int sExecutedCount1 = 0;
+static int sExecutedCount2 = 0;
 
 void
 signalFunction0()
 {
   sVar0 = 0xEB;
+  ++sExecutedCount0;
 }
 
 void
 signalFunction1(int var1)
 {
   sVar1 = var1;
+  ++sExecutedCount1;
 }
 
 void
@@ -29,6 +34,7 @@ signalFunction2(int var1, int var2)
 {
   sVar1 = var1;
   sVar2 = var2;
+  ++sExecutedCount2;
 }
 
 RTEST(TestSignal)
@@ -40,16 +46,21 @@ RTEST(TestSignal)
   RASSERT_EQUAL(sVar0, 0x1);
   RASSERT_EQUAL(sVar1, 0x2);
   RASSERT_EQUAL(sVar2, 0x3);
+  RASSERT_EQUAL(sExecutedCount0, 0);
+  RASSERT_EQUAL(sExecutedCount1, 0);
+  RASSERT_EQUAL(sExecutedCount2, 0);
 
   signal0.connect(signalFunction0);
   RASSERT_EQUAL(sVar0, 0x1);
   signal0.emit();
   RASSERT_EQUAL(sVar0, 0xEB);
+  RASSERT_EQUAL(sExecutedCount0, 1);
 
   signal1.connect(signalFunction1);
   RASSERT_EQUAL(sVar1, 0x2);
   signal1.emit(0xCA);
   RASSERT_EQUAL(sVar1, 0xCA);
+  RASSERT_EQUAL(sExecutedCount1, 1);
 
   signal2.connect(signalFunction2);
   RASSERT_EQUAL(sVar1, 0xCA);
@@ -57,6 +68,12 @@ RTEST(TestSignal)
   signal2.emit(0xCA, 0x7B);
   RASSERT_EQUAL(sVar1, 0xCA);
   RASSERT_EQUAL(sVar2, 0x7B);
+  RASSERT_EQUAL(sExecutedCount2, 1);
+
+  signal2.emit(0x2C, 0x3B);
+  RASSERT_EQUAL(sVar1, 0x2C);
+  RASSERT_EQUAL(sVar2, 0x3B);
+  RASSERT_EQUAL(sExecutedCount2, 2);
 };
 
 void

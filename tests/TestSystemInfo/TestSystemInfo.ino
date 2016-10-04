@@ -6,19 +6,14 @@
 #include <RabirdToolkit.h>
 
 #include <RTest.h>
-#include <RRawPointer.h>
-#include <RSharedPointer.h>
-#include <RFormatter.h>
 
 RTEST(TestSystemInfo)
 {
-  RFormatter formatter(manager()->printer());
-
-  formatter("Size of int : %s").arg(sizeof(int));
-  formatter("Size of uintptr_t : %s").arg(sizeof(uintptr_t));
-  formatter("Size of rsize : %s").arg(sizeof(rsize));
-  formatter("Size of rnumber : %s").arg(sizeof(rnumber));
-  formatter("Size of ruint : %s").arg(sizeof(ruint));
+  RASSERT_MORE(sizeof(int), 0);
+  RASSERT_MORE(sizeof(uintptr_t), 0);
+  RASSERT_MORE(sizeof(rsize), 0);
+  RASSERT_MORE(sizeof(rnumber), 0);
+  RASSERT_MORE(sizeof(ruint), 0);
 };
 
 void

@@ -181,8 +181,13 @@ RThread::terminate()
 {
   if(mIsOwnded && mHandle)
   {
+    // Ensure no tasks and interrupts will be trigger during thread event loop
+    // destruction.
+    taskENTER_CRITICAL();
     REventLoop::_destroy(mHandle);
     vTaskDelete(mHandle);
+    taskEXIT_CRITICAL();
+
     terminated.emit();
   }
 

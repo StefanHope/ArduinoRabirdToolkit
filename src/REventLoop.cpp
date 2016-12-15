@@ -48,7 +48,13 @@ REventLoop::processEvents()
 {
   while(!mEvents.empty())
   {
-    // TODO: Not implemented.
+    auto eventData = mEvents.front();
+    mEvents.pop_front();
+
+    eventData.receiver->event(eventData.event);
+
+    // Free the posted event
+    delete eventData.event;
 
     if(mIsInterrupt)
     {

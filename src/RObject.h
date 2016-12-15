@@ -6,19 +6,21 @@
 #include <Print.h>
 #include <Printable.h>
 
+class REvent;
 class RThread;
 class RObject : protected Printable
 {
 public:
   RObject();
 
-  virtual ~RObject()
-  {
-  }
+  virtual
+  ~RObject();
 
   size_t
   printTo(Print&p) const;
 
+  virtual bool
+  event(REvent *e);
   RThread *
   thread();
 

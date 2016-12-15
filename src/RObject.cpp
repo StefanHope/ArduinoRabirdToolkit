@@ -1,8 +1,13 @@
 #include "RObject.h"
 #include "RThread.h"
+#include "REvent.h"
 
 RObject::RObject()
   : mThread(RThread::currentThread())
+{
+}
+
+RObject::~RObject()
 {
 }
 
@@ -17,6 +22,13 @@ RObject::printTo(Print&p) const
   size += p.print(F(")"));
 
   return size;
+}
+
+bool
+RObject::event(REvent *e)
+{
+  // TODO: We need to dispatch some common events
+  return false;
 }
 
 RThread *

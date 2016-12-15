@@ -33,8 +33,10 @@ REventLoop::exec()
 void
 REventLoop::exit(int returnCode)
 {
+  taskENTER_CRITICAL();
   mReturnCode  = returnCode;
   mIsInterrupt = true;
+  taskEXIT_CRITICAL();
 }
 
 void

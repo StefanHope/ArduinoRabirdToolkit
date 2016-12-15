@@ -49,10 +49,7 @@ RThread::~RThread()
 void
 RThread::exit(int returnCode)
 {
-  // FIXME: We should post a message to this thread's queue just tell the thread
-  // with specific exit code. Now just simple terminate() this thread (very
-  // dangerous)
-  terminate();
+  REventLoop::instance(this)->exit(returnCode);
 }
 
 bool

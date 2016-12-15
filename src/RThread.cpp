@@ -1,5 +1,6 @@
 #include "RThread.h"
 #include "REventLoop.h"
+#include "RForwardList.h"
 
 class RThreadPrivate
 {
@@ -8,6 +9,8 @@ public:
   run(void *arg);
 };
 
+// FIXME: Thread list not guarded by mutex now !
+static RForwardList<RThread *> sThreads;
 void
 RThreadPrivate::run(void *arg)
 {
@@ -24,6 +27,7 @@ RThreadPrivate::run(void *arg)
 RThread::RThread(TaskHandle_t handle) : RThread()
 {
   mHandle = handle;
+  sThreads.pushFront(this);
 }
 
 RThread::RThread()
@@ -31,11 +35,15 @@ RThread::RThread()
   , mHandle(NULL)
   , mIsOwnded(false)
 {
+  sThreads.pushFront(this);
 }
 
 RThread::~RThread()
 {
   terminate();
+
+  // Clear this thread pointer in thread list
+  sThreads.remove(this);
 }
 
 void
@@ -192,6 +200,23 @@ RThread::terminate()
   }
 
   mHandle = NULL;
+}
+
+RThread *
+RThread::currentThread()
+{
+  TaskHandle_t handle = currentThreadId();
+
+  for(auto it = sThreads.begin(); it != sThreads.end(); ++it)
+  {
+    if(handle == (*it)->mHandle)
+    {
+      return *it;
+    }
+  }
+
+  // FIXME: Here generated an orphan RThread object!
+  return new RThread(handle);
 }
 
 TaskHandle_t

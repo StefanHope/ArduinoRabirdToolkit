@@ -75,6 +75,8 @@ public:
   void
   terminate();
 
+  static RThread *
+  currentThread();
   static TaskHandle_t
   currentThreadId();
   static void

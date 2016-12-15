@@ -88,6 +88,8 @@ REventLoop::instance(const RThread *inThread)
   // FIXME: Memory leaking without free!
   REventLoop *loop = new REventLoop();
 
+  loop->moveToThread(const_cast<RThread *>(inThread));
+
   // FIXME: Thread event loops should be protected by mutexs.
   sEventLoops.push_back(loop);
 

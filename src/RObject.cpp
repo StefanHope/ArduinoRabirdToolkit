@@ -36,3 +36,9 @@ RObject::thread()
 {
   return mThread.data();
 }
+
+void
+RObject::moveToThread(RThread *targetThread)
+{
+  mThread.reset(targetThread);
+}

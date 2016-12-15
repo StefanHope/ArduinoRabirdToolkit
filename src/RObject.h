@@ -24,6 +24,9 @@ public:
   RThread *
   thread();
 
+  void
+  moveToThread(RThread *targetThread);
+
 private:
   RRawPointer<RThread> mThread;
 };

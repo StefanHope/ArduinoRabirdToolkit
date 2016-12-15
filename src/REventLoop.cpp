@@ -2,7 +2,7 @@
 #include "RThread.h"
 
 static std::list<REventLoop *>
-sThreadEventLoops;
+sEventLoops;
 
 REventLoop::REventLoop() : mReturnCode(0), mIsInterrupt(false)
 {
@@ -77,7 +77,7 @@ LABEL_EXIT:
 REventLoop *
 REventLoop::instance(const RThread *inThread)
 {
-  for(auto it = sThreadEventLoops.begin(); it != sThreadEventLoops.end(); ++it)
+  for(auto it = sEventLoops.begin(); it != sEventLoops.end(); ++it)
   {
     if(inThread == (*it)->thread())
     {
@@ -89,7 +89,7 @@ REventLoop::instance(const RThread *inThread)
   REventLoop *loop = new REventLoop();
 
   // FIXME: Thread event loops should be protected by mutexs.
-  sThreadEventLoops.push_back(loop);
+  sEventLoops.push_back(loop);
 
   return loop;
 }
@@ -103,11 +103,11 @@ REventLoop::instance()
 void
 REventLoop::_destroy(const RThread *inThread)
 {
-  for(auto it = sThreadEventLoops.begin(); it != sThreadEventLoops.end(); ++it)
+  for(auto it = sEventLoops.begin(); it != sEventLoops.end(); ++it)
   {
     if(inThread == (*it)->thread())
     {
-      sThreadEventLoops.erase(it);
+      sEventLoops.erase(it);
       return;
     }
   }

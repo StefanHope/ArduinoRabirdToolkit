@@ -1,11 +1,19 @@
 #include "RCoreApplication.h"
+#include "REvent.h"
 #include "REventLoop.h"
+#include "RThread.h"
 
 static RCoreApplication *sApplication = NULL;
 
 RCoreApplication::RCoreApplication()
+  : mEventLoop(NULL)
 {
   sApplication = this;
+  mEventLoop   = REventLoop::instance();
+}
+
+RCoreApplication::~RCoreApplication()
+{
 }
 
 RCoreApplication *
@@ -17,7 +25,11 @@ RCoreApplication::instance()
 int
 RCoreApplication::exec()
 {
-  REventLoop *loop = REventLoop::instance();
+  return sApplication->mEventLoop->exec();
+}
 
-  return loop->exec();
+void
+RCoreApplication::postEvent(RObject *receiver, REvent *event)
+{
+  REventLoop::instance(receiver->thread()->mHandle)->postEvent(receiver, event);
 }

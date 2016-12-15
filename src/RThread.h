@@ -8,6 +8,7 @@
 
 class REventLoop;
 class RThreadPrivate;
+class RCoreApplication;
 class RThread : public RObject
 {
 public:
@@ -105,6 +106,7 @@ private:
 
   friend RThreadPrivate;
   friend REventLoop;
+  friend RCoreApplication;
 
   R_DISABLE_COPY(RThread)
 };

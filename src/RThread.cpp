@@ -1,4 +1,5 @@
 #include "RThread.h"
+#include "REventLoop.h"
 
 class RThreadPrivate
 {
@@ -180,6 +181,7 @@ RThread::terminate()
 {
   if(mIsOwnded && mHandle)
   {
+    REventLoop::_destroy(mHandle);
     vTaskDelete(mHandle);
     terminated.emit();
   }
@@ -199,10 +201,19 @@ RThread::yieldCurrentThread()
   taskYIELD();
 }
 
+int
+RThread::exec()
+{
+  REventLoop *loop = REventLoop::instance(mHandle);
+
+  return loop->exec();
+}
+
 void
 RThread::run()
 {
   // TODO: We sould run event loop here!
+  exec();
 }
 
 void

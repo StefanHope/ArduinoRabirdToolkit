@@ -6,6 +6,7 @@
 #include <Arduino_FreeRTOS.h>
 #include <limits>
 
+class REventLoop;
 class RThreadPrivate;
 class RThread : public RObject
 {
@@ -84,6 +85,8 @@ public:
   RSignal<void()> terminated;
 
 protected:
+  int
+  exec();
   virtual void
   run();
   static void
@@ -99,6 +102,7 @@ private:
   bool         mIsOwnded;
 
   friend RThreadPrivate;
+  friend REventLoop;
 
   R_DISABLE_COPY(RThread)
 };

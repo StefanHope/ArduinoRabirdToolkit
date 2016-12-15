@@ -242,7 +242,6 @@ RThread::exec()
 void
 RThread::run()
 {
-  // TODO: We sould run event loop here!
   exec();
 }
 

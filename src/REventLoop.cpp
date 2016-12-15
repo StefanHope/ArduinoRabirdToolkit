@@ -46,6 +46,8 @@ REventLoop::quit()
 bool
 REventLoop::processEvents()
 {
+  bool result = true;
+
   while(!mEvents.empty())
   {
     auto eventData = mEvents.front();
@@ -58,11 +60,16 @@ REventLoop::processEvents()
 
     if(mIsInterrupt)
     {
-      return false;
+      result = false;
+      goto LABEL_EXIT;
     }
   }
 
-  return true;
+LABEL_EXIT:
+
+  // TODO: Free all objects that marked as deleteLater
+
+  return result;
 }
 
 REventLoop *

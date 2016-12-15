@@ -57,6 +57,8 @@ protected:
   hasPendingEvents();
 
 private:
+  // FIXME: Events are not be protected by mutex, they will be crashed during
+  // access.
   std::list<EventData> mEvents;
   int  mReturnCode;
   bool mIsInterrupt;

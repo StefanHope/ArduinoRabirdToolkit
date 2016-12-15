@@ -2,15 +2,15 @@
 #define __INCLUDED_CB5671DA425011E6932B00F1F38F93EF
 
 #include "RTypes.h"
+#include "RRawPointer.h"
 #include <Print.h>
 #include <Printable.h>
 
+class RThread;
 class RObject : protected Printable
 {
 public:
-  RObject() : Printable()
-  {
-  }
+  RObject();
 
   virtual ~RObject()
   {
@@ -18,6 +18,12 @@ public:
 
   size_t
   printTo(Print&p) const;
+
+  RThread *
+  thread();
+
+private:
+  RRawPointer<RThread> mThread;
 };
 
 #endif // __INCLUDED_CB5671DA425011E6932B00F1F38F93EF

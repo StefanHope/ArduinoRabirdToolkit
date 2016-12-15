@@ -1,4 +1,10 @@
 #include "RObject.h"
+#include "RThread.h"
+
+RObject::RObject()
+  : mThread(RThread::currentThread())
+{
+}
 
 size_t
 RObject::printTo(Print&p) const
@@ -11,4 +17,10 @@ RObject::printTo(Print&p) const
   size += p.print(F(")"));
 
   return size;
+}
+
+RThread *
+RObject::thread()
+{
+  return mThread.data();
 }

@@ -234,7 +234,7 @@ RThread::yieldCurrentThread()
 int
 RThread::exec()
 {
-  REventLoop *loop = REventLoop::instance(mHandle);
+  REventLoop *loop = REventLoop::instance(this);
 
   return loop->exec();
 }

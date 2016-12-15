@@ -40,11 +40,11 @@ public:
   processEvents();
 
   static REventLoop *
-  instance(const TaskHandle_t handle);
+  instance(const RThread *inThread);
   static REventLoop *
   instance();
   static void
-  _destroy(const TaskHandle_t handle);
+  _destroy(const RThread *inThread);
 
 protected:
   void

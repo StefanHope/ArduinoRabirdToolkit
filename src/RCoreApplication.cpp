@@ -31,5 +31,5 @@ RCoreApplication::exec()
 void
 RCoreApplication::postEvent(RObject *receiver, REvent *event)
 {
-  REventLoop::instance(receiver->thread()->mHandle)->postEvent(receiver, event);
+  REventLoop::instance(receiver->thread())->postEvent(receiver, event);
 }

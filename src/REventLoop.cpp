@@ -1,7 +1,7 @@
 #include "REventLoop.h"
 #include "RThread.h"
 
-static std::list<std::pair<TaskHandle_t, REventLoop *> >
+static std::list<REventLoop *>
 sThreadEventLoops;
 
 REventLoop::REventLoop() : mReturnCode(0), mIsInterrupt(false)
@@ -66,13 +66,13 @@ REventLoop::processEvents()
 }
 
 REventLoop *
-REventLoop::instance(const TaskHandle_t handle)
+REventLoop::instance(const RThread *inThread)
 {
   for(auto it = sThreadEventLoops.begin(); it != sThreadEventLoops.end(); ++it)
   {
-    if(handle == it->first)
+    if(inThread == (*it)->thread())
     {
-      return it->second;
+      return *it;
     }
   }
 
@@ -80,8 +80,7 @@ REventLoop::instance(const TaskHandle_t handle)
   REventLoop *loop = new REventLoop();
 
   // FIXME: Thread event loops should be protected by mutexs.
-  sThreadEventLoops.push_back(
-    std::pair<TaskHandle_t, REventLoop *>(RThread::currentThreadId(), loop));
+  sThreadEventLoops.push_back(loop);
 
   return loop;
 }
@@ -89,15 +88,15 @@ REventLoop::instance(const TaskHandle_t handle)
 REventLoop *
 REventLoop::instance()
 {
-  return instance(RThread::currentThreadId());
+  return instance(RThread::currentThread());
 }
 
 void
-REventLoop::_destroy(const TaskHandle_t handle)
+REventLoop::_destroy(const RThread *inThread)
 {
   for(auto it = sThreadEventLoops.begin(); it != sThreadEventLoops.end(); ++it)
   {
-    if(handle == it->first)
+    if(inThread == (*it)->thread())
     {
       sThreadEventLoops.erase(it);
       return;

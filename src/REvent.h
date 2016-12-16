@@ -45,6 +45,13 @@ public:
     return sType;
   }
 
+  static inline int
+  staticType()
+  {
+    return sType;
+  }
+
+private:
   static const int sType;
 };
 

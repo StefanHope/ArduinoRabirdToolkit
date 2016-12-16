@@ -52,7 +52,7 @@ RTimer::setSingleShot(bool singleShot)
 int
 RTimer::timerId() const
 {
-  // FIXME: We shorten handle to id value, but it may lead duplicate id values.
+  // WARNING: We shorten handle to id value, but it may lead duplicate id values.
   return rShortenPtr(pvTimerGetTimerID(mHandle));
 }
 

@@ -30,4 +30,26 @@ private:
   bool mIsAccepted;
 };
 
+/**
+ * An easy wrapper template for generate type() method and provide auto
+ * registered static type variable. So that you could focus on the
+ * implementation of event class.
+ */
+template <class DerivedType, class BaseType>
+class TypeRegisteredEvent : public BaseType
+{
+public:
+  int
+  type() const
+  {
+    return sType;
+  }
+
+  static const int sType;
+};
+
+template <class DerivedType, class BaseType>
+const int TypeRegisteredEvent<DerivedType,
+                              BaseType>::sType = REvent::registerEventType();
+
 #endif // __INCLUDED_6FCA43F2953F11E6AA6EA088B4D1658C

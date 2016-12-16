@@ -1,0 +1,110 @@
+#include "RTimer.h"
+#include "RTimerEvent.h"
+#include "RCoreApplication.h"
+
+RTimer::RTimer() : mIsSingleShot(false)
+{
+  mHandle = xTimerCreate(
+    "",
+    0,  // 0s by default
+    pdFALSE,                           // one-shot timer
+    reinterpret_cast<void *>(0),
+    onTimeout
+    );
+  vTimerSetTimerID(mHandle, this);
+}
+
+RTimer::~RTimer()
+{
+  xTimerDelete(mHandle, 0);
+}
+
+int
+RTimer::interval() const
+{
+  return xTimerGetPeriod(mHandle) * portTICK_PERIOD_MS;
+}
+
+bool
+RTimer::isActive() const
+{
+  return xTimerIsTimerActive(mHandle);
+}
+
+bool
+RTimer::isSingleShot() const
+{
+  return mIsSingleShot;
+}
+
+void
+RTimer::setInterval(int msec)
+{
+  xTimerChangePeriod(mHandle, msec / portTICK_PERIOD_MS, 0);
+}
+
+void
+RTimer::setSingleShot(bool singleShot)
+{
+  mIsSingleShot = singleShot;
+}
+
+int
+RTimer::timerId() const
+{
+  // FIXME: We shorten handle to id value, but it may lead duplicate id values.
+  return rShortenPtr(pvTimerGetTimerID(mHandle));
+}
+
+void
+RTimer::start(int msec)
+{
+  setInterval(msec);
+  start();
+}
+
+void
+RTimer::start()
+{
+  stop();
+  xTimerStart(mHandle, 0);
+}
+
+void
+RTimer::stop()
+{
+  xTimerStop(mHandle, 0);
+}
+
+bool
+RTimer::event(REvent *e)
+{
+  if(e->type() == RTimerEvent::sType)
+  {
+    // FIXME: Here may be generate a potential crash
+    auto timerEvent = static_cast<RTimerEvent *>(e);
+
+    timeout.emit();
+
+    if(!mIsSingleShot)
+    {
+      start(); // Restart timer for next round
+    }
+
+    timerEvent->accept();
+    return true;
+  }
+
+  return RObject::event(e);
+}
+
+void
+RTimer::onTimeout(TimerHandle_t handle)
+{
+  auto self = static_cast<RTimer *>(pvTimerGetTimerID(handle));
+
+  // NOTE: Event will be deleted in REventLoop after they handled that event.
+  RTimerEvent *event = new RTimerEvent(self->timerId());
+
+  RCoreApplication::postEvent(self, event);
+}

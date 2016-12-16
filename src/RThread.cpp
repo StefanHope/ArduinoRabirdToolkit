@@ -189,7 +189,7 @@ RThread::terminate()
     // Ensure no tasks and interrupts will be trigger during thread event loop
     // destruction.
     taskENTER_CRITICAL();
-    REventLoop::_destroy(mHandle);
+    REventLoop::_destroy(this);
     vTaskDelete(mHandle);
     taskEXIT_CRITICAL();
 

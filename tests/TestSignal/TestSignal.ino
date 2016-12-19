@@ -15,6 +15,22 @@ static int sExecutedCount0 = 0;
 static int sExecutedCount1 = 0;
 static int sExecutedCount2 = 0;
 
+class AClass
+{
+public:
+  AClass() : mVar0(0x4)
+  {
+  }
+
+  void
+  signalClassMethod0()
+  {
+    mVar0 = 0xAD;
+  }
+
+  int mVar0;
+};
+
 void
 signalFunction0()
 {
@@ -39,9 +55,12 @@ signalFunction2(int var1, int var2)
 
 RTEST(TestSignal)
 {
+  AClass a;
+
   RSignal<void()>         signal0;
   RSignal<void(int)>      signal1;
   RSignal<void(int, int)> signal2;
+  RSignal<void()>         signal3;
 
   RASSERT_EQUAL(sVar0, 0x1);
   RASSERT_EQUAL(sVar1, 0x2);
@@ -74,6 +93,11 @@ RTEST(TestSignal)
   RASSERT_EQUAL(sVar1, 0x2C);
   RASSERT_EQUAL(sVar2, 0x3B);
   RASSERT_EQUAL(sExecutedCount2, 2);
+
+  signal3.connect(&a, &AClass::signalClassMethod0);
+  RASSERT_EQUAL(a.mVar0, 0x4);
+  signal3.emit();
+  RASSERT_EQUAL(a.mVar0, 0xAD);
 };
 
 void

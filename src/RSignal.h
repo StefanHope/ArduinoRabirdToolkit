@@ -19,7 +19,7 @@ template <class R, class ... ParamTypes>
 class RSignal<R(ParamTypes ...)>
 {
 public:
-  typedef Rt::Delegate<R(ParamTypes ...)> _Delegate;
+  typedef typename Rt::Delegate<R(ParamTypes ...)>::BaseType _Delegate;
 
 private:
   typedef RForwardList<_Delegate> DelegateList;

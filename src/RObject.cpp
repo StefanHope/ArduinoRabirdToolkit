@@ -2,6 +2,11 @@
 #include "RThread.h"
 #include "REvent.h"
 
+RObject::RObject(RThread *targetThread)
+  : mThread(targetThread)
+{
+}
+
 RObject::RObject()
   : mThread(RThread::currentThread())
 {

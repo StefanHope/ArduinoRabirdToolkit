@@ -11,6 +11,9 @@ class RThread;
 class RObject : protected Printable
 {
 public:
+  RObject(RThread *targetThread);
+
+public:
   RObject();
 
   virtual
@@ -29,6 +32,8 @@ public:
 
 private:
   RRawPointer<RThread> mThread;
+
+  friend RThread;
 };
 
 #endif // __INCLUDED_CB5671DA425011E6932B00F1F38F93EF

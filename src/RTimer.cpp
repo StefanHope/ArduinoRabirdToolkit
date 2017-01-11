@@ -4,9 +4,11 @@
 
 RTimer::RTimer() : mIsSingleShot(false)
 {
+  // NOTE: Set timer run as idle task by default, but we can't set interval to
+  // zero, otherwise the created timer will return to NULL, so we give value 1 .
   mHandle = xTimerCreate(
     "",
-    0,  // 0s by default
+    1,
     pdFALSE,                           // one-shot timer
     reinterpret_cast<void *>(0),
     onTimeout
@@ -41,6 +43,10 @@ void
 RTimer::setInterval(int msec)
 {
   xTimerChangePeriod(mHandle, msec / portTICK_PERIOD_MS, 0);
+
+  // xTimerChangePeriod will cause timer start, so we need to stop it
+  // immediately
+  stop();
 }
 
 void

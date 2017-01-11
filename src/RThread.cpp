@@ -24,14 +24,18 @@ RThreadPrivate::run(void *arg)
   }
 }
 
-RThread::RThread(TaskHandle_t handle) : RThread()
+RThread::RThread(TaskHandle_t handle)
+// So that RObject won't create another RThread lead infinite looping
+  : RObject(this)
+  , mStackSize(128)
+  , mHandle(handle)
+  , mIsOwnded(false)
 {
-  mHandle = handle;
-  sThreads.pushFront(this);
 }
 
 RThread::RThread()
-  : mStackSize(128)
+  : RObject(this)
+  , mStackSize(128)
   , mHandle(NULL)
   , mIsOwnded(false)
 {

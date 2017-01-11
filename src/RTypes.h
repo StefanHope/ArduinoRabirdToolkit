@@ -1,6 +1,12 @@
 #ifndef __INCLUDED_C140043A425411E6A04700F1F38F93EF
 #define __INCLUDED_C140043A425411E6A04700F1F38F93EF
 
+#include <Arduino.h>
+
+#undef abs
+#undef max
+#undef min
+
 #include <stddef.h>
 #include <stdint.h>
 

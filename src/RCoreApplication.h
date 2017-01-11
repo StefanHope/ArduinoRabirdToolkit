@@ -17,15 +17,9 @@ public:
   static int
   exec();
   static void
+  processEvents();
+  static void
   postEvent(RObject *receiver, REvent *event);
-
-  template <class ObjectType, class EventType>
-  static inline void
-  postEvent(ObjectType *receiver, EventType *event)
-  {
-    postEvent(dynamic_cast<RObject *>(receiver),
-              dynamic_cast<EventType *>(event));
-  }
 
 private:
   REventLoop *mEventLoop;

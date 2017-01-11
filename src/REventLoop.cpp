@@ -18,8 +18,6 @@ REventLoop::exec()
 {
   while(true)
   {
-    RThread::yieldCurrentThread();
-
     if(!processEvents())
     {
       clear();

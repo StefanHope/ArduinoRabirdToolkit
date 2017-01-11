@@ -29,6 +29,12 @@ RCoreApplication::exec()
 }
 
 void
+RCoreApplication::processEvents()
+{
+  sApplication->mEventLoop->processEvents();
+}
+
+void
 RCoreApplication::postEvent(RObject *receiver, REvent *event)
 {
   REventLoop::instance(receiver->thread())->postEvent(receiver, event);

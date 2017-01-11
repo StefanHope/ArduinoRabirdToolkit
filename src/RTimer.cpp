@@ -43,7 +43,14 @@ RTimer::isSingleShot() const
 void
 RTimer::setInterval(int msec)
 {
-  xTimerChangePeriod(mHandle, msec / portTICK_PERIOD_MS, 0);
+  msec /= portTICK_PERIOD_MS;
+
+  if(msec <= 0)
+  {
+    msec = 1;
+  }
+
+  xTimerChangePeriod(mHandle, msec, 0);
 
   // xTimerChangePeriod will cause timer start, so we need to stop it
   // immediately

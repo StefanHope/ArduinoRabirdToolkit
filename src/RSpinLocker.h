@@ -4,16 +4,15 @@
 #include "RTypes.h"
 
 /**
- * A simple class to wrap around the interrupt disable/enable pairs.
+ * A simple class to wrap around the FreeRTOS suspend/resume pairs.
+ *
+ * To ensure code statements safe to work between threads (FreeRTOS tasks).
  */
 class RSpinLocker
 {
 public:
   RSpinLocker();
   ~RSpinLocker();
-
-private:
-  uint8_t mOldRegisters;
 
 private:
   R_DISABLE_COPY(RSpinLocker)

@@ -3,11 +3,10 @@
 
 RSpinLocker::RSpinLocker()
 {
-  mOldRegisters = SREG;
-  noInterrupts();
+  vTaskSuspendAll();
 }
 
 RSpinLocker::~RSpinLocker()
 {
-  SREG = mOldRegisters;
+  xTaskResumeAll();
 }

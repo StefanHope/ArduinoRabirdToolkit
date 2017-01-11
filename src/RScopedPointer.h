@@ -42,11 +42,12 @@ public:
   T *
   take()
   {
-    T *ret = BaseType::getDerived()->data();
+    T *ptr = BaseType::getDerived()->data();
 
-    BaseType::getDerived()->clear();
+    // WARNING: Only clear the ptr, don't cleanup it!
+    BaseType::clear();
 
-    return ret;
+    return ptr;
   }
 
   DerivedType &

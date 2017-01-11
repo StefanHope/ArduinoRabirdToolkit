@@ -40,6 +40,7 @@ private:
   static void
   onTimeout(TimerHandle_t handle);
   bool          mIsSingleShot;
+  int           mInterval;
   TimerHandle_t mHandle;
 };
 

@@ -3,35 +3,39 @@
 #include "RCoreApplication.h"
 #include "RScopedPointer.h"
 
-RTimer::RTimer() : mIsSingleShot(false)
+RTimer::RTimer()
+  : mIsSingleShot(false)
+  , mInterval(0)
+  , mHandle(0)
 {
-  // NOTE: Set timer run as idle task by default, but we can't set interval to
-  // zero, otherwise the created timer will return to NULL, so we give value 1 .
-  mHandle = xTimerCreate(
-    "",
-    1,
-    pdFALSE,                           // one-shot timer
-    reinterpret_cast<void *>(0),
-    onTimeout
-    );
-  vTimerSetTimerID(mHandle, this);
 }
 
 RTimer::~RTimer()
 {
-  xTimerDelete(mHandle, 0);
+  if(mHandle)
+  {
+    xTimerDelete(mHandle, 0);
+    mHandle = 0;
+  }
 }
 
 int
 RTimer::interval() const
 {
-  return xTimerGetPeriod(mHandle) * portTICK_PERIOD_MS;
+  return mInterval;
 }
 
 bool
 RTimer::isActive() const
 {
-  return xTimerIsTimerActive(mHandle);
+  if(mHandle)
+  {
+    return xTimerIsTimerActive(mHandle);
+  }
+  else
+  {
+    return false;
+  }
 }
 
 bool
@@ -43,11 +47,7 @@ RTimer::isSingleShot() const
 void
 RTimer::setInterval(int msec)
 {
-  xTimerChangePeriod(mHandle, msec / portTICK_PERIOD_MS, 0);
-
-  // xTimerChangePeriod will cause timer start, so we need to stop it
-  // immediately
-  stop();
+  mInterval = msec;
 }
 
 void
@@ -60,7 +60,7 @@ int
 RTimer::timerId() const
 {
   // WARNING: We shorten handle to id value, but it may lead duplicate id values.
-  return rShortenPtr(pvTimerGetTimerID(mHandle));
+  return static_cast<int>(rShortenPtr(this));
 }
 
 void
@@ -74,6 +74,17 @@ void
 RTimer::start()
 {
   stop();
+
+  // NOTE: Set timer run as idle task by default, but we can't set interval to
+  // zero, otherwise the created timer will return to NULL, so we give value 1 .
+  mHandle = xTimerCreate(
+    "",
+    (mInterval <= 0) ? 1 : (mInterval / portTICK_PERIOD_MS),
+    mIsSingleShot ? pdTRUE : pdFALSE,
+    this,
+    onTimeout
+    );
+
   xTimerStart(mHandle, 0);
 }
 
@@ -81,6 +92,7 @@ void
 RTimer::stop()
 {
   xTimerStop(mHandle, 0);
+  mHandle = 0;
 }
 
 bool

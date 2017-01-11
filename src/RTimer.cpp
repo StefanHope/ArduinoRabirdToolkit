@@ -1,6 +1,7 @@
 #include "RTimer.h"
 #include "RTimerEvent.h"
 #include "RCoreApplication.h"
+#include "RScopedPointer.h"
 
 RTimer::RTimer() : mIsSingleShot(false)
 {
@@ -110,7 +111,7 @@ RTimer::onTimeout(TimerHandle_t handle)
   auto self = static_cast<RTimer *>(pvTimerGetTimerID(handle));
 
   // NOTE: Event will be deleted in REventLoop after they handled that event.
-  RTimerEvent *event = new RTimerEvent(self->timerId());
+  RScopedPointer<RTimerEvent> event(new RTimerEvent(self->timerId()));
 
-  RCoreApplication::postEvent(self, event);
+  RCoreApplication::postEvent(self, event.take());
 }

@@ -183,7 +183,7 @@ RThread::start(RThread::Priority priority)
   auto ret = xTaskCreate(
     RThreadPrivate::run,  /* Function that implements the task. */
     "",                /* Text name for the task. */
-    (stackSize() + 1) % sizeof(uint16_t), /* Stack size in words, not bytes. */
+    (stackSize() + 1) / sizeof(uint16_t), /* Stack size in words, not bytes. */
     static_cast<void *>(this),      /* Parameter passed into the task. */
     targetPriority,  /* Priority at which the task is created. */
     &handle);   /* Used to pass out the created task's handle. */

@@ -106,6 +106,12 @@ RThread::setStackSize(size_t stackSize)
   mStackSize = stackSize;
 }
 
+size_t
+RThread::stackSize() const
+{
+  return mStackSize;
+}
+
 bool
 RThread::wait(unsigned long time)
 {

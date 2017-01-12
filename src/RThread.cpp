@@ -173,11 +173,10 @@ RThread::start(RThread::Priority priority)
 
   terminate();
 
-  UBaseType_t targetPriority = NormalPriority;
-
   if(InheritPriority == priority)
   {
-    targetPriority = uxTaskPriorityGet(currentThreadId());
+    priority =
+      static_cast<RThread::Priority>(uxTaskPriorityGet(currentThreadId()));
   }
 
   auto ret = xTaskCreate(
@@ -185,7 +184,7 @@ RThread::start(RThread::Priority priority)
     "",                /* Text name for the task. */
     (stackSize() + 1) / sizeof(uint16_t), /* Stack size in words, not bytes. */
     static_cast<void *>(this),      /* Parameter passed into the task. */
-    targetPriority,  /* Priority at which the task is created. */
+    priority,  /* Priority at which the task is created. */
     &handle);   /* Used to pass out the created task's handle. */
 
   if(ret == pdPASS)

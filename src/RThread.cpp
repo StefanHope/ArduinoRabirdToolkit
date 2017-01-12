@@ -173,7 +173,7 @@ RThread::start(RThread::Priority priority)
 
   terminate();
 
-  UBaseType_t targetPriority = IdlePriority;
+  UBaseType_t targetPriority = NormalPriority;
 
   if(InheritPriority == priority)
   {

@@ -72,7 +72,7 @@ public:
   void
   quit();
   void
-  start(Priority priority=InheritPriority);
+  start(Priority priority=NormalPriority);
   void
   terminate();
 

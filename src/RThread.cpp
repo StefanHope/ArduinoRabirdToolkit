@@ -1,6 +1,7 @@
 #include "RThread.h"
 #include "REventLoop.h"
 #include "RForwardList.h"
+#include "RSpinLocker.h"
 
 class RThreadPrivate
 {
@@ -39,12 +40,15 @@ RThread::RThread()
   , mHandle(NULL)
   , mIsOwnded(false)
 {
+  R_MAKE_SPINLOCKER();
   sThreads.pushFront(this);
 }
 
 RThread::~RThread()
 {
   terminate();
+
+  R_MAKE_SPINLOCKER();
 
   // Clear this thread pointer in thread list
   sThreads.remove(this);
@@ -198,10 +202,11 @@ RThread::terminate()
   {
     // Ensure no tasks and interrupts will be trigger during thread event loop
     // destruction.
-    taskENTER_CRITICAL();
-    REventLoop::_destroy(this);
-    vTaskDelete(mHandle);
-    taskEXIT_CRITICAL();
+    {
+      R_MAKE_SPINLOCKER();
+      REventLoop::_destroy(this);
+      vTaskDelete(mHandle);
+    }
 
     terminated.emit();
   }

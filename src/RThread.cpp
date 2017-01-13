@@ -32,7 +32,7 @@ RThreadPrivate::run(void *arg)
 RThread::RThread(TaskHandle_t handle)
 // So that RObject won't create another RThread lead infinite looping
   : RObject(this)
-  , mStackSize(128)
+  , mStackSize(configMINIMAL_STACK_SIZE * sizeof(word))
   , mHandle(handle)
   , mIsOwnded(false)
 {
@@ -40,7 +40,7 @@ RThread::RThread(TaskHandle_t handle)
 
 RThread::RThread()
   : RObject(this)
-  , mStackSize(128)
+  , mStackSize(configMINIMAL_STACK_SIZE * sizeof(word))
   , mHandle(NULL)
   , mIsOwnded(false)
 {

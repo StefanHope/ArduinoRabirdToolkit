@@ -82,6 +82,12 @@ public:
   currentThreadId();
   static void
   yieldCurrentThread();
+  static void
+  msleep(unsigned long msecs);
+  static void
+  sleep(unsigned long secs);
+  static void
+  usleep(unsigned long usecs);
 
   RSignal<void()> started;
   RSignal<void()> finished;
@@ -92,12 +98,6 @@ protected:
   exec();
   virtual void
   run();
-  static void
-  msleep(unsigned long msecs);
-  static void
-  sleep(unsigned long secs);
-  static void
-  usleep(unsigned long usecs);
 
 private:
   size_t       mStackSize;

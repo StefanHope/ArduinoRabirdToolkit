@@ -263,37 +263,40 @@ RThread::run()
 void
 RThread::msleep(unsigned long msecs)
 {
-  unsigned long blockTime = std::numeric_limits<unsigned long>::max() / 1000;
+  unsigned long blockMS = std::numeric_limits<unsigned long>::max() / 1000;
+  unsigned long blockUS = blockMS * 1000;
 
   while(msecs > 0)
   {
-    if(msecs <= std::numeric_limits<unsigned long>::max())
+    if(msecs < blockMS)
     {
-      usleep(msecs);
-      return;
+      blockMS = msecs;
+      blockUS = blockMS * 1000;
     }
 
-    usleep(std::numeric_limits<unsigned long>::max());
-    msecs -= blockTime;
+    usleep(blockUS);
+
+    msecs -= blockMS;
   }
 }
 
 void
 RThread::sleep(unsigned long secs)
 {
-  unsigned long blockTime = std::numeric_limits<unsigned long>::max() /
-                            1000000l;
+  unsigned long blockS  = std::numeric_limits<unsigned long>::max() / 1000;
+  unsigned long blockMS = blockS * 1000;
 
   while(secs > 0)
   {
-    if(secs <= std::numeric_limits<unsigned long>::max())
+    if(secs < blockMS)
     {
-      usleep(secs);
-      return;
+      blockS  = secs;
+      blockMS = blockS * 1000;
     }
 
-    usleep(std::numeric_limits<unsigned long>::max());
-    secs -= blockTime;
+    msleep(blockMS);
+
+    secs -= blockS;
   }
 }
 
@@ -302,15 +305,29 @@ RThread::usleep(unsigned long usecs)
 {
   unsigned long ticks = usecs / (1000 * portTICK_PERIOD_MS);
 
-  while(ticks > 0)
-  {
-    if(ticks <= static_cast<decltype(usecs)>(portMAX_DELAY))
-    {
-      vTaskDelay(static_cast<decltype(portMAX_DELAY)>(ticks));
-      return;
-    }
+  auto maxTicks = static_cast<decltype(usecs)>(portMAX_DELAY);
 
-    vTaskDelay(portMAX_DELAY);
-    ticks -= static_cast<decltype(usecs)>(portMAX_DELAY);
+  if(ticks <= 0)
+  {
+    ticks = 1;
+    usecs = portTICK_PERIOD_MS * 1000;
+  }
+
+  if(currentThreadId())
+  {
+    while(ticks > 0)
+    {
+      if(ticks < maxTicks)
+      {
+        maxTicks = ticks;
+      }
+
+      vTaskDelay(maxTicks);
+      ticks -= maxTicks;
+    }
+  }
+  else
+  {
+    delayMicroseconds(usecs);
   }
 }

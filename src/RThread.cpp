@@ -144,9 +144,6 @@ RThread::wait(unsigned long time)
 {
   /// FIXME: Ugly way to wait for thread finished.
 
-  /* Block for 100ms each time */
-  const TickType_t ticksPerBlock = 100 / portTICK_PERIOD_MS;
-
   if(currentThreadId() == mHandle)
   {
     // You can't wait yourself in the samethread!
@@ -173,7 +170,8 @@ RThread::wait(unsigned long time)
       }
     }
 
-    vTaskDelay(ticksPerBlock);
+    /* Block for 100ms each time */
+    msleep(100);
   }
 }
 

@@ -20,9 +20,6 @@ public:
   processEvents();
   static void
   postEvent(RObject *receiver, REvent *event);
-
-private:
-  REventLoop *mEventLoop;
 };
 
 #define rCoreApp (RCoreApplication::instance())

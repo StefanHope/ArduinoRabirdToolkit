@@ -3,7 +3,6 @@
 
 #include "RObject.h"
 #include "RSignal.h"
-#include <Arduino_FreeRTOS.h>
 #include <limits>
 
 class REventLoop;
@@ -75,7 +74,8 @@ public:
   start(Priority priority=NormalPriority);
   void
   terminate();
-
+  REventLoop *
+  eventLoop();
   static RThread *
   currentThread();
   static TaskHandle_t
@@ -103,6 +103,7 @@ private:
   size_t       mStackSize;
   TaskHandle_t mHandle;
   bool         mIsOwnded;
+  REventLoop * mEventLoop;
 
   friend RThreadPrivate;
   friend REventLoop;

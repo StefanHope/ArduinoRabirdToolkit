@@ -2,9 +2,6 @@
 #include "RThread.h"
 #include "RSpinLocker.h"
 
-static std::list<REventLoop *>
-sEventLoops;
-
 REventLoop::REventLoop() : mReturnCode(0), mIsInterrupt(false)
 {
 }
@@ -69,47 +66,6 @@ LABEL_EXIT:
   // TODO: Free all objects that marked as deleteLater
 
   return result;
-}
-
-REventLoop *
-REventLoop::instance(const RThread *inThread)
-{
-  for(auto it = sEventLoops.begin(); it != sEventLoops.end(); ++it)
-  {
-    if(inThread == (*it)->thread())
-    {
-      return *it;
-    }
-  }
-
-  // FIXME: Memory leaking without free!
-  REventLoop *loop = new REventLoop();
-
-  loop->moveToThread(const_cast<RThread *>(inThread));
-
-  // FIXME: Thread event loops should be protected by mutexs.
-  sEventLoops.push_back(loop);
-
-  return loop;
-}
-
-REventLoop *
-REventLoop::instance()
-{
-  return instance(RThread::currentThread());
-}
-
-void
-REventLoop::_destroy(const RThread *inThread)
-{
-  for(auto it = sEventLoops.begin(); it != sEventLoops.end(); ++it)
-  {
-    if(inThread == (*it)->thread())
-    {
-      sEventLoops.erase(it);
-      return;
-    }
-  }
 }
 
 void

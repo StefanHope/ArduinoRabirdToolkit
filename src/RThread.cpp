@@ -41,7 +41,19 @@ RThread::RThread(TaskHandle_t handle)
   , mStackSize(configMINIMAL_STACK_SIZE * sizeof(word))
   , mHandle(handle)
   , mIsOwnded(false)
+  , mEventLoop(NULL)
 {
+  // Find matched event loop for specific task.
+  for(auto it = sThreads.begin(); it != sThreads.end(); ++it)
+  {
+    if(handle == (*it)->mHandle)
+    {
+      mEventLoop = (*it)->eventLoop();
+      break;
+    }
+  }
+
+  // FIXME: New event loop will generated for task 0 and without free!
 }
 
 RThread::RThread()
@@ -49,6 +61,7 @@ RThread::RThread()
   , mStackSize(configMINIMAL_STACK_SIZE * sizeof(word))
   , mHandle(NULL)
   , mIsOwnded(false)
+  , mEventLoop(NULL)
 {
   R_MAKE_SPINLOCKER();
   sThreads.pushFront(this);
@@ -67,7 +80,7 @@ RThread::~RThread()
 void
 RThread::exit(int returnCode)
 {
-  REventLoop::instance(this)->exit(returnCode);
+  eventLoop()->exit(returnCode);
 }
 
 bool
@@ -213,7 +226,8 @@ RThread::terminate()
     // destruction.
     {
       R_MAKE_SPINLOCKER();
-      REventLoop::_destroy(this);
+      delete mEventLoop;
+      mEventLoop = NULL;
       vTaskDelete(mHandle);
     }
 
@@ -221,6 +235,25 @@ RThread::terminate()
   }
 
   mHandle = NULL;
+}
+
+REventLoop *
+RThread::eventLoop()
+{
+  if(NULL == mEventLoop)
+  {
+    R_MAKE_SPINLOCKER();
+
+    if(mEventLoop) // Avoid previous check passed at the same time.
+    {
+      return mEventLoop;
+    }
+
+    mEventLoop = new REventLoop();
+    mEventLoop->moveToThread(const_cast<RThread *>(this));
+  }
+
+  return mEventLoop;
 }
 
 RThread *
@@ -255,9 +288,7 @@ RThread::yieldCurrentThread()
 int
 RThread::exec()
 {
-  REventLoop *loop = REventLoop::instance(this);
-
-  return loop->exec();
+  return eventLoop()->exec();
 }
 
 void

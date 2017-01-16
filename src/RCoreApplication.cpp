@@ -2,14 +2,14 @@
 #include "REvent.h"
 #include "REventLoop.h"
 #include "RThread.h"
+#include "RSpinLocker.h"
 
-static RCoreApplication *sApplication = NULL;
+static RCoreApplication *sApp = NULL;
 
 RCoreApplication::RCoreApplication()
-  : mEventLoop(NULL)
 {
-  sApplication = this;
-  mEventLoop   = REventLoop::instance();
+  R_MAKE_SPINLOCKER();
+  sApp = this;
 }
 
 RCoreApplication::~RCoreApplication()
@@ -19,23 +19,23 @@ RCoreApplication::~RCoreApplication()
 RCoreApplication *
 RCoreApplication::instance()
 {
-  return sApplication;
+  return sApp;
 }
 
 int
 RCoreApplication::exec()
 {
-  return sApplication->mEventLoop->exec();
+  return sApp->thread()->eventLoop()->exec();
 }
 
 void
 RCoreApplication::processEvents()
 {
-  sApplication->mEventLoop->processEvents();
+  sApp->thread()->eventLoop()->processEvents();
 }
 
 void
 RCoreApplication::postEvent(RObject *receiver, REvent *event)
 {
-  REventLoop::instance(receiver->thread())->postEvent(receiver, event);
+  receiver->thread()->eventLoop()->postEvent(receiver, event);
 }

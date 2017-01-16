@@ -39,13 +39,6 @@ public:
   bool
   processEvents();
 
-  static REventLoop *
-  instance(const RThread *inThread);
-  static REventLoop *
-  instance();
-  static void
-  _destroy(const RThread *inThread);
-
 protected:
   void
   postEvent(RObject *receiver, REvent *event);
@@ -63,6 +56,7 @@ private:
   int  mReturnCode;
   bool mIsInterrupt;
 
+  friend RThread;
   friend RCoreApplication;
 };
 

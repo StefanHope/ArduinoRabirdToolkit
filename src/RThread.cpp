@@ -10,6 +10,12 @@ public:
   run(void *arg);
 };
 
+static const rtime sTimeBlockMax = std::numeric_limits<rtime>::max() /
+                                   1000;
+static const rtime sTickBlock     = sTimeBlockMax / portTICK_PERIOD_MS;  /**< ms value matched ticks */
+static const rtime sTickBlockToMS = sTickBlock * portTICK_PERIOD_MS;  /**< ms value */
+static const rtime sTickBlockToUS = sTickBlockToMS * 1000;  /**< us value */
+
 // FIXME: Thread list not guarded by mutex now !
 static RForwardList<RThread *> sThreads;
 void
@@ -261,69 +267,65 @@ RThread::run()
 }
 
 void
-RThread::msleep(unsigned long msecs)
+RThread::msleep(rtime msecs)
 {
-  unsigned long blockMS = std::numeric_limits<unsigned long>::max() / 1000;
-  unsigned long blockUS = blockMS * 1000;
-
-  while(msecs > 0)
+  if(currentThreadId())
   {
-    if(msecs < blockMS)
+    while(msecs > 0)
     {
-      blockMS = msecs;
-      blockUS = blockMS * 1000;
+      if(msecs < sTickBlockToMS)
+      {
+        // Convert to ticks
+        vTaskDelay(msecs / portTICK_PERIOD_MS);
+        break;
+      }
+
+      vTaskDelay(sTickBlock);
+      msecs -= sTickBlockToMS;
     }
-
-    usleep(blockUS);
-
-    msecs -= blockMS;
+  }
+  else
+  {
+    delay(msecs);
   }
 }
 
 void
-RThread::sleep(unsigned long secs)
+RThread::sleep(rtime secs)
 {
-  unsigned long blockS  = std::numeric_limits<unsigned long>::max() / 1000;
-  unsigned long blockMS = blockS * 1000;
+  /**< Time block to milliseconds */
+  static const rtime sTimeBlockToMS = sTimeBlockMax * 1000;
 
   while(secs > 0)
   {
-    if(secs < blockMS)
+    if(secs < sTimeBlockMax)
     {
-      blockS  = secs;
-      blockMS = blockS * 1000;
+      msleep(secs * 1000);
+      break;
     }
 
-    msleep(blockMS);
+    msleep(sTimeBlockToMS);
 
-    secs -= blockS;
+    secs -= sTimeBlockMax;
   }
 }
 
 void
-RThread::usleep(unsigned long usecs)
+RThread::usleep(rtime usecs)
 {
-  unsigned long ticks = usecs / (1000 * portTICK_PERIOD_MS);
-
-  auto maxTicks = static_cast<decltype(usecs)>(portMAX_DELAY);
-
-  if(ticks <= 0)
-  {
-    ticks = 1;
-    usecs = portTICK_PERIOD_MS * 1000;
-  }
-
   if(currentThreadId())
   {
-    while(ticks > 0)
+    while(usecs > 0)
     {
-      if(ticks < maxTicks)
+      if(usecs < sTickBlockToUS)
       {
-        maxTicks = ticks;
+        // Convert to ticks
+        vTaskDelay(usecs / (1000 * portTICK_PERIOD_MS));
+        break;
       }
 
-      vTaskDelay(maxTicks);
-      ticks -= maxTicks;
+      vTaskDelay(sTickBlock);
+      usecs -= sTickBlockToUS;
     }
   }
   else

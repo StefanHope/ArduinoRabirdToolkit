@@ -101,6 +101,13 @@ typedef BaseType_t   rcount;
 typedef signed char  rbool;
 typedef unsigned int ruint;
 
+/**
+ * @brief Time related counter
+ *
+ * Just like seconds, milliseconds, microseconds, nanoseconds or ticks.
+ */
+typedef TickType_t rtime;
+
 template <class Type>
 inline
 uintptr_t

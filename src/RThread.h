@@ -83,11 +83,11 @@ public:
   static void
   yieldCurrentThread();
   static void
-  msleep(unsigned long msecs);
+  msleep(rtime msecs);
   static void
-  sleep(unsigned long secs);
+  sleep(rtime secs);
   static void
-  usleep(unsigned long usecs);
+  usleep(rtime usecs);
 
   RSignal<void()> started;
   RSignal<void()> finished;

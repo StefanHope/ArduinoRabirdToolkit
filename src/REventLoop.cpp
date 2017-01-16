@@ -1,5 +1,6 @@
 #include "REventLoop.h"
 #include "RThread.h"
+#include "RSpinLocker.h"
 
 static std::list<REventLoop *>
 sEventLoops;
@@ -31,10 +32,8 @@ REventLoop::exec()
 void
 REventLoop::exit(int returnCode)
 {
-  taskENTER_CRITICAL();
   mReturnCode  = returnCode;
   mIsInterrupt = true;
-  taskEXIT_CRITICAL();
 }
 
 void

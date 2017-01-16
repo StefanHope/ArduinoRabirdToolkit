@@ -30,7 +30,7 @@ RThreadPrivate::run(void *arg)
     thread->finished.emit();
   }
 
-  // We must delete self when wan't to exit a task.
+  // We must delete self when want to exit a task.
   // Reference to "Implementing a Task" section of FreeRTOS.
   vTaskDelete(NULL);
 }

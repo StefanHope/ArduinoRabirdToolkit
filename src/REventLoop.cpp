@@ -18,6 +18,7 @@ REventLoop::exec()
   {
     if(!processEvents())
     {
+
       clear();
       return mReturnCode;
     }
@@ -71,6 +72,7 @@ LABEL_EXIT:
 void
 REventLoop::postEvent(RObject *receiver, REvent *event)
 {
+  R_MAKE_SPINLOCKER();
   mEvents.push_back(EventData(receiver, event));
 }
 

@@ -16,4 +16,4 @@ Our default thread stack is very small for local variables, change your algorith
 
 ## String
 
-Try to best not use normal string! They will eat stack memory! Our stack size is limit on most environment. Be notice your debug code, if you really want to use string, use F() to surround them for place them into Flash not stack or memory.
+Try you best not use normal string! They will eat stack memory! Our stack size is limit on most environment. Be notice your debug code, if you really want to use string, use F() to surround them for place them into Flash not stack or memory.

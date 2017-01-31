@@ -8,7 +8,7 @@ RFlashStringRef::RFlashStringRef()
 {
 }
 
-RFlashStringRef::RFlashStringRef(const ValueType *flashStr)
+RFlashStringRef::RFlashStringRef(const rfchar *flashStr)
   : mStr(flashStr)
   , mLength(0)
 {

@@ -7,12 +7,9 @@
 
 class RFlashStringRef : public RAbstractStringRef
 {
-private:
-  typedef rfchar ValueType;
-
 public:
   RFlashStringRef();
-  RFlashStringRef(const ValueType *flashStr);
+  RFlashStringRef(const rfchar *flashStr);
   RFlashStringRef(const RFlashStringRef &stringRef);
   ~RFlashStringRef();
 
@@ -23,7 +20,7 @@ public:
   char
   charAt(unsigned int index) const;
 
-  const ValueType *
+  const rfchar *
   data()
   {
     return mStr;
@@ -35,7 +32,7 @@ public:
     return NULL == mStr;
   }
 
-  operator const ValueType *()
+  operator const rfchar *()
   {
     return mStr;
   }
@@ -51,8 +48,8 @@ private:
    * rfchar is a special type with pointer value may large than
    * normal pointer, so we must not use uintptr_t to express it.
    */
-  const ValueType *mStr;
-  size_t           mLength;
+  const rfchar *mStr;
+  size_t        mLength;
 };
 
 #endif // __INCLUDED_675A3F04598211E6AA6EA088B4D1658C

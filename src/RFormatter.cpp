@@ -20,7 +20,7 @@ RFormatter::operator ()(const char *format)
 }
 
 RFormatter &
-RFormatter::operator ()(const __FlashStringHelper *format)
+RFormatter::operator ()(const rfchar *format)
 {
   mFormat.reset(new RFlashStringRef(format));
   // If this message does not have any format mark, we just print the

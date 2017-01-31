@@ -82,7 +82,7 @@ public:
   };
 
 public:
-  RTest(const class __FlashStringHelper *aName);
+  RTest(const rfchar *aName);
 
   virtual void
   run() = 0;
@@ -90,7 +90,7 @@ public:
   Status
   status();
 
-  const __FlashStringHelper *
+  const rfchar *
   name();
 
   /** Template binary operator== to assist with assertions */
@@ -143,11 +143,10 @@ public:
 
   template <class LeftType, class RightType>
   bool
-  assertion(const __FlashStringHelper *file, uint16_t line,
-            const __FlashStringHelper *lhss, const LeftType &lhs,
-            const __FlashStringHelper *ops, bool (*op)(const LeftType&lhs,
-                                                       const RightType&rhs), const __FlashStringHelper *rhss,
-            const RightType&rhs)
+  assertion(const rfchar *file, uint16_t line, const rfchar *lhss,
+            const LeftType &lhs, const rfchar *ops, bool (*op)(
+              const LeftType&lhs,
+              const RightType&rhs), const rfchar *rhss, const RightType&rhs)
   {
     bool ok = op(lhs, rhs);
 
@@ -188,9 +187,9 @@ protected:
   manager();
 
 private:
-  Status mStatus;
-  const __FlashStringHelper *mName;
-  RTestAbstractApplication * mManager;
+  Status        mStatus;
+  const rfchar *mName;
+  RTestAbstractApplication *mManager;
 
   friend RTestApplication;
 };

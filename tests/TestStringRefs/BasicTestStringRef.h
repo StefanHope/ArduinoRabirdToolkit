@@ -11,7 +11,7 @@ class BasicTestStringRef :
 public:
   typedef BasicTestStringRef<DerivedType, StringRefType> ThisType;
 
-  BasicTestStringRef(const __FlashStringHelper *str)
+  BasicTestStringRef(const rfchar *str)
 
     : RTest(str)
     , mNormalString0("")
@@ -161,21 +161,21 @@ protected:
   }
 
 public:
-  const char *mNormalString0;
-  const char *mNormalString1;
-  const char *mNormalString2;
-  const char *mNormalString3;
-  const char *mNormalString4;
-  const __FlashStringHelper *mFlashString0;
-  const __FlashStringHelper *mFlashString1;
-  const __FlashStringHelper *mFlashString2;
-  const __FlashStringHelper *mFlashString3;
-  const __FlashStringHelper *mFlashString4;
-  String mString0;
-  String mString1;
-  String mString2;
-  String mString3;
-  String mString4;
+  const char *  mNormalString0;
+  const char *  mNormalString1;
+  const char *  mNormalString2;
+  const char *  mNormalString3;
+  const char *  mNormalString4;
+  const rfchar *mFlashString0;
+  const rfchar *mFlashString1;
+  const rfchar *mFlashString2;
+  const rfchar *mFlashString3;
+  const rfchar *mFlashString4;
+  String        mString0;
+  String        mString1;
+  String        mString2;
+  String        mString3;
+  String        mString4;
 };
 
 #endif // __INCLUDED_BB33D42E68CC11E6AA6E0021CC66E280

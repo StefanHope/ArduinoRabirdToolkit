@@ -3,13 +3,12 @@
 
 #include "RRawPointer.h"
 #include "RAbstractStringRef.h"
-#include <WString.h>
 #include <Printable.h>
 
 class RFlashStringRef : public RAbstractStringRef
 {
 private:
-  typedef class __FlashStringHelper ValueType;
+  typedef rfchar ValueType;
 
 public:
   RFlashStringRef();
@@ -49,7 +48,7 @@ public:
 
 private:
   /**
-   * __FlashStringHelper is a special type with pointer value may large than
+   * rfchar is a special type with pointer value may large than
    * normal pointer, so we must not use uintptr_t to express it.
    */
   const ValueType *mStr;

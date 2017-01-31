@@ -42,7 +42,7 @@ public:
   RFormatter &
   operator ()(const char *format);
   RFormatter &
-  operator ()(const __FlashStringHelper *format);
+  operator ()(const rfchar *format);
   RFormatter &
   operator ()(const String *format);
 

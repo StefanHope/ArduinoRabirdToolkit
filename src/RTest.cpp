@@ -1,7 +1,7 @@
 #include "RTest.h"
 #include <Arduino.h>
 
-RTest::RTest(const __FlashStringHelper *aName)
+RTest::RTest(const rfchar *aName)
   : mStatus(Passed), mName(aName)
 {
 }
@@ -12,7 +12,7 @@ RTest::status()
   return mStatus;
 }
 
-const __FlashStringHelper *
+const rfchar *
 RTest::name()
 {
   return mName;
@@ -122,8 +122,8 @@ RTestApplication::run()
   {
     (*it)->run();
 
-    RTest::Status status = (*it)->status();
-    const __FlashStringHelper *statusPrefix = F("UNKNOWN ");
+    RTest::Status status       = (*it)->status();
+    const rfchar *statusPrefix = F("UNKNOWN ");
 
     if(RTest::Passed == status)
     {

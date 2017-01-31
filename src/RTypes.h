@@ -108,6 +108,13 @@ typedef unsigned int ruint;
  */
 typedef TickType_t rtime;
 
+/**
+ * Flash char type (Rabird Flash Char). An alias of __FlashStringHelper.
+ *
+ * String be stored in flash not in memory.
+ */
+typedef class __FlashStringHelper rfchar;
+
 template <class Type>
 inline
 uintptr_t

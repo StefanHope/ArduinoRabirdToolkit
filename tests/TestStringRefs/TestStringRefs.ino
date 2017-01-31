@@ -1,10 +1,9 @@
 # 2 "TestStringRefs.ino"
 
-#include "BasicStringRef.h"
-#include "BasicTestStringRef.h"
 #include <Arduino.h>
 #include <Arduino_FreeRTOS.h>
-#include <StandardCplusplus.h>
+#include <FreeRTOSMallocFixer.h>
+#include <ArduinouClibcpp.h>
 #include <RabirdToolkit.h>
 #include <RAbstractStringRef.h>
 #include <RConstStringRef.h>
@@ -12,6 +11,9 @@
 #include <RFlashStringRef.h>
 #include <RTest.h>
 #include <string.h>
+
+#include "BasicStringRef.h"
+#include "BasicTestStringRef.h"
 
 class TestBasicStringRef
   : public BasicTestStringRef<TestBasicStringRef, BasicStringRef>

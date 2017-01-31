@@ -1,10 +1,5 @@
 #include "RStringRef.h"
 
-RStringRef::RStringRef()
-  : mStr(NULL)
-{
-}
-
 RStringRef::RStringRef(const String *str)
   : mStr(str)
 {

@@ -8,7 +8,6 @@
 class RFlashStringRef : public RAbstractStringRef
 {
 public:
-  RFlashStringRef();
   RFlashStringRef(const rfchar *flashStr);
   RFlashStringRef(const RFlashStringRef &stringRef);
   ~RFlashStringRef();

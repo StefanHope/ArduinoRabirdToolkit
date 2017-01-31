@@ -2,12 +2,6 @@
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 
-RFlashStringRef::RFlashStringRef()
-  : mStr(NULL)
-  , mLength(0)
-{
-}
-
 RFlashStringRef::RFlashStringRef(const rfchar *flashStr)
   : mStr(flashStr)
   , mLength(0)

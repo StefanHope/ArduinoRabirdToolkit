@@ -3,10 +3,12 @@
 #include "REventLoop.h"
 #include "RThread.h"
 #include "RSpinLocker.h"
+#include "RNullStream.h"
 
 static RCoreApplication *sApp = NULL;
 
 RCoreApplication::RCoreApplication()
+  : mNullStream(new RNullStream())
 {
   R_MAKE_SPINLOCKER();
   sApp = this;
@@ -14,6 +16,12 @@ RCoreApplication::RCoreApplication()
 
 RCoreApplication::~RCoreApplication()
 {
+}
+
+RNullStream *
+RCoreApplication::nullStream()
+{
+  return mNullStream.data();
 }
 
 RCoreApplication *

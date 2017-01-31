@@ -172,7 +172,7 @@ public:
     mManager->printer()->print(file);
     mManager->printer()->print(F(", line "));
     mManager->printer()->print(line);
-    mManager->printer()->println(".");
+    mManager->printer()->println(F("."));
 
     return ok;
   }

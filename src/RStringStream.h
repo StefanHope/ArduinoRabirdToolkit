@@ -5,7 +5,7 @@
 #include <WString.h>
 #include <Stream.h>
 
-class RStringStream : protected Stream
+class RStringStream : public Stream
 {
 public:
   RStringStream(String *strPtr);

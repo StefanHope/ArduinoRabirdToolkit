@@ -91,5 +91,10 @@ RFormatter::printBeforeNextMark()
     }
   }
 
+  // The format finished.
+  // Free the string reference object as soon as possible, because we are
+  // running on resource limitted system.
+  mFormat.clear();
+
   return false;
 }

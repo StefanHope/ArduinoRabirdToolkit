@@ -163,4 +163,16 @@ rUnsignedCast(const T &value)
   aclass & \
   operator =(const aclass &);
 
+#define R_MAKE_VERSION(major, minor, micro) \
+  (((major) << 24) | ((minor) << 16) | ((micro) << 0))
+
+#define _R_MAKE_VERSION_TEXT0(major, minor, \
+                              micro) #major "."#minor "."#micro
+#define _R_MAKE_VERSION_TEXT1(major, minor, \
+                              micro) _R_MAKE_VERSION_TEXT0(major, \
+                                                           minor, \
+                                                           micro)
+#define R_MAKE_VERSION_TEXT(major, minor, micro) \
+  _R_MAKE_VERSION_TEXT1(major, minro, micro)
+
 #endif // __INCLUDED_C140043A425411E6A04700F1F38F93EF

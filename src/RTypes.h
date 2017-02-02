@@ -88,6 +88,15 @@ struct RTypeSignTraits<unsigned long long>
   typedef signed long long   Signed;
   typedef unsigned long long Unsigned;
 };
+
+template <typename T>
+struct RArraySize;
+
+template <typename T, size_t N>
+struct RArraySize<T(&)[N]>
+{
+  enum { Value = N };
+};
 }
 
 typedef Rt::RTypeSignTraits<size_t>::Signed    rsize;
@@ -152,7 +161,7 @@ rUnsignedCast(const T &value)
  *
  * @param array Target array variant to calculate
  */
-#define R_SIZE_OF_ARRAY(array) (sizeof((array)) / sizeof((array)[0]))
+#define R_SIZE_OF_ARRAY(array) (Rt::RArraySize<decltype((array))>::Value)
 
 /**
  * Disable copy constructor and assign operations.

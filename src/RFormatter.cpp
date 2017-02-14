@@ -42,6 +42,12 @@ RFormatter::operator ()(const String *format)
 bool
 RFormatter::printBeforeNextMark()
 {
+  if(!mFormat)
+  {
+    // Do nothing if don't have a format string
+    return false;
+  }
+
   char c;
   char nextChar;
 

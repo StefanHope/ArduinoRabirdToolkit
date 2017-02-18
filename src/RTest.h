@@ -18,7 +18,7 @@
     { \
       return; \
     }; \
-  } while(true);
+  } while(false);
 
 /** macro generates optional output and calls fail() followed by a return if false. */
 #define RASSERT_EQUAL(arg1, arg2) RASSERT_OP(arg1, isEqual, "==", arg2)

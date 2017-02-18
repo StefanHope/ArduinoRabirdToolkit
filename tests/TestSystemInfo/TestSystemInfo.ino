@@ -14,6 +14,7 @@ RTEST(TestSystemInfo)
   RASSERT_MORE(sizeof(rsize), 0);
   RASSERT_MORE(sizeof(rnumber), 0);
   RASSERT_MORE(sizeof(ruint), 0);
+  RASSERT_MORE(sizeof(void *), 0);
 };
 
 void

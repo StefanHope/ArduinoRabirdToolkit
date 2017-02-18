@@ -33,16 +33,17 @@ REvent::setAccepted(bool accepted)
   mIsAccepted = accepted;
 }
 
-int
+rcount
 REvent::type() const
 {
   return 0;
 }
 
-int
+rcount
 REvent::registerEventType()
 {
-  static RAtomicInteger<int> previousType = 0;
+  static RAtomicInteger<rcount> previousType = 0;
 
+  // FIXME: If type value exceed the type size, we should report error!
   return ++previousType;
 }

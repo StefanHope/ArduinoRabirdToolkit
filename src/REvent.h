@@ -1,6 +1,8 @@
 #ifndef __INCLUDED_6FCA43F2953F11E6AA6EA088B4D1658C
 #define __INCLUDED_6FCA43F2953F11E6AA6EA088B4D1658C
 
+#include <RTypes.h>
+
 class REvent
 {
 public:
@@ -21,9 +23,9 @@ public:
   void
   setAccepted(bool accepted);
 
-  virtual int
+  virtual rcount
   type() const;
-  static int
+  static rcount
   registerEventType();
 
 private:
@@ -39,24 +41,24 @@ template <class DerivedType, class BaseType>
 class TypeRegisteredEvent : public BaseType
 {
 public:
-  int
+  rcount
   type() const
   {
     return sType;
   }
 
-  static inline int
+  static inline rcount
   staticType()
   {
     return sType;
   }
 
 private:
-  static const int sType;
+  static const rcount sType;
 };
 
 template <class DerivedType, class BaseType>
-const int TypeRegisteredEvent<DerivedType,
-                              BaseType>::sType = REvent::registerEventType();
+const rcount TypeRegisteredEvent<DerivedType,
+                                 BaseType>::sType = REvent::registerEventType();
 
 #endif // __INCLUDED_6FCA43F2953F11E6AA6EA088B4D1658C

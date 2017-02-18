@@ -164,6 +164,23 @@ rUnsignedCast(const T &value)
 #define R_SIZE_OF_ARRAY(array) (Rt::RArraySize<decltype((array))>::Value)
 
 /**
+ * Offset specific ptr to nBytes
+ */
+#define R_PTR_OFFSET(ptr, nBytes) \
+  ((decltype(ptr))(((char *)(ptr)) + (nBytes)))
+
+/**
+ * Calculate how much bytes between ptrBegin and ptrEnd
+ */
+#define R_OFFSET_BETWEEN_PTRS(ptrBegin, ptrEnd) \
+  ((char *)(ptrEnd) - (char *)(ptrBegin))
+
+/**
+ * Get the member offset of a struct
+ */
+#define R_OFFSET_OF(structName, member) (size_t)&(((structName *)0)->m)
+
+/**
  * Disable copy constructor and assign operations.
  *
  */

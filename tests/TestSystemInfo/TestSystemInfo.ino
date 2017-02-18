@@ -7,14 +7,24 @@
 
 #include <RTest.h>
 
+void
+aFunction()
+{
+}
+
 RTEST(TestSystemInfo)
 {
+  RASSERT_MORE(sizeof(char), 0);
+  RASSERT_MORE(sizeof(short), 0);
   RASSERT_MORE(sizeof(int), 0);
+  RASSERT_MORE(sizeof(long), 0);
+  RASSERT_MORE(sizeof(long long), 0);
+  RASSERT_MORE(sizeof(void *), 0);
+  RASSERT_MORE(sizeof(&aFunction), 0);
   RASSERT_MORE(sizeof(uintptr_t), 0);
   RASSERT_MORE(sizeof(rsize), 0);
   RASSERT_MORE(sizeof(rnumber), 0);
   RASSERT_MORE(sizeof(ruint), 0);
-  RASSERT_MORE(sizeof(void *), 0);
 };
 
 void

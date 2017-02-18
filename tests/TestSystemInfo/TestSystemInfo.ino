@@ -14,6 +14,7 @@ aFunction()
 
 RTEST(TestSystemInfo)
 {
+  RASSERT_MORE(sizeof(bool), 0);
   RASSERT_MORE(sizeof(char), 0);
   RASSERT_MORE(sizeof(short), 0);
   RASSERT_MORE(sizeof(int), 0);

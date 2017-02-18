@@ -1,8 +1,8 @@
 #include "RTest.h"
 #include <Arduino.h>
 
-RTest::RTest(const rfchar *aName)
-  : mStatus(Passed), mName(aName)
+RTest::RTest(const rfchar *aName, const rfchar *fileName, int lineNo)
+  : mStatus(Passed), mName(aName), mFileName(fileName), mLineNo(lineNo)
 {
 }
 
@@ -16,6 +16,18 @@ const rfchar *
 RTest::name()
 {
   return mName;
+}
+
+const rfchar *
+RTest::fileName()
+{
+  return mFileName;
+}
+
+int
+RTest::lineNo()
+{
+  return mLineNo;
 }
 
 void
@@ -120,20 +132,29 @@ RTestApplication::run()
 
   for(; it != mTests.end(); ++it)
   {
+    mPrint->print(F("Test : "));
+    mPrint->print((*it)->name());
+    mPrint->print(F(" at "));
+    mPrint->print((*it)->fileName());
+    mPrint->print(F(" ("));
+    mPrint->print((*it)->lineNo());
+    mPrint->print(F(")"));
+    mPrint->println();
+
     (*it)->run();
 
     RTest::Status status       = (*it)->status();
-    const rfchar *statusPrefix = F("UNKNOWN ");
+    const rfchar *statusPrefix = F("Unknown ");
 
     if(RTest::Passed == status)
     {
       ++mPassed;
-      statusPrefix = F("PASSED  ");
+      statusPrefix = F("Passed ");
     }
     else if(RTest::Failed == status)
     {
       ++mFailed;
-      statusPrefix = F("FAILED  ");
+      statusPrefix = F("Failed ");
     }
 
     mPrint->print(statusPrefix);

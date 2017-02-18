@@ -13,7 +13,7 @@
     auto tempArg1 = (arg1); \
     auto tempArg2 = (arg2); \
     if(!assertion<decltype(tempArg1), decltype(tempArg2)>( \
-         F(__FILE__), __LINE__, F(#arg1), (tempArg1), F(opName), op, F(#arg2), \
+         __LINE__, F(#arg1), (tempArg1), F(opName), op, F(#arg2), \
          (tempArg2))) \
     { \
       return; \
@@ -53,7 +53,7 @@ public: \
     testName(); \
     void run(); \
 }; \
-  testName::testName() : RTest(F(#testName)) \
+  testName::testName() : RTest(F(#testName), F(__FILE__), __LINE__) \
   { \
   }; \
   static testName RTEST_INSTANCE(testName); \
@@ -82,7 +82,7 @@ public:
   };
 
 public:
-  RTest(const rfchar *aName);
+  RTest(const rfchar *aName, const rfchar *fileName, int lineNo);
 
   virtual void
   run() = 0;
@@ -92,6 +92,11 @@ public:
 
   const rfchar *
   name();
+  const rfchar *
+  fileName();
+
+  int
+  lineNo();
 
   /** Template binary operator== to assist with assertions */
   template <class LeftType, class RightType>
@@ -143,8 +148,8 @@ public:
 
   template <class LeftType, class RightType>
   bool
-  assertion(const rfchar *file, uint16_t line, const rfchar *lhss,
-            const LeftType &lhs, const rfchar *ops, bool (*op)(
+  assertion(uint16_t line, const rfchar *lhss, const LeftType &lhs,
+            const rfchar *ops, bool (*op)(
               const LeftType&lhs,
               const RightType&rhs), const rfchar *rhss, const RightType&rhs)
   {
@@ -167,9 +172,7 @@ public:
     mManager->printer()->print(rhss);
     mManager->printer()->print(F("="));
     mManager->printer()->print(rhs);
-    mManager->printer()->print(F("), file "));
-    mManager->printer()->print(file);
-    mManager->printer()->print(F(", line "));
+    mManager->printer()->print(F("), line "));
     mManager->printer()->print(line);
     mManager->printer()->println(F("."));
 
@@ -189,6 +192,8 @@ protected:
 private:
   Status        mStatus;
   const rfchar *mName;
+  const rfchar *mFileName;
+  const int     mLineNo;
   RTestAbstractApplication *mManager;
 
   friend RTestApplication;

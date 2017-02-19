@@ -21,17 +21,17 @@ RCpuTimer::stop()
 {
 }
 
-RCpuTimer::TimeType
+rtime
 RCpuTimer::elapsed()
 {
   return elapsedTicks() * portTICK_PERIOD_MS;
 }
 
-TickType_t
+rtime
 RCpuTimer::elapsedTicks()
 {
-  TickType_t currentTime = xTaskGetTickCount();
-  TickType_t elapsed     = 0;
+  rtime currentTime = xTaskGetTickCount();
+  rtime elapsed     = 0;
 
   if(currentTime >= mLastTime)
   {

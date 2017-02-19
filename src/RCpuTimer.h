@@ -6,9 +6,6 @@
 class RCpuTimer
 {
 public:
-  typedef TickType_t TimeType;
-
-public:
   RCpuTimer();
   ~RCpuTimer();
 
@@ -21,14 +18,14 @@ public:
    *
    * Unit in milliseconds.
    */
-  TimeType
+  rtime
   elapsed();
 
-  TickType_t
+  rtime
   elapsedTicks();
 
 private:
-  TickType_t mLastTime;
+  rtime mLastTime;
 };
 
 #endif /* __INCLUDED_BE81AF72390F11E5AA6EA088B4D1658C */

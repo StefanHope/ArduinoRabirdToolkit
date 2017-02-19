@@ -178,7 +178,7 @@ rUnsignedCast(const T &value)
 /**
  * Get the member offset of a struct
  */
-#define R_OFFSET_OF(structName, member) (size_t)&(((structName *)0)->m)
+#define R_OFFSET_OF(structName, member) (size_t)&(((structName *)0)->member)
 
 /**
  * Disable copy constructor and assign operations.

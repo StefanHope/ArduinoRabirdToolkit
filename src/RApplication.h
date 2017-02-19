@@ -9,6 +9,6 @@ public:
   RApplication();
 };
 
-#define rApp (RApplication::instance())
+#define rApp static_cast<RApplication *>(RApplication::instance())
 
 #endif // __INCLUDED_32495286DDE511E6AA6EA088B4D1658C

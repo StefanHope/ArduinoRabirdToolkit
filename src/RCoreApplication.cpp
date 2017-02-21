@@ -33,17 +33,18 @@ RCoreApplication::instance()
 int
 RCoreApplication::exec()
 {
-  return sApp->thread()->eventLoop()->exec();
+  return RThread::currentThread()->eventLoop()->exec();
 }
 
 void
 RCoreApplication::processEvents()
 {
-  sApp->thread()->eventLoop()->processEvents();
+  RThread::currentThread()->eventLoop()->processEvents();
 }
 
 void
 RCoreApplication::postEvent(RObject *receiver, REvent *event)
 {
+  R_MAKE_SPINLOCKER();
   receiver->thread()->eventLoop()->postEvent(receiver, event);
 }

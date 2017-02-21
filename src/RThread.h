@@ -65,6 +65,8 @@ public:
   setStackSize(size_t stackSize);
   size_t
   stackSize() const;
+  TaskHandle_t
+  id() const;
   bool
   wait(unsigned long time=std::numeric_limits<unsigned long>::max());
 

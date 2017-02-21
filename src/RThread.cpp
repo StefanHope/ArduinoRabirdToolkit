@@ -54,6 +54,11 @@ RThread::RThread(TaskHandle_t handle)
   }
 
   // FIXME: New event loop will generated for task 0 and without free!
+  if(NULL == mEventLoop)
+  {
+    R_MAKE_SPINLOCKER();
+    sThreads.pushFront(this);
+  }
 }
 
 RThread::RThread()
@@ -137,6 +142,12 @@ size_t
 RThread::stackSize() const
 {
   return mStackSize;
+}
+
+TaskHandle_t
+RThread::id() const
+{
+  return mHandle;
 }
 
 bool

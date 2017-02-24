@@ -101,6 +101,7 @@ RFormatter::printBeforeNextMark()
   // Free the string reference object as soon as possible, because we are
   // running on resource limitted system.
   mFormat.clear();
+  mFormatIndex = 0;
 
   return false;
 }

@@ -9,6 +9,7 @@
 
 #include "RDelegate.h"
 #include "RForwardList.h"
+#include "RSpinLocker.h"
 
 // Declare RSignal as a class template.  It will be specialized
 // later for all number of arguments.
@@ -28,6 +29,7 @@ public:
   void
   connect(_Delegate delegate)
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.pushFront(delegate);
   }
 
@@ -35,6 +37,7 @@ public:
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...))
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.pushFront(Rt::MakeDelegate(obj, func));
   }
 
@@ -42,18 +45,21 @@ public:
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.pushFront(Rt::MakeDelegate(obj, func));
   }
 
   void
   connect(R (*functionToBind)(ParamTypes ...))
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.pushFront(Rt::Delegate<R(ParamTypes ...)>(functionToBind));
   }
 
   void
   disconnect(_Delegate delegate)
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.remove(delegate);
   }
 
@@ -61,6 +67,7 @@ public:
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...))
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.remove(Rt::MakeDelegate(obj, func));
   }
 
@@ -68,18 +75,22 @@ public:
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.remove(Rt::MakeDelegate(obj, func));
   }
 
   void
   clear()
   {
+    R_MAKE_SPINLOCKER();
     mDelegateList.clear();
   }
 
   void
   emit(ParamTypes ... params) const
   {
+    R_MAKE_SPINLOCKER();
+
     for(auto i = mDelegateList.begin(); i != mDelegateList.end();
         )
     {

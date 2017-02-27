@@ -14,6 +14,16 @@
 #include <Arduino_FreeRTOS.h>
 #include <semphr.h>
 
+#ifdef __cplusplus
+#define R_EXTERN_C             extern "C"
+#define R_EXTERN_C_BLOCK_BEGIN extern "C" {
+#define R_EXTERN_C_BLOCK_END   }
+#else
+#define R_EXTERN_C extern
+#define R_EXTERN_C_BLOCK_BEGIN
+#define R_EXTERN_C_BLOCK_END
+#endif  /* __cplusplus */
+
 namespace Rt
 {
 template <class T>

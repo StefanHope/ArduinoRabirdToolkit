@@ -37,7 +37,7 @@
 class RFormatter
 {
 public:
-  RFormatter(Print *print);
+  RFormatter(Stream *stream);
 
   RFormatter &
   operator ()(const char *format);
@@ -52,7 +52,7 @@ public:
   {
     if(printBeforeNextMark())
     {
-      mPrint->print(params ...);
+      mStream->print(params ...);
       mFormatIndex += 2;
       printBeforeNextMark();
     }
@@ -60,12 +60,15 @@ public:
     return *this;
   }
 
+  bool
+  isFinished();
+
 private:
   bool
   printBeforeNextMark();
 
 private:
-  Print *mPrint;
+  Stream *mStream;
 
   RScopedPointer<RAbstractStringRef> mFormat;
   unsigned int mFormatIndex;

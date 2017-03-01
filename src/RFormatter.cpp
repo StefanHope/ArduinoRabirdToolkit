@@ -4,8 +4,8 @@
 #include "RConstStringRef.h"
 #include <Print.h>
 
-RFormatter::RFormatter(Print *print)
-  : mPrint(print), mFormat(NULL), mFormatIndex(0)
+RFormatter::RFormatter(Stream *stream)
+  : mStream(stream), mFormat(NULL), mFormatIndex(0)
 {
 }
 
@@ -40,6 +40,12 @@ RFormatter::operator ()(const String *format)
 }
 
 bool
+RFormatter::isFinished()
+{
+  return mFormat.isNull();
+}
+
+bool
 RFormatter::printBeforeNextMark()
 {
   if(!mFormat)
@@ -69,7 +75,7 @@ RFormatter::printBeforeNextMark()
       if('%' == nextChar)
       {
         // '%%' means one '%'
-        mPrint->write(nextChar);
+        mStream->write(nextChar);
         ++mFormatIndex;
       }
       else if('s' == nextChar)
@@ -80,19 +86,19 @@ RFormatter::printBeforeNextMark()
       }
       else if('\0' == nextChar)
       {
-        mPrint->write(c);
+        mStream->write(c);
         break;
       }
       else
       {
-        mPrint->write(c);
-        mPrint->write(nextChar);
+        mStream->write(c);
+        mStream->write(nextChar);
         ++mFormatIndex;
       }
     }
     else
     {
-      mPrint->write(c);
+      mStream->write(c);
       ++mFormatIndex;
     }
   }

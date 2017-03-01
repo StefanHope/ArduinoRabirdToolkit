@@ -62,6 +62,8 @@ public:
 
   bool
   isFinished();
+  Stream *
+  stream();
 
 private:
   bool

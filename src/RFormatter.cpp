@@ -45,6 +45,12 @@ RFormatter::isFinished()
   return mFormat.isNull();
 }
 
+Stream *
+RFormatter::stream()
+{
+  return mStream;
+}
+
 bool
 RFormatter::printBeforeNextMark()
 {

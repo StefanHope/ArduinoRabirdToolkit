@@ -211,4 +211,6 @@ rUnsignedCast(const T &value)
 #define R_MAKE_VERSION_TEXT(major, minor, micro) \
   _R_MAKE_VERSION_TEXT1(major, minro, micro)
 
+#define R_WAIT_UNTIL(condition) while(!(condition)) {}
+
 #endif // __INCLUDED_C140043A425411E6A04700F1F38F93EF

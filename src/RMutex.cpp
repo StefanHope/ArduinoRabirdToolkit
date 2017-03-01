@@ -28,11 +28,11 @@ RMutex::lock()
   // INCLUDE_vTaskSuspend should specific to 1 for infinite loop !
   if(NonRecursive == mMode)
   {
-    xSemaphoreTake(mHandle, portMAX_DELAY);
+    R_WAIT_UNTIL(xSemaphoreTake(mHandle, portMAX_DELAY));
   }
   else
   {
-    xSemaphoreTakeRecursive(mHandle, portMAX_DELAY);
+    R_WAIT_UNTIL(xSemaphoreTakeRecursive(mHandle, portMAX_DELAY));
   }
 }
 
@@ -66,10 +66,10 @@ RMutex::unlock()
 {
   if(NonRecursive == mMode)
   {
-    xSemaphoreGive(mHandle);
+    R_WAIT_UNTIL(xSemaphoreGive(mHandle));
   }
   else
   {
-    xSemaphoreGiveRecursive(mHandle);
+    R_WAIT_UNTIL(xSemaphoreGiveRecursive(mHandle));
   }
 }

@@ -25,7 +25,7 @@ RSemaphore::release(rcount n)
 {
   for(auto i = 0; i < n; ++i)
   {
-    xSemaphoreGive(mHandle);
+    R_WAIT_UNTIL(xSemaphoreGive(mHandle));
   }
 }
 

@@ -19,7 +19,9 @@ RTimer::RTimer() : mIsSingleShot(false)
 
 RTimer::~RTimer()
 {
-  xTimerDelete(mHandle, 0);
+  while(pdPASS != xTimerDelete(mHandle, portMAX_DELAY))
+  {
+  }
 }
 
 int
@@ -50,7 +52,9 @@ RTimer::setInterval(int msec)
     msec = 1;
   }
 
-  xTimerChangePeriod(mHandle, msec, 0);
+  while(pdPASS != xTimerChangePeriod(mHandle, msec, portMAX_DELAY))
+  {
+  }
 
   // xTimerChangePeriod will cause timer start, so we need to stop it
   // immediately
@@ -81,13 +85,18 @@ void
 RTimer::start()
 {
   stop();
-  xTimerStart(mHandle, 0);
+
+  while(pdPASS != xTimerStart(mHandle, portMAX_DELAY))
+  {
+  }
 }
 
 void
 RTimer::stop()
 {
-  xTimerStop(mHandle, 0);
+  while(pdPASS != xTimerStop(mHandle, portMAX_DELAY))
+  {
+  }
 }
 
 bool

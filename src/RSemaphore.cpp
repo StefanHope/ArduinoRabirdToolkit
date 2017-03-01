@@ -12,7 +12,7 @@ RSemaphore::~RSemaphore()
 void
 RSemaphore::acquire(rcount n)
 {
-  tryAcquire(n, portMAX_DELAY);
+  R_WAIT_UNTIL(tryAcquire(n, portMAX_DELAY));
 }
 
 int

@@ -47,8 +47,13 @@ REventLoop::processEvents()
 
   while(!mEvents.empty())
   {
-    auto eventData = mEvents.front();
-    mEvents.pop_front();
+    EventData eventData;
+
+    {
+      R_MAKE_SPINLOCKER();
+      eventData = mEvents.front();
+      mEvents.pop_front();
+    }
 
     eventData.receiver->event(eventData.event);
 
@@ -79,6 +84,8 @@ REventLoop::postEvent(RObject *receiver, REvent *event)
 void
 REventLoop::clear()
 {
+  R_MAKE_SPINLOCKER();
+
   for(auto it = mEvents.begin(); it != mEvents.end(); ++it)
   {
     delete it->event;

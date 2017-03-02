@@ -14,6 +14,12 @@ private:
     RObject *receiver;
     REvent * event;
 
+    EventData()
+
+      : receiver(NULL), event(NULL)
+    {
+    }
+
     EventData(RObject *inReceiver, REvent *inEvent)
 
       : receiver(inReceiver), event(inEvent)

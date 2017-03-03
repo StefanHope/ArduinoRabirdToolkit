@@ -6,14 +6,7 @@
 class RReadWriteLock
 {
 public:
-  enum RecursionMode
-  {
-    NonRecursive,
-    Recursive,
-  };
-
-public:
-  RReadWriteLock(RecursionMode mode=NonRecursive);
+  RReadWriteLock();
   ~RReadWriteLock();
 
   void

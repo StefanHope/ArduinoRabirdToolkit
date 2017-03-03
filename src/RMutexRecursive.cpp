@@ -1,40 +1,43 @@
-#include "RMutex.h"
+#include "RMutexRecursive.h"
 #include "RThread.h"
 #include "RSpinLocker.h"
 
-RMutex::RMutex()
-  : mIsLocked(false)
+RMutexRecursive::RMutexRecursive()
+  : mCount(0), mThreadId(0)
 {
 }
 
-RMutex::~RMutex()
+RMutexRecursive::~RMutexRecursive()
 {
 }
 
 void
-RMutex::lock()
+RMutexRecursive::lock()
 {
   // INCLUDE_vTaskSuspend should specific to 1 for infinite loop !
   tryLock(-1);
 }
 
 bool
-RMutex::tryLock()
+RMutexRecursive::tryLock()
 {
   return tryLock(0);
 }
 
 bool
-RMutex::tryLock(int timeout)
+RMutexRecursive::tryLock(int timeout)
 {
+  auto currentThreadId = RThread::currentThreadId();
+
   while(1)
   {
     {
       R_MAKE_SPINLOCKER();
 
-      if(!mIsLocked)
+      if((0 == mThreadId) || (currentThreadId == mThreadId))
       {
-        mIsLocked = true;
+        ++mCount;
+        mThreadId = currentThreadId;
         return true;
       }
     }
@@ -57,9 +60,17 @@ RMutex::tryLock(int timeout)
 }
 
 void
-RMutex::unlock()
+RMutexRecursive::unlock()
 {
   R_MAKE_SPINLOCKER();
 
-  mIsLocked = false;
+  if(RThread::currentThreadId() == mThreadId)
+  {
+    --mCount;
+
+    if(0 == mCount)
+    {
+      mThreadId = 0;
+    }
+  }
 }

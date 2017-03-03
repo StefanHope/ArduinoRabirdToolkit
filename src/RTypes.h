@@ -166,6 +166,24 @@ rUnsignedCast(const T &value)
   return static_cast<typename Rt::RTypeSignTraits<T>::Unsigned>(value);
 }
 
+template <class T>
+struct RRemoveReference
+{
+  typedef T Type;
+};
+
+template <class T>
+struct RRemoveReference<T&>
+{
+  typedef T Type;
+};
+
+template <class T>
+struct RRemoveReference<T&&>
+{
+  typedef T Type;
+};
+
 /**
  * Calculate how much elements in the array
  *

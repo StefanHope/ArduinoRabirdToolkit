@@ -3,17 +3,11 @@
 
 #include "RTypes.h"
 
+class RThread;
 class RMutex
 {
 public:
-  enum RecursionMode
-  {
-    NonRecursive,
-    Recursive,
-  };
-
-public:
-  RMutex(RecursionMode mode=NonRecursive);
+  RMutex();
   ~RMutex();
 
   void
@@ -26,8 +20,7 @@ public:
   unlock();
 
 private:
-  RecursionMode     mMode;
-  SemaphoreHandle_t mHandle;
+  bool mIsLocked;
 
   R_DISABLE_COPY(RMutex)
 };

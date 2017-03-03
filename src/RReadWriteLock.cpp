@@ -2,11 +2,8 @@
 #include "RMutexLocker.h"
 #include <limits>
 
-RReadWriteLock::RReadWriteLock(RReadWriteLock::RecursionMode mode)
-  : mReadMutex()
-  , mWriteMutex((mode ==
-                 NonRecursive) ? RMutex::NonRecursive : RMutex::Recursive)
-  , mReaders(0)
+RReadWriteLock::RReadWriteLock()
+  : mReaders(0)
 {
 }
 
@@ -17,7 +14,7 @@ RReadWriteLock::~RReadWriteLock()
 void
 RReadWriteLock::lockForRead()
 {
-  RMutexLocker readLocker(&mReadMutex);
+  R_MAKE_MUTEXLOCKER(&mReadMutex);
 
   if(mReaders == 0)
   {
@@ -42,7 +39,7 @@ RReadWriteLock::tryLockForRead()
 bool
 RReadWriteLock::tryLockForRead(int timeout)
 {
-  RMutexLocker readLocker(&mReadMutex);
+  R_MAKE_MUTEXLOCKER(&mReadMutex);
 
   if(mReaders == 0)
   {
@@ -71,7 +68,7 @@ RReadWriteLock::tryLockForWrite(int timeout)
 void
 RReadWriteLock::unlock()
 {
-  RMutexLocker readLocker(&mReadMutex);
+  R_MAKE_MUTEXLOCKER(&mReadMutex)
 
   if(mReaders > 0)
   {

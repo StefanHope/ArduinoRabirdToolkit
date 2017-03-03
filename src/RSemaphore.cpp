@@ -1,7 +1,9 @@
 #include "RSemaphore.h"
+#include "RSpinLocker.h"
+#include "RThread.h"
 
 RSemaphore::RSemaphore(rcount n)
-  : mHandle(xSemaphoreCreateCounting(n, 0))
+  : mCount(n)
 {
 }
 
@@ -12,21 +14,22 @@ RSemaphore::~RSemaphore()
 void
 RSemaphore::acquire(rcount n)
 {
-  R_WAIT_UNTIL(tryAcquire(n, portMAX_DELAY));
+  tryAcquire(n, -1);
 }
 
-int
+rcount
 RSemaphore::available() const
 {
+  R_MAKE_SPINLOCKER();
+  return mCount;
 }
 
 void
 RSemaphore::release(rcount n)
 {
-  for(auto i = 0; i < n; ++i)
-  {
-    R_WAIT_UNTIL(xSemaphoreGive(mHandle));
-  }
+  R_MAKE_SPINLOCKER();
+
+  mCount += n;
 }
 
 bool
@@ -38,18 +41,31 @@ RSemaphore::tryAcquire(rcount n)
 bool
 RSemaphore::tryAcquire(rcount n, int ms)
 {
-  auto ticks = ms / portTICK_PERIOD_MS;
-
-  for(auto i = 0; i < n; ++i)
+  while(1)
   {
-    // If failed we should release all acquired.
-    if(pdFALSE == xSemaphoreTake(mHandle, ticks))
     {
-      release(i + 1);
+      R_MAKE_SPINLOCKER();
 
+      if(mCount >= n)
+      {
+        mCount -= n;
+        return true;
+      }
+    }
+
+    if(ms < 0)
+    {
+      // Loop infinite ...
+    }
+    else if(ms < portTICK_PERIOD_MS)
+    {
       return false;
     }
-  }
+    else
+    {
+      ms -= portTICK_PERIOD_MS;
+    }
 
-  return true;
+    RThread::yieldCurrentThread();
+  }
 }

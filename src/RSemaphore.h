@@ -12,7 +12,7 @@ public:
   void
   acquire(rcount n=1);
 
-  int
+  rcount
   available() const;
 
   void
@@ -25,7 +25,7 @@ public:
   tryAcquire(rcount n, int ms);
 
 private:
-  SemaphoreHandle_t mHandle;
+  rcount mCount;
 
   R_DISABLE_COPY(RSemaphore)
 };

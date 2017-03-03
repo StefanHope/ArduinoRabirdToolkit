@@ -71,6 +71,9 @@ LABEL_EXIT:
 
   // TODO: Free all objects that marked as deleteLater
 
+  // Give control to other threads.
+  RThread::yieldCurrentThread();
+
   return result;
 }
 

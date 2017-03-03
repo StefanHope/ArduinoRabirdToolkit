@@ -89,8 +89,6 @@ public:
   void
   emit(ParamTypes ... params) const
   {
-    R_MAKE_SPINLOCKER();
-
     for(auto i = mDelegateList.begin(); i != mDelegateList.end();
         )
     {

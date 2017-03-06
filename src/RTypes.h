@@ -134,6 +134,8 @@ typedef TickType_t rtime;
  */
 typedef class __FlashStringHelper rfchar;
 
+class RObject;
+
 template <class Type>
 inline
 uintptr_t
@@ -183,6 +185,9 @@ struct RRemoveReference<T&&>
 {
   typedef T Type;
 };
+
+bool
+rIsObjectInSameThread(const RObject *left, const RObject *right);
 
 /**
  * Calculate how much elements in the array

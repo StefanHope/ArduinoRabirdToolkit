@@ -61,7 +61,7 @@ private:
 
 public:
   void
-  connect(_Delegate delegate)
+  connect(const _Delegate &delegate)
   {
     R_MAKE_SPINLOCKER();
     mDelegateList.pushFront(Connection(delegate));

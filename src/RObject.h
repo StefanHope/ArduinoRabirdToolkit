@@ -25,7 +25,7 @@ public:
   virtual bool
   event(REvent *e);
   RThread *
-  thread();
+  thread() const;
 
   void
   moveToThread(RThread *targetThread);

@@ -37,7 +37,7 @@ RObject::event(REvent *e)
 }
 
 RThread *
-RObject::thread()
+RObject::thread() const
 {
   return mThread.data();
 }

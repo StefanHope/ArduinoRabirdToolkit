@@ -44,7 +44,7 @@ public:
   {
     T *ptr = BaseType::getDerived()->data();
 
-    // WARNING: Only clear the ptr, don't cleanup it!
+    // WARNING: Only clear the ptr, don't delete it!
     BaseType::clear();
 
     return ptr;

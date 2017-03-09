@@ -246,11 +246,11 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
 #define R_DECLARE_PRIVATE(className) \
 private: \
   struct className##Private *pd; \
-  friend class className##Impl;
+  friend struct className##Impl;
 
 #define R_IMPLEMENT_PRIVATE(className) \
   typedef struct className##Private RPrivate; \
-  typedef class className##Impl     RImpl;
+  typedef struct className##Impl    RImpl;
 
 #define rThis static_cast<RImpl *>(this)
 

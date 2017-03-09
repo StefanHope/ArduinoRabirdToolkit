@@ -245,17 +245,39 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
 
 #define R_DECLARE_PRIVATE_WITHOUT_DATA(className) \
 private: \
-  friend struct className##Impl;
+  friend struct className##Impl; \
+  inline struct className##Impl *pImpl() \
+  { \
+    return reinterpret_cast<struct className##Impl *>(this); \
+  } \
+  inline const struct className##Impl *pImpl() const \
+  { \
+    return reinterpret_cast<const struct className##Impl *>(this); \
+  }
 
 #define R_DECLARE_PRIVATE(className) \
   R_DECLARE_PRIVATE_WITHOUT_DATA(className) \
 private: \
-  struct className##Private *pd; \
+  struct className##Private *pData; \
 
 #define R_IMPLEMENT_PRIVATE(className) \
   typedef struct className##Private RPrivate; \
   typedef struct className##Impl    RImpl;
 
 #define rThis static_cast<RImpl *>(this)
+
+template <typename T>
+static inline T *
+rGetPtrHelper(T *ptr)
+{
+  return ptr;
+}
+
+template <typename Wrapper>
+static inline typename Wrapper::pointer
+rGetPtrHelper(const Wrapper &p)
+{
+  return p.data();
+}
 
 #endif // __INCLUDED_C140043A425411E6A04700F1F38F93EF

@@ -211,7 +211,8 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
 /**
  * Get the member offset of a struct
  */
-#define R_OFFSET_OF(structName, member) (size_t)&(((structName *)0)->member)
+#define R_OFFSET_OF(structName, member) \
+  (rsize)(&(((structName *)1)->member) - 1)
 
 /**
  * Calculate how much bytes between two struct members

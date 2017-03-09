@@ -238,7 +238,8 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
 
 #define R_DECLARE_PRIVATE(className) \
 private: \
-  struct className##Private *pd;
+  struct className##Private *pd; \
+  friend class className##Impl;
 
 #define R_IMPLEMENT_PRIVATE(className) \
   typedef struct className##Private RPrivate; \

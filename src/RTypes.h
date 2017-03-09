@@ -264,7 +264,7 @@ private: \
   typedef struct className##Private RPrivate; \
   typedef struct className##Impl    RImpl;
 
-#define rThis static_cast<RImpl *>(this)
+#define rThis pImpl()
 
 template <typename T>
 static inline T *

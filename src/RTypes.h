@@ -243,10 +243,14 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
 
 #define R_WAIT_UNTIL(condition) while(!(condition)) {}
 
+#define R_DECLARE_PRIVATE_WITHOUT_DATA(className) \
+private: \
+  friend struct className##Impl;
+
 #define R_DECLARE_PRIVATE(className) \
+  R_DECLARE_PRIVATE_WITHOUT_DATA(className) \
 private: \
   struct className##Private *pd; \
-  friend struct className##Impl;
 
 #define R_IMPLEMENT_PRIVATE(className) \
   typedef struct className##Private RPrivate; \

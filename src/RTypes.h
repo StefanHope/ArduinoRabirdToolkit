@@ -214,6 +214,13 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
 #define R_OFFSET_OF(structName, member) (size_t)&(((structName *)0)->member)
 
 /**
+ * Calculate how much bytes between two struct members
+ */
+#define R_OFFSET_BETWEEN_MEMBERS(structName, fromMember, toMember) \
+  (R_OFFSET_OF(structName, toMember) - \
+   R_OFFSET_OF(structName, fromMember))
+
+/**
  * Disable copy constructor and assign operations.
  *
  */

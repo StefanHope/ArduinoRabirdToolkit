@@ -209,10 +209,21 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
   ((char *)(ptrEnd) - (char *)(ptrBegin))
 
 /**
- * Get the member offset of a struct
+ * Get the member offset of a struct. Only valid on POD types.
  */
 #define R_OFFSET_OF(structName, member) \
-  (rsize)(&(((structName *)1)->member) - 1)
+  ((rsize)(&(((structName *)0)->member)))
+
+/**
+ * Same as R_OFFSET_OF(), support non-POD types.
+ *
+ * WARNING! It's dangerous and not reliable ! You have a bad design if you are
+ * using this macro, it will crash your system in unknown condition. It's just
+ * for you temporary use while R_OFFSET_OF() cause compile complain and you
+ * really want to do that and you clearly knowing what you are doing!
+ */
+#define R_FORCE_OFFSET_OF(structName, member) \
+  (((rsize) & (((structName *)1)->member)) - 1)
 
 /**
  * Calculate how much bytes between two struct members
@@ -220,6 +231,14 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
 #define R_OFFSET_BETWEEN_MEMBERS(structName, fromMember, toMember) \
   (R_OFFSET_OF(structName, toMember) - \
    R_OFFSET_OF(structName, fromMember))
+
+/**
+ * Same as R_OFFSET_BETWEEN_MEMBERS(), but using R_FORCE_OFFSET_OF() to
+ * calculate the offsets
+ */
+#define R_FORCE_OFFSET_BETWEEN_MEMBERS(structName, fromMember, toMember) \
+  (R_FORCE_OFFSET_OF(structName, toMember) - \
+   R_FORCE_OFFSET_OF(structName, fromMember))
 
 /**
  * Disable copy constructor and assign operations.

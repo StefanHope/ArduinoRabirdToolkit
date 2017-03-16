@@ -4,6 +4,7 @@
 #include "RThread.h"
 #include "RSpinLocker.h"
 #include "RNullStream.h"
+#include "RIsr.h"
 
 static RCoreApplication *sApp = NULL;
 
@@ -11,11 +12,14 @@ RCoreApplication::RCoreApplication()
   : mNullStream(new RNullStream())
 {
   R_MAKE_SPINLOCKER();
+
+  _rIsrInitialize();
   sApp = this;
 }
 
 RCoreApplication::~RCoreApplication()
 {
+  _rIsrFinalize();
 }
 
 RNullStream *

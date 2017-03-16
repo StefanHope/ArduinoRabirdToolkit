@@ -3,6 +3,8 @@
 
 #include "RObject.h"
 #include "RScopedPointer.h"
+#include "RSignal.h"
+#include "RIsr.h"
 
 class REvent;
 class REventLoop;
@@ -31,6 +33,18 @@ public:
   processEvents();
   static void
   postEvent(RObject *receiver, REvent *event);
+
+  /**
+   * Attach an ISR slot.
+   *
+   * @warning NOT allow detach!
+   */
+  template <class ... ParamTypes>
+  void
+  attachIsr(ParamTypes ... params)
+  {
+    _rIsrAttach(params ...);
+  }
 
 private:
   RScopedPointer<RNullStream> mNullStream;

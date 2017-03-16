@@ -2,6 +2,7 @@
 #include "REventLoop.h"
 #include "RForwardList.h"
 #include "RSpinLocker.h"
+#include "RIsr.h"
 
 class RThreadPrivate
 {
@@ -291,6 +292,11 @@ RThread::currentThreadId()
 void
 RThread::yieldCurrentThread()
 {
+  if(_rIsrExecuting())
+  {
+    return;
+  }
+
   taskYIELD();
 }
 

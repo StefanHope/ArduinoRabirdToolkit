@@ -2,7 +2,7 @@
 #define __INCLUDED_9B933A8E8FBD11E6AA6EA088B4D1658C
 
 #include "RObject.h"
-#include "RScopedPointer.h"
+#include "RUniquePointer.h"
 #include "RSignal.h"
 #include "RIsr.h"
 
@@ -47,7 +47,7 @@ public:
   }
 
 private:
-  RScopedPointer<RNullStream> mNullStream;
+  RUniquePointer<RNullStream> mNullStream;
 };
 
 #define rCoreApp (RCoreApplication::instance())

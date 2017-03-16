@@ -245,9 +245,19 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
  *
  */
 #define R_DISABLE_COPY(aclass) \
+private: \
   aclass(const aclass &); \
   aclass & \
   operator =(const aclass &);
+
+/**
+ * Disable create the class on heap
+ */
+#define R_DISABLE_NEW(aclass) \
+private: \
+  void *operator new(size_t); \
+  void * \
+  operator new[](size_t);
 
 #define R_MAKE_VERSION(major, minor, micro) \
   (((major) << 24) | ((minor) << 16) | ((micro) << 0))

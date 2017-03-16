@@ -10,7 +10,7 @@
 
 #include "RTypes.h"
 #include "RAbstractStringRef.h"
-#include "RScopedPointer.h"
+#include "RUniquePointer.h"
 #include <Print.h>
 
 /**
@@ -72,7 +72,7 @@ private:
 private:
   Stream *mStream;
 
-  RScopedPointer<RAbstractStringRef> mFormat;
+  RUniquePointer<RAbstractStringRef> mFormat;
   unsigned int mFormatIndex;
 
 private:

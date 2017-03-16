@@ -21,6 +21,10 @@ public:
   RScopedPointer(T *ptr) : BaseType(ptr)
   {
   }
+
+private:
+  R_DISABLE_COPY(RScopedPointer);
+  R_DISABLE_NEW(RScopedPointer);
 };
 
 #endif // __INCLUDED_B9852640644F11E6878D00F1F38F93EF

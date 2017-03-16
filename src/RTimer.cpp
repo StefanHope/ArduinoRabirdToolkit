@@ -2,6 +2,7 @@
 #include "RTimerEvent.h"
 #include "RCoreApplication.h"
 #include "RScopedPointer.h"
+#include "RIsr.h"
 
 RTimer::RTimer() : mIsSingleShot(false)
 {
@@ -52,8 +53,17 @@ RTimer::setInterval(int msec)
     msec = 1;
   }
 
-  while(pdPASS != xTimerChangePeriod(mHandle, msec, portMAX_DELAY))
+  if(_rIsrExecuting())
   {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    xTimerChangePeriodFromISR(mHandle, msec, &xHigherPriorityTaskWoken);
+  }
+  else
+  {
+    while(pdPASS != xTimerChangePeriod(mHandle, msec, portMAX_DELAY))
+    {
+    }
   }
 
   // xTimerChangePeriod will cause timer start, so we need to stop it
@@ -86,16 +96,34 @@ RTimer::start()
 {
   stop();
 
-  while(pdPASS != xTimerStart(mHandle, portMAX_DELAY))
+  if(_rIsrExecuting())
   {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    xTimerStartFromISR(mHandle, &xHigherPriorityTaskWoken);
+  }
+  else
+  {
+    while(pdPASS != xTimerStart(mHandle, portMAX_DELAY))
+    {
+    }
   }
 }
 
 void
 RTimer::stop()
 {
-  while(pdPASS != xTimerStop(mHandle, portMAX_DELAY))
+  if(_rIsrExecuting())
   {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
+  }
+  else
+  {
+    while(pdPASS != xTimerStop(mHandle, portMAX_DELAY))
+    {
+    }
   }
 }
 

@@ -3,6 +3,7 @@
 #include "RCoreApplication.h"
 #include "RScopedPointer.h"
 #include "RIsr.h"
+#include "RThread.h"
 
 RTimer::RTimer() : mIsSingleShot(false)
 {
@@ -22,6 +23,7 @@ RTimer::~RTimer()
 {
   while(pdPASS != xTimerDelete(mHandle, portMAX_DELAY))
   {
+    RThread::yieldCurrentThread();
   }
 }
 
@@ -63,6 +65,7 @@ RTimer::setInterval(int msec)
   {
     while(pdPASS != xTimerChangePeriod(mHandle, msec, portMAX_DELAY))
     {
+      RThread::yieldCurrentThread();
     }
   }
 
@@ -106,6 +109,7 @@ RTimer::start()
   {
     while(pdPASS != xTimerStart(mHandle, portMAX_DELAY))
     {
+      RThread::yieldCurrentThread();
     }
   }
 }
@@ -123,6 +127,7 @@ RTimer::stop()
   {
     while(pdPASS != xTimerStop(mHandle, portMAX_DELAY))
     {
+      RThread::yieldCurrentThread();
     }
   }
 }

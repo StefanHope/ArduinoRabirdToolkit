@@ -30,6 +30,9 @@ _rIsrInitialize();
 void
 _rIsrFinalize();
 
+bool
+_rIsrExecuting();
+
 RIsrContext *
 _rIsrAllocate();
 

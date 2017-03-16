@@ -6,12 +6,15 @@
   void __rIsr##number() \
   { \
     noInterrupts(); \
+    sIsrExecuting = true; \
     sContexts[number].triggered.emit() \
     interrupts(); \
+    sIsrExecuting = false; \
   }
 
-static RIsrContext *sContexts = NULL;
-static int8_t       sIndex    = -1;
+static volatile int8_t sIsrExecuting = false;
+static int8_t          sIndex        = -1;
+static RIsrContext *   sContexts     = NULL;
 
 _R_IMPLEMENT_ISR(0)
 _R_IMPLEMENT_ISR(1)
@@ -65,4 +68,10 @@ _rIsrAllocate()
   }
 
   return &sContexts[sIndex++];
+}
+
+bool
+_rIsrExecuting()
+{
+  return sIsrExecuting;
 }

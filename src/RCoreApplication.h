@@ -37,6 +37,8 @@ public:
   /**
    * Attach an ISR slot.
    *
+   * The _rIsrAttach() will initialize ISR contexts at the first invoke .
+   *
    * @warning NOT allow detach!
    */
   template <class ... ParamTypes>

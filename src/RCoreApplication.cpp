@@ -13,7 +13,6 @@ RCoreApplication::RCoreApplication()
 {
   R_MAKE_SPINLOCKER();
 
-  _rIsrInitialize();
   sApp = this;
 }
 

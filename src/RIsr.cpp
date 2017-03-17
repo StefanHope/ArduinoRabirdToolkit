@@ -7,7 +7,7 @@
   { \
     noInterrupts(); \
     sIsrExecuting = true; \
-    sContexts[number].triggered.emit() \
+    sContexts[number].triggered.emit(); \
     interrupts(); \
     sIsrExecuting = false; \
   }

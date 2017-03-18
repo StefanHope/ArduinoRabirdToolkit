@@ -20,13 +20,20 @@
     PT_WAIT_THREAD((&this->mPt), (otherCR)->run()) \
   } while(0);
 
+class RAbstractCoRoutine : public RObject
+{
+public:
+  virtual char
+  run() = 0;
+};
+
 /**
  * @brief The RCoRoutine class
  *
  * CoRoutine design, not yet implemented.
  */
 template <class T>
-class RCoRoutine : public RObject
+class RCoRoutine : public RAbstractCoRoutine
 {
 public:
   template <class ... ParamTypes>
@@ -36,9 +43,12 @@ public:
     mRunner.reset();
     mRunner.reset(new T(params ...));
 
+    thread()->eventLoop()->_attachCR(this);
+
     return run();
   }
 
+protected:
   char
   run()
   {

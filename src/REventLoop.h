@@ -5,6 +5,7 @@
 #include "REvent.h"
 #include <list>
 
+class RAbstractCoRoutine;
 class RCoreApplication;
 class REventLoop : public RObject
 {
@@ -45,6 +46,9 @@ public:
   bool
   processEvents();
 
+  void
+  _attachCR(RAbstractCoRoutine *cr);
+
 protected:
   void
   postEvent(RObject *receiver, REvent *event);
@@ -59,6 +63,7 @@ private:
   // FIXME: Events are not be protected by mutex, they will be crashed during
   // access.
   std::list<EventData> mEvents;
+  std::list<RAbstractCoRoutine *> mCoRoutines;
   int  mReturnCode;
   bool mIsInterrupt;
 

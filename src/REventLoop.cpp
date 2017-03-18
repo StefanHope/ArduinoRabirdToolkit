@@ -1,6 +1,7 @@
 #include "REventLoop.h"
 #include "RThread.h"
 #include "RSpinLocker.h"
+#include "RCoRoutine.h"
 
 REventLoop::REventLoop() : mReturnCode(0), mIsInterrupt(false)
 {
@@ -71,10 +72,37 @@ LABEL_EXIT:
 
   // TODO: Free all objects that marked as deleteLater
 
+  // Schedule coroutines
+  for(auto it = mCoRoutines.begin(); it != mCoRoutines.end(); )
+  {
+    auto ret   = (*it)->run();
+    auto oldIt = it;
+
+    ++it;
+
+    // Detach coroutines if it's exited!
+    if(ret >= PT_EXITED)
+    {
+      mCoRoutines.erase(oldIt);
+    }
+  }
+
   // Give control to other threads.
   RThread::yieldCurrentThread();
 
   return result;
+}
+
+void
+REventLoop::_attachCR(RAbstractCoRoutine *cr)
+{
+  if((NULL == cr) || (cr->thread()->id() != thread()->id()))
+  {
+    /* Don't put invalid coroutine into list */
+    return;
+  }
+
+  mCoRoutines.push_back(cr);
 }
 
 void

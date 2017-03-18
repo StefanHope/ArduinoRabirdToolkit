@@ -46,7 +46,7 @@ public:
 
     thread()->eventLoop()->_attachCR(this);
 
-    return run();
+    return PT_WAITING;
   }
 
 protected:

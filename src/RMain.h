@@ -3,7 +3,11 @@
 
 #include "RTypes.h"
 
+class RThread;
+
 R_EXTERN_C int
-rMain(int argc, char *argv[]);
+rMain(int argc, rfchar *argv[]);
+R_EXTERN_C RThread *
+rGetMainThread();
 
 #endif // __INCLUDED_72B5181CFC9111E6AA6EA088B4D1658C

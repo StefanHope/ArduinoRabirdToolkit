@@ -3,6 +3,7 @@
 #include "RForwardList.h"
 #include "RSpinLocker.h"
 #include "RIsr.h"
+#include "RMain.h"
 
 class RThreadPrivate
 {
@@ -315,7 +316,9 @@ RThread::run()
 void
 RThread::msleep(rtime msecs)
 {
-  if(currentThreadId())
+  // I don't know why, but we can't use vTaskDelay() inside the idle task !
+  // Otherwise the program crash!
+  if(currentThreadId() && (currentThreadId() != rGetMainThread()->id()))
   {
     while(msecs > 0)
     {
@@ -332,7 +335,11 @@ RThread::msleep(rtime msecs)
   }
   else
   {
-    delay(msecs);
+    // Simple delay
+    for(; msecs > 0; --msecs)
+    {
+      delayMicroseconds(1000);
+    }
   }
 }
 
@@ -359,7 +366,9 @@ RThread::sleep(rtime secs)
 void
 RThread::usleep(rtime usecs)
 {
-  if(currentThreadId())
+  // I don't know why, but we can't use vTaskDelay() inside the idle task !
+  // Otherwise the program crash!
+  if(currentThreadId() && (currentThreadId() != rGetMainThread()->id()))
   {
     while(usecs > 0)
     {

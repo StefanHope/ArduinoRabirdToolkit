@@ -3,6 +3,7 @@
 
 #include "RObject.h"
 #include "REvent.h"
+#include "RSignal.h"
 #include <list>
 
 class RAbstractCoRoutine;
@@ -48,6 +49,8 @@ public:
 
   void
   _attachCR(RAbstractCoRoutine *cr);
+
+  RSignal<void()> idle;
 
 protected:
   void

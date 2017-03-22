@@ -87,6 +87,8 @@ LABEL_EXIT:
     }
   }
 
+  idle.emit();
+
   // Give control to other threads.
   RThread::yieldCurrentThread();
 

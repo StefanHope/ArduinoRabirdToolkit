@@ -73,7 +73,7 @@ public:
   void
   quit();
   void
-  start(Priority priority=NormalPriority);
+  start(Priority priority=InheritPriority);
   void
   terminate();
   REventLoop *

@@ -28,6 +28,12 @@ loop()
     const rfchar *programName = F("");
     rfchar *      argv[]      = {const_cast<rfchar *>(programName), };
 
+    // FIXME: Idle thread only get working when other thread suspended (
+    // vTaskDelay() or vTaskSuspend())
+
+    // Fixed idle thread won't get any notice even yield from other thread
+    vTaskPrioritySet(RThread::currentThreadId(), RThread::NormalPriority);
+
     sMainThread = RThread::currentThread();
 
     rMain(1, argv);

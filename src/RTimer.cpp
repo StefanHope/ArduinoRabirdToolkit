@@ -5,7 +5,13 @@
 #include "RIsr.h"
 #include "RThread.h"
 
-RTimer::RTimer() : mIsSingleShot(false)
+RTimer::RTimer()
+  : mHandle(NULL)
+  , mIsSingleShot(false)
+  , mExtended(0)
+#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
+  , mExtendedCounter(0)
+#endif
 {
   // NOTE: Set timer run as idle task by default, but we can't set interval to
   // zero, otherwise the created timer will return to NULL, so we give value 1 .
@@ -27,10 +33,14 @@ RTimer::~RTimer()
   }
 }
 
-int
+int32_t
 RTimer::interval() const
 {
-  return xTimerGetPeriod(mHandle) * portTICK_PERIOD_MS;
+  return xTimerGetPeriod(mHandle) * portTICK_PERIOD_MS
+#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
+         + mExtended * portMAX_DELAY;
+#endif
+  ;
 }
 
 bool
@@ -46,8 +56,16 @@ RTimer::isSingleShot() const
 }
 
 void
-RTimer::setInterval(int msec)
+RTimer::setInterval(int32_t msec)
 {
+  static const int32_t blockMS = static_cast<int32_t>(portMAX_DELAY) *
+                                 portTICK_PERIOD_MS;
+
+#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
+  mExtended = msec / blockMS;
+  msec      = msec % blockMS;
+#endif
+
   msec /= portTICK_PERIOD_MS;
 
   if(msec <= 0)
@@ -88,16 +106,19 @@ RTimer::timerId() const
 }
 
 void
-RTimer::start(int msec)
+RTimer::start()
 {
-  setInterval(msec);
-  start();
+  start(interval());
 }
 
 void
-RTimer::start()
+RTimer::start(int32_t msec)
 {
-  stop();
+  setInterval(msec);
+
+#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
+  mExtendedCounter = mExtended;
+#endif
 
   if(_rIsrExecuting())
   {
@@ -158,6 +179,33 @@ void
 RTimer::onTimeout(TimerHandle_t handle)
 {
   auto self = static_cast<RTimer *>(pvTimerGetTimerID(handle));
+
+#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
+
+  if(self->mExtendedCounter > 0)
+  {
+    --self->mExtendedCounter;
+
+    if(_rIsrExecuting())
+    {
+      BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+      xTimerChangePeriodFromISR(
+        self->mHandle, portMAX_DELAY, &xHigherPriorityTaskWoken);
+    }
+    else
+    {
+      while(pdPASS !=
+            xTimerChangePeriod(self->mHandle, portMAX_DELAY, portMAX_DELAY))
+      {
+        RThread::yieldCurrentThread();
+      }
+    }
+
+    return;
+  }
+
+#endif
 
   // NOTE: Event will be deleted in REventLoop after they handled that event.
   RScopedPointer<RTimerEvent> event(new RTimerEvent(self->timerId()));

@@ -104,7 +104,14 @@ REventLoop::_attachCR(RAbstractCoRoutine *cr)
     return;
   }
 
+  mCoRoutines.remove(cr);
   mCoRoutines.push_back(cr);
+}
+
+void
+REventLoop::_detachCR(RAbstractCoRoutine *cr)
+{
+  mCoRoutines.remove(cr);
 }
 
 void

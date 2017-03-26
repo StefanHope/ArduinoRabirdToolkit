@@ -50,6 +50,9 @@ public:
   void
   _attachCR(RAbstractCoRoutine *cr);
 
+  void
+  _detachCR(RAbstractCoRoutine *cr);
+
   RSignal<void()> idle;
 
 protected:

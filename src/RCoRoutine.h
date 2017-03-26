@@ -54,6 +54,12 @@ public:
     return PT_WAITING;
   }
 
+  void
+  terminate()
+  {
+    thread()->eventLoop()->_detachCR(this);
+  }
+
 protected:
   char
   run()

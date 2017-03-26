@@ -4,6 +4,7 @@
 #include "RObject.h"
 #include "RUniquePointer.h"
 #include "RCoRoutineRunner.h"
+#include "RSpinLocker.h"
 
 #define RCR_BEGIN()                PT_BEGIN(&this->mPt)
 #define RCR_END()                  PT_END(&this->mPt)
@@ -41,8 +42,12 @@ public:
   char
   spawn(ParamTypes ... params)
   {
-    mRunner.reset();
-    mRunner.reset(new T(params ...));
+    {
+      R_MAKE_SPINLOCKER();
+
+      mRunner.reset();
+      mRunner.reset(new T(params ...));
+    }
 
     thread()->eventLoop()->_attachCR(this);
 

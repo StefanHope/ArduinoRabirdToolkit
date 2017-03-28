@@ -22,6 +22,62 @@ public:
   }
 
   bool
+  addIfLessThan(T compareValue, T valueToAdd)
+  {
+    R_MAKE_SPINLOCKER();
+
+    if(mValue < compareValue)
+    {
+      mValue += valueToAdd;
+      return true;
+    }
+
+    return false;
+  }
+
+  bool
+  addIfLargeThan(T compareValue, T valueToAdd)
+  {
+    R_MAKE_SPINLOCKER();
+
+    if(mValue > compareValue)
+    {
+      mValue += valueToAdd;
+      return true;
+    }
+
+    return false;
+  }
+
+  bool
+  setIfLessThan(T compareValue, T newValue)
+  {
+    R_MAKE_SPINLOCKER();
+
+    if(mValue < compareValue)
+    {
+      mValue = newValue;
+      return true;
+    }
+
+    return false;
+  }
+
+  bool
+  setIfLargeThan(T compareValue, T newValue)
+  {
+    R_MAKE_SPINLOCKER();
+
+    if(mValue > compareValue)
+    {
+      mValue = newValue;
+      return true;
+    }
+
+    return false;
+  }
+
+  bool
   deref()
   {
     R_MAKE_SPINLOCKER();

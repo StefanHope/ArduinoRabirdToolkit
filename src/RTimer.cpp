@@ -5,11 +5,14 @@
 #include "RIsr.h"
 #include "RThread.h"
 
+static const int32_t sMaxDelayMS = static_cast<int32_t>(portMAX_DELAY) *
+                                   portTICK_PERIOD_MS;
+
 RTimer::RTimer()
   : mHandle(NULL)
   , mIsSingleShot(false)
   , mExtended(0)
-#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
+#if (configUSE_16_BIT_TICKS == 1)
   , mExtendedCounter(0)
 #endif
 {
@@ -22,6 +25,7 @@ RTimer::RTimer()
     reinterpret_cast<void *>(0),
     onTimeout
     );
+
   vTimerSetTimerID(mHandle, this);
 }
 
@@ -36,9 +40,9 @@ RTimer::~RTimer()
 int32_t
 RTimer::interval() const
 {
-  return xTimerGetPeriod(mHandle) * portTICK_PERIOD_MS
-#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
-         + mExtended * portMAX_DELAY;
+  return static_cast<int32_t>(xTimerGetPeriod(mHandle)) * portTICK_PERIOD_MS
+#if (configUSE_16_BIT_TICKS == 1)
+         * (mExtended + 1)
 #endif
   ;
 }
@@ -58,12 +62,12 @@ RTimer::isSingleShot() const
 void
 RTimer::setInterval(int32_t msec)
 {
-  static const int32_t blockMS = static_cast<int32_t>(portMAX_DELAY) *
-                                 portTICK_PERIOD_MS;
+#if (configUSE_16_BIT_TICKS == 1)
+  mExtended = static_cast<uint8_t>(msec / sMaxDelayMS);
 
-#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
-  mExtended = msec / blockMS;
-  msec      = msec % blockMS;
+  // A little trick to generate a fixed delay value, so that we needs not to
+  // store the remainder
+  msec /= (mExtended + 1);
 #endif
 
   msec /= portTICK_PERIOD_MS;
@@ -77,19 +81,30 @@ RTimer::setInterval(int32_t msec)
   {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-    xTimerChangePeriodFromISR(mHandle, msec, &xHigherPriorityTaskWoken);
+    xTimerChangePeriodFromISR(mHandle, static_cast<rtime>(msec),
+                              &xHigherPriorityTaskWoken);
+
+    // xTimerChangePeriod will cause timer start, so we need to stop it
+    // immediately
+    xHigherPriorityTaskWoken = pdFALSE;
+    xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
   }
   else
   {
-    while(pdPASS != xTimerChangePeriod(mHandle, msec, portMAX_DELAY))
-    {
-      RThread::yieldCurrentThread();
-    }
-  }
+    taskENTER_CRITICAL();
 
-  // xTimerChangePeriod will cause timer start, so we need to stop it
-  // immediately
-  stop();
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    xTimerChangePeriodFromISR(mHandle, static_cast<rtime>(msec),
+                              &xHigherPriorityTaskWoken);
+
+    // xTimerChangePeriod will cause timer start, so we need to stop it
+    // immediately
+    xHigherPriorityTaskWoken = pdFALSE;
+    xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
+
+    taskEXIT_CRITICAL();
+  }
 }
 
 void
@@ -108,16 +123,8 @@ RTimer::timerId() const
 void
 RTimer::start()
 {
-  start(interval());
-}
-
-void
-RTimer::start(int32_t msec)
-{
-  setInterval(msec);
-
-#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
-  mExtendedCounter = mExtended;
+#if (configUSE_16_BIT_TICKS == 1)
+  mExtendedCounter.store(mExtended);
 #endif
 
   if(_rIsrExecuting())
@@ -128,11 +135,21 @@ RTimer::start(int32_t msec)
   }
   else
   {
-    while(pdPASS != xTimerStart(mHandle, portMAX_DELAY))
-    {
-      RThread::yieldCurrentThread();
-    }
+    taskENTER_CRITICAL();
+
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    xTimerStartFromISR(mHandle, &xHigherPriorityTaskWoken);
+
+    taskEXIT_CRITICAL();
   }
+}
+
+void
+RTimer::start(int32_t msec)
+{
+  setInterval(msec);
+  start();
 }
 
 void
@@ -146,10 +163,13 @@ RTimer::stop()
   }
   else
   {
-    while(pdPASS != xTimerStop(mHandle, portMAX_DELAY))
-    {
-      RThread::yieldCurrentThread();
-    }
+    taskENTER_CRITICAL();
+
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
+
+    taskEXIT_CRITICAL();
   }
 }
 
@@ -180,26 +200,26 @@ RTimer::onTimeout(TimerHandle_t handle)
 {
   auto self = static_cast<RTimer *>(pvTimerGetTimerID(handle));
 
-#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
+#if (configUSE_16_BIT_TICKS == 1)
 
-  if(self->mExtendedCounter > 0)
+  if(self->mExtendedCounter.addIfLargeThan(0, -1))
   {
-    --self->mExtendedCounter;
-
     if(_rIsrExecuting())
     {
       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-      xTimerChangePeriodFromISR(
-        self->mHandle, portMAX_DELAY, &xHigherPriorityTaskWoken);
+      xTimerStartFromISR(
+        self->mHandle, &xHigherPriorityTaskWoken);
     }
     else
     {
-      while(pdPASS !=
-            xTimerChangePeriod(self->mHandle, portMAX_DELAY, portMAX_DELAY))
-      {
-        RThread::yieldCurrentThread();
-      }
+      taskENTER_CRITICAL();
+
+      BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+      xTimerStartFromISR(self->mHandle, &xHigherPriorityTaskWoken);
+
+      taskEXIT_CRITICAL();
     }
 
     return;

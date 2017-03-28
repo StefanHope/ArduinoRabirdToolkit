@@ -4,6 +4,7 @@
 #include "RObject.h"
 #include "RSignal.h"
 #include "timers.h"
+#include "RAtomicInteger.h"
 
 class RTimer : public RObject
 {
@@ -49,11 +50,16 @@ private:
   static void
   onTimeout(TimerHandle_t handle);
   TimerHandle_t mHandle;
-  bool          mIsSingleShot : 1;
-  uint8_t       mExtended     : 7;
 
-#if defined(configUSE_16_BIT_TICKS) && (configUSE_16_BIT_TICKS == 1)
-  uint8_t mExtendedCounter;
+  class
+  {
+public:
+    bool    mIsSingleShot : 1;
+    uint8_t mExtended     : 7;
+  };
+
+#if (configUSE_16_BIT_TICKS == 1)
+  RAtomicInteger<uint8_t> mExtendedCounter;
 
 #endif
 };

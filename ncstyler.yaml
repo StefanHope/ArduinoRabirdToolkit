@@ -56,7 +56,7 @@ class_variant:
 
 struct_variant:
   re: ^(?!m)[a-z0-9]+(?:[A-Z]+[a-zA-Z0-9]*)?$
-  error: "must lower camel case and must not prefix with 'm_', for example : thisIsAnExample."
+  error: "must lower camel case and must not prefix with 'm', for example : mThisIsAnExample."
 
 # struct_method:
 #   re: ^[a-z0-9_]+$

@@ -11,6 +11,7 @@ class RThread;
 class RObject : protected Printable
 {
 public:
+  explicit
   RObject(RThread *targetThread);
 
 public:

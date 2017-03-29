@@ -2,7 +2,11 @@
 #include <Arduino.h>
 
 RTest::RTest(const rfchar *aName, const rfchar *fileName, int lineNo)
-  : mStatus(Passed), mName(aName), mFileName(fileName), mLineNo(lineNo)
+  : mStatus(Passed)
+  , mName(aName)
+  , mFileName(fileName)
+  , mLineNo(lineNo)
+  , mManager(NULL)
 {
 }
 

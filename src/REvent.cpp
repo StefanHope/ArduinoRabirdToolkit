@@ -1,7 +1,7 @@
 #include "REvent.h"
 #include "RAtomicInteger.h"
 
-REvent::REvent()
+REvent::REvent() : mIsAccepted(false)
 {
 }
 

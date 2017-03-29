@@ -5,6 +5,12 @@
 #include "RIsr.h"
 #include "RThread.h"
 
+#define RTIMER_WAIT_PASS(code) \
+  while(pdPASS != (code)) \
+  { \
+    RThread::yieldCurrentThread(); \
+  }
+
 static const int32_t sMaxDelayMS = static_cast<int32_t>(portMAX_DELAY) *
                                    portTICK_PERIOD_MS;
 
@@ -31,10 +37,7 @@ RTimer::RTimer()
 
 RTimer::~RTimer()
 {
-  while(pdPASS != xTimerDelete(mHandle, portMAX_DELAY))
-  {
-    RThread::yieldCurrentThread();
-  }
+  RTIMER_WAIT_PASS(xTimerDelete(mHandle, portMAX_DELAY));
 }
 
 int32_t
@@ -91,19 +94,9 @@ RTimer::setInterval(int32_t msec)
   }
   else
   {
-    taskENTER_CRITICAL();
-
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-    xTimerChangePeriodFromISR(mHandle, static_cast<rtime>(msec),
-                              &xHigherPriorityTaskWoken);
-
-    // xTimerChangePeriod will cause timer start, so we need to stop it
-    // immediately
-    xHigherPriorityTaskWoken = pdFALSE;
-    xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
-
-    taskEXIT_CRITICAL();
+    RTIMER_WAIT_PASS(xTimerChangePeriod(
+                       mHandle, static_cast<rtime>(msec), portMAX_DELAY));
+    RTIMER_WAIT_PASS(xTimerStop(mHandle, portMAX_DELAY));
   }
 }
 
@@ -135,13 +128,7 @@ RTimer::start()
   }
   else
   {
-    taskENTER_CRITICAL();
-
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-    xTimerStartFromISR(mHandle, &xHigherPriorityTaskWoken);
-
-    taskEXIT_CRITICAL();
+    RTIMER_WAIT_PASS(xTimerStart(mHandle, portMAX_DELAY));
   }
 }
 
@@ -163,13 +150,7 @@ RTimer::stop()
   }
   else
   {
-    taskENTER_CRITICAL();
-
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-    xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
-
-    taskEXIT_CRITICAL();
+    RTIMER_WAIT_PASS(xTimerStop(mHandle, portMAX_DELAY));
   }
 }
 
@@ -213,13 +194,7 @@ RTimer::onTimeout(TimerHandle_t handle)
     }
     else
     {
-      taskENTER_CRITICAL();
-
-      BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-      xTimerStartFromISR(self->mHandle, &xHigherPriorityTaskWoken);
-
-      taskEXIT_CRITICAL();
+      RTIMER_WAIT_PASS(xTimerStart(self->mHandle, portMAX_DELAY));
     }
 
     return;

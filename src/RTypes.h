@@ -318,6 +318,9 @@ private: \
   (sender)->signal.connect((sender), (receiver), \
                            &RRemovePointer<decltype((receiver))>::Type::slot)
 
+#define RCONNECT_THIS(signal, slot) \
+  RCONNECT(rThis, signal, rThis, slot)
+
 template <typename T>
 static inline T *
 rGetPtrHelper(T *ptr)

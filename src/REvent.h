@@ -37,10 +37,17 @@ private:
  * registered static type variable. So that you could focus on the
  * implementation of event class.
  */
-template <class DerivedType, class BaseType>
+template <class DerivedType, class BaseType = REvent>
 class TypeRegisteredEvent : public BaseType
 {
 public:
+  // Inherit all constructors
+  template <class ... ParamTypes>
+  TypeRegisteredEvent(ParamTypes ... params)
+    : BaseType(params ...)
+  {
+  }
+
   rcount
   type() const
   {

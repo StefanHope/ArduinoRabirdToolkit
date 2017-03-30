@@ -186,6 +186,24 @@ struct RRemoveReference<T&&>
   typedef T Type;
 };
 
+template <class T>
+struct RRemovePointer
+{
+  typedef T Type;
+};
+
+template <class T>
+struct RRemovePointer<T *>
+{
+  typedef T Type;
+};
+
+template <class T>
+struct RRemovePointer<T **>
+{
+  typedef T Type;
+};
+
 bool
 rIsObjectInSameThread(const RObject *left, const RObject *right);
 
@@ -295,6 +313,10 @@ private: \
   typedef struct className##Impl    RImpl;
 
 #define rThis pImpl()
+
+#define RCONNECT(sender, signal, receiver, slot) \
+  (sender)->signal.connect((sender), (receiver), \
+                           &RRemovePointer<decltype((receiver))>::Type::slot)
 
 template <typename T>
 static inline T *

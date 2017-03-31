@@ -18,19 +18,19 @@ public:
   enum Priority
   {
     /// scheduled only when no other threads are running.
-    IdlePriority /* = tskIDLE_PRIORITY */,
+    IdlePriority = 0 /* = tskIDLE_PRIORITY */,
     /// scheduled less often than LowPriority.
-    LowestPriority,
+    LowestPriority = configMAX_PRIORITIES / 7,
     /// scheduled less often than NormalPriority.
-    LowPriority,
+    LowPriority = configMAX_PRIORITIES / 4,
     /// the default priority of the operating system.
-    NormalPriority,
+    NormalPriority = configMAX_PRIORITIES / 2,
     /// scheduled more often than NormalPriority.
-    HighPriority,
+    HighPriority = NormalPriority + LowestPriority,
     /// scheduled more often than HighPriority.
-    HighestPriority,
+    HighestPriority = NormalPriority + LowPriority,
     /// scheduled as often as possible.
-    TimeCriticalPriority,
+    TimeCriticalPriority = configMAX_PRIORITIES - 1,
     /// use the same priority as the creating thread. This is the default.
     InheritPriority,
   };

@@ -1,6 +1,7 @@
 #include "RObject.h"
 #include "RThread.h"
 #include "REvent.h"
+#include "RCoreApplication.h"
 
 RObject::RObject(RThread *targetThread)
   : mThread(targetThread)
@@ -46,4 +47,10 @@ void
 RObject::moveToThread(RThread *targetThread)
 {
   mThread.reset(targetThread);
+}
+
+void
+RObject::deleteLater()
+{
+  rCoreApp->postEvent(this, new REvent(REvent::DeferredDelete));
 }

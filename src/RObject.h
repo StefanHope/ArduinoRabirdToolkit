@@ -31,6 +31,9 @@ public:
   void
   moveToThread(RThread *targetThread);
 
+  void
+  deleteLater();
+
 private:
   RRawPointer<RThread> mThread;
 

@@ -56,7 +56,15 @@ REventLoop::processEvents()
       mEvents.pop_front();
     }
 
-    eventData.receiver->event(eventData.event);
+    if(eventData.event->type() == REvent::DeferredDelete)
+    {
+      delete eventData.receiver;
+      clear(eventData.receiver);
+    }
+    else
+    {
+      eventData.receiver->event(eventData.event);
+    }
 
     // Free the posted event
     delete eventData.event;
@@ -138,4 +146,22 @@ bool
 REventLoop::hasPendingEvents()
 {
   return !mEvents.empty();
+}
+
+void
+REventLoop::clear(RObject *receiver)
+{
+  R_MAKE_SPINLOCKER();
+
+  for(auto it = mEvents.begin(); it != mEvents.end(); )
+  {
+    if(it->receiver == receiver)
+    {
+      delete it->event;
+      it = mEvents.erase(it);
+      continue;
+    }
+
+    ++it;
+  }
 }

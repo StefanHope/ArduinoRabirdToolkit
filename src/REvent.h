@@ -10,10 +10,11 @@ public:
   enum Type
   {
     None = RNumericLimits<rcount>::sMin,
+    DeferredDelete,
     User, ///< User defined events start from this value.
   };
 
-  REvent();
+  REvent(rcount type=0);
 
   virtual
   ~REvent();
@@ -36,7 +37,8 @@ public:
   registerEventType();
 
 private:
-  bool mIsAccepted;
+  rcount mType;
+  bool   mIsAccepted;
 };
 
 /**

@@ -1,7 +1,7 @@
 #include "REvent.h"
 #include "RAtomicInteger.h"
 
-REvent::REvent() : mIsAccepted(false)
+REvent::REvent(rcount type) : mType(type), mIsAccepted(false)
 {
 }
 
@@ -36,7 +36,7 @@ REvent::setAccepted(bool accepted)
 rcount
 REvent::type() const
 {
-  return 0;
+  return mType;
 }
 
 rcount

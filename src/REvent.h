@@ -2,10 +2,17 @@
 #define __INCLUDED_6FCA43F2953F11E6AA6EA088B4D1658C
 
 #include <RTypes.h>
+#include <RLimits.h>
 
 class REvent
 {
 public:
+  enum Type
+  {
+    None = RNumericLimits<rcount>::sMin,
+    User, ///< User defined events start from this value.
+  };
+
   REvent();
 
   virtual

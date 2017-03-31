@@ -42,8 +42,8 @@ REvent::type() const
 rcount
 REvent::registerEventType()
 {
-  static RAtomicInteger<rcount> previousType = 0;
+  static RAtomicInteger<rcount> previousType = RNumericLimits<rcount>::sMax;
 
   // FIXME: If type value exceed the type size, we should report error!
-  return ++previousType;
+  return previousType--;
 }

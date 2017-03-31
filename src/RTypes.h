@@ -11,7 +11,12 @@
 #include <stdint.h>
 
 // Include all FreeRTOS stuffs
+#if defined(ARDUINO)
 #include <Arduino_FreeRTOS.h>
+#else
+#include <FreeRTOS.h>
+#endif
+
 #include <semphr.h>
 
 #ifdef __cplusplus

@@ -87,7 +87,8 @@ public:
       connectionType = DirectConnection;
     }
 
-    mDelegateList.pushFront(Connection(Rt::MakeDelegate(receiver, func),
+    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
+                                         static_cast<X *>(receiver), func),
                                        connectionType));
   }
 
@@ -112,7 +113,8 @@ public:
       connectionType = DirectConnection;
     }
 
-    mDelegateList.pushFront(Connection(Rt::MakeDelegate(receiver, func),
+    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
+                                         static_cast<X *>(receiver), func),
                                        connectionType));
   }
 

@@ -49,9 +49,10 @@ private:
 template <class BaseType = REvent>
 class TypeRegisteredEvent : public BaseType
 {
-public:
+private:
   typedef TypeRegisteredEvent<BaseType> SelfType;
 
+public:
   // Inherit all constructors
   template <class ... ParamTypes>
   TypeRegisteredEvent(ParamTypes ... params)

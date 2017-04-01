@@ -14,7 +14,8 @@ public:
     User, ///< User defined events start from this value.
   };
 
-  REvent(rcount type=0);
+  explicit
+  REvent(rcount type=None);
 
   virtual
   ~REvent();
@@ -55,7 +56,7 @@ private:
 public:
   // Inherit all constructors
   template <class ... ParamTypes>
-  TypeRegisteredEvent(ParamTypes ... params)
+  explicit TypeRegisteredEvent(ParamTypes ... params)
     : BaseType(params ...)
   {
   }

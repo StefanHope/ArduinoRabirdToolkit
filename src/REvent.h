@@ -65,13 +65,6 @@ public:
     return sType;
   }
 
-  static inline rcount
-  staticType()
-  {
-    return sType;
-  }
-
-private:
   static const rcount sType;
 };
 

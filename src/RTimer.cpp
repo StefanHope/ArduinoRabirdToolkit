@@ -157,7 +157,7 @@ RTimer::stop()
 bool
 RTimer::event(REvent *e)
 {
-  if(e->type() == RTimerEvent::staticType())
+  if(e->type() == RTimerEvent::sType)
   {
     // FIXME: Here may be generate a potential crash
     auto timerEvent = static_cast<RTimerEvent *>(e);

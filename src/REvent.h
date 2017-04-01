@@ -46,10 +46,12 @@ private:
  * registered static type variable. So that you could focus on the
  * implementation of event class.
  */
-template <class DerivedType, class BaseType = REvent>
+template <class BaseType = REvent>
 class TypeRegisteredEvent : public BaseType
 {
 public:
+  typedef TypeRegisteredEvent<BaseType> SelfType;
+
   // Inherit all constructors
   template <class ... ParamTypes>
   TypeRegisteredEvent(ParamTypes ... params)
@@ -73,8 +75,7 @@ private:
   static const rcount sType;
 };
 
-template <class DerivedType, class BaseType>
-const rcount TypeRegisteredEvent<DerivedType,
-                                 BaseType>::sType = REvent::registerEventType();
+template <class BaseType>
+const rcount TypeRegisteredEvent<BaseType>::sType = REvent::registerEventType();
 
 #endif // __INCLUDED_6FCA43F2953F11E6AA6EA088B4D1658C

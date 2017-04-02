@@ -3,7 +3,7 @@
 
 #include "REvent.h"
 
-class RTimerEvent : public TypeRegisteredEvent<REvent>
+class RTimerEvent : public TypeRegisteredEvent<>
 {
 public:
   RTimerEvent(int timerId);

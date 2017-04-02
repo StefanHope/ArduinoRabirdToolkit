@@ -52,5 +52,5 @@ RObject::moveToThread(RThread *targetThread)
 void
 RObject::deleteLater()
 {
-  rCoreApp->postEvent(this, new REvent(REvent::DeferredDelete));
+  rCoreApp->postEvent(this, rMakeEvent(REvent::DeferredDelete));
 }

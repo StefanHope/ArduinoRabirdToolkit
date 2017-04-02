@@ -1,7 +1,7 @@
 #include "REvent.h"
 #include "RAtomicInteger.h"
 
-REvent::REvent(rcount type) : mType(type), mIsAccepted(false)
+REvent::REvent(const rcount &type) : mType(type), mIsAccepted(false)
 {
 }
 
@@ -46,4 +46,10 @@ REvent::registerEventType()
 
   // FIXME: If type value exceed the type size, we should report error!
   return previousType--;
+}
+
+REvent *
+rMakeEvent(const rcount &type)
+{
+  return new REvent(type);
 }

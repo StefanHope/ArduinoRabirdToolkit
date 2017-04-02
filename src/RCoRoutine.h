@@ -57,7 +57,8 @@ public:
   void
   terminate()
   {
-    thread()->eventLoop()->_detachCR(this);
+    // run() will return PT_ENDED lead REventLoop detach this CR.
+    mRunner.reset();
   }
 
 protected:

@@ -311,11 +311,19 @@ private: \
 #define R_DECLARE_PRIVATE(className) \
   R_DECLARE_PRIVATE_WITHOUT_DATA(className) \
 private: \
-  struct className##Private *pData; \
+  struct className##Private *pData;
 
 #define R_IMPLEMENT_PRIVATE(className) \
   typedef struct className##Private RPrivate; \
   typedef struct className##Impl    RImpl;
+
+#define R_INHERIT_CONSTRUCTORS(className, baseClassName) \
+  template <class ... ParamTypes> \
+  explicit \
+  className(ParamTypes ... params) \
+    : baseClassName(params ...) \
+  { \
+  }
 
 #define rThis pImpl()
 

@@ -65,20 +65,12 @@ protected:
   bool
   hasPendingEvents();
 
-  ///
-  /// @brief clear
-  ///
-  /// Clear events realted to receiver.
-  ///
-  /// @param receiver
-  void
-  clear(RObject *receiver);
-
 private:
   // FIXME: Events are not be protected by mutex, they will be crashed during
   // access.
   std::list<EventData> mEvents;
   std::list<RAbstractCoRoutine *> mCoRoutines;
+  std::list<RObject *> mDeferredObjects;
   int  mReturnCode;
   bool mIsInterrupt;
 

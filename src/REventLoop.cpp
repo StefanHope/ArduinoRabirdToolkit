@@ -58,8 +58,7 @@ REventLoop::processEvents()
 
     if(eventData.event->type() == REvent::DeferredDelete)
     {
-      delete eventData.receiver;
-      clear(eventData.receiver);
+      mDeferredObjects.push_back(eventData.receiver);
     }
     else
     {
@@ -79,19 +78,31 @@ REventLoop::processEvents()
 LABEL_EXIT:
 
   // TODO: Free all objects that marked as deleteLater
+  if(mDeferredObjects.size() > 0)
+  {
+    for(auto it = mDeferredObjects.begin(); it != mDeferredObjects.end(); ++it)
+    {
+      delete *it;
+    }
+
+    mDeferredObjects.clear();
+  }
 
   // Schedule coroutines
-  for(auto it = mCoRoutines.begin(); it != mCoRoutines.end(); )
+  if(mCoRoutines.size() > 0)
   {
-    auto ret   = (*it)->run();
-    auto oldIt = it;
-
-    ++it;
-
-    // Detach coroutines if it's exited!
-    if(ret >= PT_EXITED)
+    for(auto it = mCoRoutines.begin(); it != mCoRoutines.end(); )
     {
-      mCoRoutines.erase(oldIt);
+      auto ret   = (*it)->run();
+      auto oldIt = it;
+
+      ++it;
+
+      // Detach coroutines if it's exited!
+      if(ret >= PT_EXITED)
+      {
+        mCoRoutines.erase(oldIt);
+      }
     }
   }
 
@@ -146,22 +157,4 @@ bool
 REventLoop::hasPendingEvents()
 {
   return !mEvents.empty();
-}
-
-void
-REventLoop::clear(RObject *receiver)
-{
-  R_MAKE_SPINLOCKER();
-
-  for(auto it = mEvents.begin(); it != mEvents.end(); )
-  {
-    if(it->receiver == receiver)
-    {
-      delete it->event;
-      it = mEvents.erase(it);
-      continue;
-    }
-
-    ++it;
-  }
 }

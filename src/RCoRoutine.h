@@ -38,6 +38,12 @@ template <class T>
 class RCoRoutine : public RAbstractCoRoutine
 {
 public:
+  ~RCoRoutine()
+  {
+    // We should detach this CR if we be destroied.
+    thread()->eventLoop()->_detachCR(this);
+  }
+
   template <class ... ParamTypes>
   char
   spawn(ParamTypes ... params)

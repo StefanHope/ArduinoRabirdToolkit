@@ -42,7 +42,9 @@ public:
   char
   spawn(ParamTypes ... params)
   {
-    {
+    { // CoRoutine won't run between different threads, but spinlock could
+      // ensure memory allocation will always get the same memory block we just
+      // free or not get heap space grow up.
       R_MAKE_SPINLOCKER();
 
       mRunner.reset();

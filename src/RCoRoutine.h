@@ -22,6 +22,37 @@
     PT_WAIT_THREAD((&this->mPt), (otherCR)->run()) \
   } while(0);
 
+#define RCR_METHOD_DECL(methodName) \
+  friend class __RCR##methodName; \
+  RUniquePointer<__RCR##methodName> pRCR##methodName;
+
+#define _RCR_METHOD_EXPAND_ARGS_RCR_NO_ARGS   /**/
+#define _RCR_METHOD_EXPAND_MEMBER(type, name) type name;
+#define _RCR_METHOD_EXPAND_ARGS(arg, ...) \
+  _RCR_METHOD_EXPAND_MEMBER##arg; \
+  _RCR_METHOD_EXPAND_ARGS##__VA_ARGS__
+
+#define RCR_METHOD_BEGIN(className, methodName, ...) \
+  class __RCR##methodName : public RCoRoutineRunner \
+  { \
+public: \
+    className *self; \
+    _RCR_METHOD_EXPAND_ARGS(__VA_ARGS__, _RCR_NO_ARGS); \
+    __RCR##methodName(className * inSelf) \
+      : self(inSelf) \
+    { \
+    }
+
+#define RCR_METHOD_IMPL() \
+protected: \
+  char run() \
+  { RCR_BEGIN();
+
+#define RCR_METHOD_END() \
+  RCR_END(); }};
+
+#define RCR_METHOD_INVOKE(methodName)
+
 class RAbstractCoRoutine : public RObject
 {
 public:

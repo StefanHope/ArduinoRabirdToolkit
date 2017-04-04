@@ -13,9 +13,9 @@
 #define RCR_YIELD()                PT_YIELD(&this->mPt)
 #define RCR_YIELD_UNTIL(condition) PT_YIELD_UNTIL(&this->mPt, (condition))
 #define RCR_EXIT()                 PT_EXIT(&this->mPt)
-#define RCR_SPAWN(otherCR, args ...) \
+#define RCR_SPAWN(otherCR, ...) \
   do { \
-    if(!PT_SCHEDULE((otherCR)->spawn(args))) \
+    if(!PT_SCHEDULE((otherCR)->spawn(__VA_ARGS__))) \
     { \
       return PT_WAITING; \
     } \

@@ -22,29 +22,17 @@
     PT_WAIT_THREAD((&this->mPt), (otherCR)->run()) \
   } while(0);
 
-class RAbstractCoRoutine : public RObject
-{
-public:
-  virtual char
-  run() = 0;
-};
-
 /**
  * @brief The RCoRoutine class
  *
  * CoRoutine design, not yet implemented.
  */
-template <class T>
-class RCoRoutine : public RAbstractCoRoutine
+class RCoRoutine : public RObject
 {
 public:
-  ~RCoRoutine()
-  {
-    // We should detach this CR if we be destroied.
-    thread()->eventLoop()->_detachCR(this);
-  }
+  ~RCoRoutine();
 
-  template <class ... ParamTypes>
+  template <class T, class ... ParamTypes>
   char
   spawn(ParamTypes ... params)
   {
@@ -57,31 +45,25 @@ public:
       mRunner.reset(new T(params ...));
     }
 
-    thread()->eventLoop()->_attachCR(this);
+    _attachThisToEventLoop();
 
     return PT_WAITING;
   }
 
   void
-  terminate()
-  {
-    // run() will return PT_ENDED lead REventLoop detach this CR.
-    mRunner.reset();
-  }
+  terminate();
 
 protected:
   char
-  run()
-  {
-    if(!mRunner)
-    {
-      return PT_ENDED;
-    }
-
-    return mRunner->run();
-  }
+  run();
 
 private:
+  void
+  _attachThisToEventLoop();
+
+private:
+  friend class REventLoop;
+
   RUniquePointer<RCoRoutineRunner> mRunner;
 };
 

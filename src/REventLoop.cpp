@@ -115,7 +115,7 @@ LABEL_EXIT:
 }
 
 void
-REventLoop::_attachCR(RAbstractCoRoutine *cr)
+REventLoop::_attachCR(RCoRoutine *cr)
 {
   if((NULL == cr) || (cr->thread()->id() != thread()->id()))
   {
@@ -128,7 +128,7 @@ REventLoop::_attachCR(RAbstractCoRoutine *cr)
 }
 
 void
-REventLoop::_detachCR(RAbstractCoRoutine *cr)
+REventLoop::_detachCR(RCoRoutine *cr)
 {
   mCoRoutines.remove(cr);
 }

@@ -10,8 +10,8 @@ public:
   enum Type
   {
     None = RNumericLimits<rcount>::sMin,
-    DeferredDelete,
     Timer,
+    DeferredDelete,
     User, ///< User defined events start from this value.
   };
 

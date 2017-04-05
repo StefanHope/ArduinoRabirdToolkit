@@ -86,9 +86,6 @@ public:
   static const rcount sType = TypeValue;
 };
 
-//template <rcount TypeValue, class BaseType>
-//const rcount TypeEnumeratedEvent<TypeValue, BaseType>::sType = TypeValue;
-
 template <class EventType, class ... ParamTypes>
 EventType *
 rMakeEvent(ParamTypes ... params)

@@ -1,6 +1,8 @@
 #include "RTimerEvent.h"
 
-RTimerEvent::RTimerEvent(int timerId) : mTimerId(timerId)
+RTimerEvent::RTimerEvent(rcount type, int timerId)
+  : BaseType(type)
+  , mTimerId(timerId)
 {
 }
 

@@ -3,10 +3,13 @@
 
 #include "REvent.h"
 
-class RTimerEvent : public TypeRegisteredEvent<>
+class RTimerEvent : public TypeEnumeratedEvent<REvent::Timer>
 {
+private:
+  typedef TypeEnumeratedEvent<REvent::Timer> BaseType;
+
 public:
-  RTimerEvent(int timerId);
+  RTimerEvent(rcount type, int timerId);
   ~RTimerEvent();
 
   int

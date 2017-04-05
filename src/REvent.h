@@ -11,6 +11,7 @@ public:
   {
     None = RNumericLimits<rcount>::sMin,
     DeferredDelete,
+    Timer,
     User, ///< User defined events start from this value.
   };
 

@@ -203,7 +203,5 @@ RTimer::onTimeout(TimerHandle_t handle)
 #endif
 
   // NOTE: Event will be deleted in REventLoop after they handled that event.
-  RScopedPointer<RTimerEvent> event(new RTimerEvent(self->timerId()));
-
-  RCoreApplication::postEvent(self, event.take());
+  RCoreApplication::postEvent(self, rMakeEvent<RTimerEvent>(self->timerId()));
 }

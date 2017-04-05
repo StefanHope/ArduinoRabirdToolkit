@@ -3,7 +3,7 @@
 
 #include "REvent.h"
 
-class RTimerEvent : public TypeEnumeratedEvent<REvent::Timer>
+class RTimerEvent : public TypeEnumeratedEvent<REvent::Timer, REvent>
 {
 private:
   typedef RegisteredEventType BaseType;

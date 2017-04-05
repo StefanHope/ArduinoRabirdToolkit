@@ -6,7 +6,7 @@
 class RTimerEvent : public TypeEnumeratedEvent<REvent::Timer>
 {
 private:
-  typedef TypeEnumeratedEvent<REvent::Timer> BaseType;
+  typedef RegisteredEventType BaseType;
 
 public:
   RTimerEvent(rcount type, int timerId);

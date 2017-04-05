@@ -49,8 +49,8 @@ private:
 template <class MyType, class BaseType = REvent>
 class TypeRegisteredEvent : public BaseType
 {
-private:
-  typedef TypeRegisteredEvent<MyType, BaseType> SelfType;
+protected:
+  typedef TypeRegisteredEvent<MyType, BaseType> RegisteredEventType;
 
 public:
   // Inherit all constructors
@@ -71,8 +71,8 @@ const rcount TypeRegisteredEvent<MyType,
 template <rcount TypeValue, class BaseType = REvent>
 class TypeEnumeratedEvent : public BaseType
 {
-private:
-  typedef TypeEnumeratedEvent<TypeValue, BaseType> SelfType;
+protected:
+  typedef TypeEnumeratedEvent<TypeValue, BaseType> RegisteredEventType;
 
 public:
   // Inherit all constructors

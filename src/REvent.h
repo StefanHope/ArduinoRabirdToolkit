@@ -46,11 +46,11 @@ private:
  * An easy wrapper template for provide auto registered static type variable.
  * So that you could focus on the implementation of event class.
  */
-template <class BaseType = REvent>
+template <class MyType, class BaseType = REvent>
 class TypeRegisteredEvent : public BaseType
 {
 private:
-  typedef TypeRegisteredEvent<BaseType> SelfType;
+  typedef TypeRegisteredEvent<MyType, BaseType> SelfType;
 
 public:
   // Inherit all constructors
@@ -64,8 +64,9 @@ public:
   static const rcount sType;
 };
 
-template <class BaseType>
-const rcount TypeRegisteredEvent<BaseType>::sType = REvent::registerEventType();
+template <class MyType, class BaseType>
+const rcount TypeRegisteredEvent<MyType,
+                                 BaseType>::sType = REvent::registerEventType();
 
 template <rcount TypeValue, class BaseType = REvent>
 class TypeEnumeratedEvent : public BaseType

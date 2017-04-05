@@ -92,6 +92,11 @@ RTimer::setInterval(int32_t msec)
     xHigherPriorityTaskWoken = pdFALSE;
     xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
   }
+  else if(RThread::currentThreadId() == xTimerGetTimerDaemonTaskHandle())
+  {
+    xTimerChangePeriod(mHandle, static_cast<rtime>(msec), 0);
+    xTimerStop(mHandle, 0);
+  }
   else
   {
     RTIMER_WAIT_PASS(xTimerChangePeriod(
@@ -126,6 +131,10 @@ RTimer::start()
 
     xTimerStartFromISR(mHandle, &xHigherPriorityTaskWoken);
   }
+  else if(RThread::currentThreadId() == xTimerGetTimerDaemonTaskHandle())
+  {
+    xTimerStart(mHandle, 0);
+  }
   else
   {
     RTIMER_WAIT_PASS(xTimerStart(mHandle, portMAX_DELAY));
@@ -147,6 +156,10 @@ RTimer::stop()
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     xTimerStopFromISR(mHandle, &xHigherPriorityTaskWoken);
+  }
+  else if(RThread::currentThreadId() == xTimerGetTimerDaemonTaskHandle())
+  {
+    xTimerStop(mHandle, 0);
   }
   else
   {
@@ -185,18 +198,9 @@ RTimer::onTimeout(TimerHandle_t handle)
 
   if(self->mExtendedCounter.addIfLargeThan(0, -1))
   {
-    if(_rIsrExecuting())
-    {
-      BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-      xTimerStartFromISR(
-        self->mHandle, &xHigherPriorityTaskWoken);
-    }
-    else
-    {
-      RTIMER_WAIT_PASS(xTimerStart(self->mHandle, portMAX_DELAY));
-    }
-
+    // Do not use a block time if calling a timer API function from a
+    // timer callback function, as doing so could cause a deadlock!
+    xTimerStart(self->mHandle, 0);
     return;
   }
 

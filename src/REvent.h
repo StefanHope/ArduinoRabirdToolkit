@@ -11,6 +11,11 @@ public:
   {
     None = RNumericLimits<rcount>::sMin,
     Timer,
+    KeyPress,
+    KeyRelease,
+    Paint,
+    Show,
+    Hide,
     DeferredDelete,
     User, ///< User defined events start from this value.
   };

@@ -47,9 +47,3 @@ REvent::registerEventType()
   // FIXME: If type value exceed the type size, we should report error!
   return previousType--;
 }
-
-REvent *
-rMakeEvent(const rcount &type)
-{
-  return new REvent(type);
-}

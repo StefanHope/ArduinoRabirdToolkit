@@ -98,7 +98,11 @@ rMakeEvent(ParamTypes ... params)
   return new EventType(EventType::sType, params ...);
 }
 
-REvent *
-rMakeEvent(const rcount &type);
+template <class EventType, rcount TypeValue, class ... ParamTypes>
+EventType *
+rMakeEvent(ParamTypes ... params)
+{
+  return new EventType(TypeValue, params ...);
+}
 
 #endif // __INCLUDED_6FCA43F2953F11E6AA6EA088B4D1658C

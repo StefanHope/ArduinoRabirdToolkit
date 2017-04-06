@@ -201,13 +201,13 @@ RRealtimeTimer::_callback(TimerHandle_t handle)
 
   if(self->_isRestartFromCallback())
   {
-    // Do restart action inside event loop
-    self->_redirectEvents();
-    return;
+    self->run();
   }
   else
   {
-    self->run();
+    // Do restart action inside event loop
+    self->_redirectEvents();
+    return;
   }
 
   if(self->isSingleShot())

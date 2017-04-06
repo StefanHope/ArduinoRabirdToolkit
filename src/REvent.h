@@ -55,7 +55,7 @@ template <class MyType, class BaseType>
 class TypeRegisteredEvent : public BaseType
 {
 protected:
-  typedef TypeRegisteredEvent<MyType, BaseType> GeneratedBaseEventClass;
+  typedef TypeRegisteredEvent<MyType, BaseType> GeneratedEventClass;
 
 public:
   // Inherit all constructors
@@ -77,7 +77,7 @@ template <rcount TypeValue, class BaseType>
 class TypeEnumeratedEvent : public BaseType
 {
 protected:
-  typedef TypeEnumeratedEvent<TypeValue, BaseType> GeneratedBaseEventClass;
+  typedef TypeEnumeratedEvent<TypeValue, BaseType> GeneratedEventClass;
 
 public:
   // Inherit all constructors

@@ -58,7 +58,7 @@ protected:
 
 private:
   static void
-  onTimeout(TimerHandle_t handle);
+  _callback(TimerHandle_t handle);
   TimerHandle_t mHandle;
 
   class

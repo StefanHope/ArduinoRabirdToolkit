@@ -18,7 +18,9 @@ public:
 
   RSignal<void()> timeout;
 
-protected:
+  // Not allow override these functions ! End for RTimer!
+
+private:
   bool
   _isRestartFromCallback();
   void

@@ -27,7 +27,7 @@ RRealtimeTimer::RRealtimeTimer()
     1,
     pdFALSE,                           // one-shot timer
     reinterpret_cast<void *>(0),
-    onTimeout
+    _callback
     );
 
   vTimerSetTimerID(mHandle, this);
@@ -178,7 +178,7 @@ RRealtimeTimer::run()
 }
 
 void
-RRealtimeTimer::onTimeout(TimerHandle_t handle)
+RRealtimeTimer::_callback(TimerHandle_t handle)
 {
   auto self = static_cast<RRealtimeTimer *>(pvTimerGetTimerID(handle));
 

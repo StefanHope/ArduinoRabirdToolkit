@@ -195,9 +195,15 @@ RRealtimeTimer::_callback(TimerHandle_t handle)
 #endif
   self->run();
 
-  if((!self->mIsSingleShot) && self->_isRestartFromCallback())
+  if(self->isSingleShot())
   {
-    xTimerStart(self->mHandle, 0);
     return;
   }
+
+  if(!self->_isRestartFromCallback())
+  {
+    return;
+  }
+
+  xTimerStart(self->mHandle, 0);
 }

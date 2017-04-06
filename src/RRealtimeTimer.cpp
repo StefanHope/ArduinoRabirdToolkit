@@ -166,6 +166,11 @@ RRealtimeTimer::stop()
   }
 }
 
+void
+RRealtimeTimer::run()
+{
+}
+
 bool
 RRealtimeTimer::_isRestartFromCallback()
 {
@@ -173,7 +178,7 @@ RRealtimeTimer::_isRestartFromCallback()
 }
 
 void
-RRealtimeTimer::run()
+RRealtimeTimer::_redirectEvents()
 {
 }
 
@@ -193,14 +198,19 @@ RRealtimeTimer::_callback(TimerHandle_t handle)
   }
 
 #endif
-  self->run();
 
-  if(self->isSingleShot())
+  if(self->_isRestartFromCallback())
   {
+    // Do restart action inside event loop
+    self->_redirectEvents();
     return;
   }
+  else
+  {
+    self->run();
+  }
 
-  if(!self->_isRestartFromCallback())
+  if(self->isSingleShot())
   {
     return;
   }

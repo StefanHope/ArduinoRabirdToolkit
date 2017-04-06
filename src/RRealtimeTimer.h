@@ -41,7 +41,11 @@ public:
   void
   stop();
 
-protected:
+  virtual
+  void
+  run();
+
+private:
   /**
    * @brief _isRestartFromCallback
    *
@@ -54,9 +58,7 @@ protected:
   _isRestartFromCallback();
   virtual
   void
-  run();
-
-private:
+  _redirectEvents();
   static void
   _callback(TimerHandle_t handle);
   TimerHandle_t mHandle;
@@ -72,6 +74,7 @@ public:
   RAtomicInteger<uint8_t> mExtendedCounter;
 
 #endif
+  friend class RTimer;
 };
 
 #endif // __INCLUDED_8DA9A26C1A1B11E7AA6EA088B4D1658C

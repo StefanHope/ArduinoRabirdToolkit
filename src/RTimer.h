@@ -24,7 +24,7 @@ private:
   bool
   _isRestartFromCallback();
   void
-  run();
+  _redirectEvents();
 };
 
 template <class DelegateType>

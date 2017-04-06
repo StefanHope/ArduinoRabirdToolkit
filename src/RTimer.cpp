@@ -21,6 +21,8 @@ RTimer::event(REvent *e)
     // FIXME: Here may be generate a potential crash
     auto timerEvent = static_cast<RTimerEvent *>(e);
 
+    this->run();
+
     timeout.emit();
 
     if(!isSingleShot())
@@ -42,7 +44,7 @@ RTimer::_isRestartFromCallback()
 }
 
 void
-RTimer::run()
+RTimer::_redirectEvents()
 {
   // NOTE: Event will be deleted in REventLoop after they handled that event.
   RCoreApplication::postEvent(this, rMakeEvent<RTimerEvent>(timerId()));

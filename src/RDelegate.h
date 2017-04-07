@@ -81,6 +81,7 @@
 #endif // _MSC_VER > 1000
 
 //#include <memory.h> // to allow <,> comparisons
+#include <string.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //						Configuration options
@@ -1369,6 +1370,18 @@ DelegateCommon<FASTDLGT_RETTYPE, ParamTypes ...>
 MakeDelegate(Y *x, RetType (X::*func)(ParamTypes ...) const)
 {
   return DelegateCommon<FASTDLGT_RETTYPE, ParamTypes ...>(x, func);
+}
+
+// Support C++11 lambdas
+
+Delegate<void()>
+MakeDelegate(void (*func)());
+
+template <class ... ParamTypes>
+Delegate<void(ParamTypes ...)>
+MakeDelegate(void (*func)(ParamTypes ...))
+{
+  return Delegate<void(ParamTypes ...)>(func);
 }
 
 // clean up after ourselves...

@@ -56,10 +56,10 @@ public:
 
   RSignal<void()> idle;
 
-protected:
   void
   postEvent(RObject *receiver, REvent *event);
 
+protected:
   void
   clear();
 

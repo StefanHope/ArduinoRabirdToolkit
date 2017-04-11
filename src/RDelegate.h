@@ -1069,7 +1069,7 @@ public:
 template <class RetType, class ... ParamTypes>
 class DelegateCommon
 {
-private:
+public:
   typedef typename detail::DefaultVoidToVoid<RetType>::type DesiredRetType;
   typedef DesiredRetType
   (*StaticFunctionPtr)(ParamTypes ...);

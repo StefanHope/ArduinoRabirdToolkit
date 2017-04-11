@@ -11,6 +11,9 @@
 #include "RDelegate.h"
 #include "RForwardList.h"
 #include "RSpinLocker.h"
+#include "RMain.h"
+#include "REvent.h"
+#include "RMetaCallEvent.h"
 
 enum RConnectionType
 {
@@ -20,6 +23,7 @@ enum RConnectionType
   /// connection is determined when the signal is connected.
   AutoConnection,
   DirectConnection,
+  ObjectConnection,
   BlockedConnection,
 };
 
@@ -196,6 +200,179 @@ public:
   operator ()(ParamTypes ... params) const
   {
     emit(params ...);
+  }
+
+  bool
+  empty() const
+  {
+    return mDelegateList.empty();
+  }
+
+private:
+  DelegateList mDelegateList;
+};
+
+/**
+ * Specific to "void()" style
+ */
+template <>
+class RSignal<void()>
+{
+public:
+  typedef typename Rt::Delegate<void ()>::BaseType _Delegate;
+  typedef RConnection<_Delegate>                   Connection;
+
+private:
+  typedef RForwardList<Connection> DelegateList;
+
+public:
+  void
+  connect(const _Delegate &delegate)
+  {
+    R_MAKE_SPINLOCKER();
+    mDelegateList.pushFront(Connection(delegate));
+  }
+
+  template <class X, class Y>
+  void
+  connect(Y *obj, void (X::*func)())
+  {
+    connect(Rt::MakeDelegate(obj, func));
+  }
+
+  template <class X>
+  void
+  connect(RObject *sender, RObject *receiver, void (X::*func)())
+  {
+    R_MAKE_SPINLOCKER();
+
+    uint8_t connectionType = BlockedConnection;
+
+    if(rIsObjectInSameThread(sender, receiver))
+    {
+      connectionType = ObjectConnection;
+    }
+
+    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
+                                         static_cast<X *>(receiver), func),
+                                       connectionType));
+  }
+
+  template <class X, class Y>
+  void
+  connect(Y *obj, void (X::*func)() const)
+  {
+    connect(Rt::MakeDelegate(obj, func));
+  }
+
+  template <class X>
+  void
+  connect(RObject *sender, RObject *receiver, void (X::*func)(
+            ) const)
+  {
+    R_MAKE_SPINLOCKER();
+
+    uint8_t connectionType = BlockedConnection;
+
+    if(rIsObjectInSameThread(sender, receiver))
+    {
+      connectionType = ObjectConnection;
+    }
+
+    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
+                                         static_cast<X *>(receiver), func),
+                                       connectionType));
+  }
+
+  void
+  connect(void (*functionToBind)())
+  {
+    connect(Rt::Delegate<void()>(functionToBind));
+  }
+
+  void
+  disconnect(_Delegate delegate)
+  {
+    R_MAKE_SPINLOCKER();
+
+    auto it = mDelegateList.beforeBegin();
+    typename DelegateList::iterator nextIt;
+
+    while(1)
+    {
+      nextIt = it + 1;
+
+      if(nextIt == mDelegateList.end())
+      {
+        break;
+      }
+
+      if((*nextIt).mDelegate == delegate)
+      {
+        mDelegateList.eraseAfter(it);
+      }
+
+      it = nextIt;
+    }
+  }
+
+  template <class X, class Y>
+  void
+  disconnect(Y *obj, void (X::*func)())
+  {
+    disconnect(Rt::MakeDelegate(obj, func));
+  }
+
+  template <class X, class Y>
+  void
+  disconnect(Y *obj, void (X::*func)() const)
+  {
+    disconnect(Rt::MakeDelegate(obj, func));
+  }
+
+  void
+  clear()
+  {
+    R_MAKE_SPINLOCKER();
+    mDelegateList.clear();
+  }
+
+  void
+  emit() const
+  {
+    for(auto it = mDelegateList.begin(); it != mDelegateList.end(); )
+    {
+      Connection &connection = *it;
+
+      if(BlockedConnection == connection.mType)
+      {
+        R_MAKE_SPINLOCKER();
+        connection.mDelegate();
+      }
+      else if(ObjectConnection == connection.mType)
+      {
+        auto closure =
+          (const _Delegate::ClosureType &)(connection.mDelegate.GetMemento());
+        auto closureThis = closure.GetClosureThis();
+
+        // If type equal to ObjectConnection, that means it must be object type!
+        rPostEvent(reinterpret_cast<RObject *>(closureThis),
+                   rMakeEvent<RMetaCallEvent,
+                              REvent::MetaCall>(connection.mDelegate));
+      }
+      else
+      {
+        connection.mDelegate();
+      }
+
+      it++;
+    }
+  }
+
+  void
+  operator ()() const
+  {
+    emit();
   }
 
   bool

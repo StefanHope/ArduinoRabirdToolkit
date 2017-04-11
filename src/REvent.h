@@ -17,6 +17,7 @@ public:
     Show,
     Hide,
     DeferredDelete,
+    MetaCall,
     User, ///< User defined events start from this value.
   };
 

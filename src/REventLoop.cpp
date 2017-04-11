@@ -60,6 +60,10 @@ REventLoop::processEvents()
     {
       mDeferredObjects.push_back(eventData.receiver);
     }
+    else if(eventData.event->type() == REvent::MetaCall)
+    {
+      static_cast<RMetaCallEvent *>(eventData.event)->delegate()();
+    }
     else
     {
       eventData.receiver->event(eventData.event);

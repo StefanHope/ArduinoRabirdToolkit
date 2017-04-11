@@ -1,7 +1,9 @@
 #include "RMain.h"
 #include "RTypes.h"
 #include "RThread.h"
+#include "REventLoop.h"
 #include "RCoreApplication.h"
+#include "RSpinLocker.h"
 
 static volatile RThread *sMainThread = NULL;
 RThread *
@@ -43,4 +45,11 @@ loop()
   {
     rCoreApp->processEvents();
   }
+}
+
+void
+rPostEvent(RObject *receiver, REvent *event)
+{
+  R_MAKE_SPINLOCKER();
+  receiver->thread()->eventLoop()->postEvent(receiver, event);
 }

@@ -333,8 +333,8 @@ private: \
   (sender)->signal.connect((sender), (receiver), \
                            &RRemovePointer<decltype((receiver))>::Type::slot)
 
-#define R_CONNECT_THIS(signal, slot) \
-  R_CONNECT(rThis, signal, rThis, slot)
+#define R_CONNECT_THIS(sender, signal, slot) \
+  R_CONNECT(sender, signal, rThis, slot)
 
 template <typename T>
 static inline T *

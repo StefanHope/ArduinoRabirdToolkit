@@ -329,12 +329,12 @@ private: \
 #define rThisClass \
   RRemoveReference<RRemovePointer<decltype(rThis)>::Type > ::Type
 
-#define RCONNECT(sender, signal, receiver, slot) \
+#define R_CONNECT(sender, signal, receiver, slot) \
   (sender)->signal.connect((sender), (receiver), \
                            &RRemovePointer<decltype((receiver))>::Type::slot)
 
-#define RCONNECT_THIS(signal, slot) \
-  RCONNECT(rThis, signal, rThis, slot)
+#define R_CONNECT_THIS(signal, slot) \
+  R_CONNECT(rThis, signal, rThis, slot)
 
 template <typename T>
 static inline T *

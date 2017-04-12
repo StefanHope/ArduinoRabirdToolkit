@@ -325,13 +325,14 @@ private: \
   { \
   }
 
-#define rThis pImpl()
-#define rThisClass \
-  RRemoveReference<RRemovePointer<decltype(rThis)>::Type > ::Type
+#define R_RAW_TYPE_OF(code) \
+  RRemoveReference<RRemovePointer<decltype(code)>::Type > ::Type
+#define rThis      pImpl()
+#define rThisClass R_RAW_TYPE_OF(rThis)
 
 #define R_CONNECT(sender, signal, receiver, slot) \
-  (sender)->signal.connect((sender), (receiver), \
-                           &RRemovePointer<decltype((receiver))>::Type::slot)
+  (sender)->signal.connect((sender), \
+                           (receiver), &R_RAW_TYPE_OF(receiver) ::slot)
 
 #define R_CONNECT_THIS(sender, signal, slot) \
   R_CONNECT(sender, signal, rThis, slot)

@@ -326,6 +326,8 @@ private: \
   }
 
 #define rThis pImpl()
+#define rThisClass \
+  RRemoveReference<RRemovePointer<decltype(rThis)>::Type > ::Type
 
 #define RCONNECT(sender, signal, receiver, slot) \
   (sender)->signal.connect((sender), (receiver), \

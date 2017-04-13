@@ -11,7 +11,7 @@ public:
   ~RCoRoutineRunner();
 
   virtual char
-  run();
+  run() = 0;
 
 public:
   struct pt mPt;

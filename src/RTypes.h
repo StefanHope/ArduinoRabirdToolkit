@@ -263,6 +263,9 @@ rIsObjectInSameThread(const RObject *left, const RObject *right);
   (R_FORCE_OFFSET_OF(structName, toMember) - \
    R_FORCE_OFFSET_OF(structName, fromMember))
 
+#define R_CONTAINER_OF(ptr, type, member) ( \
+    static_cast<type *>(R_PTR_OFFSET(ptr, -R_FORCE_OFFSET_OF(type, member))))
+
 /**
  * Disable copy constructor and assign operations.
  *

@@ -34,7 +34,7 @@ template <class ImplementationType>
 class RCoRoutineRunner : public RCoRoutineBasicRunner
 {
 protected:
-  RCoRoutineRunner(void *impl) : RCoRoutineBasicRunner(impl)
+  RCoRoutineRunner(ImplementationType *impl) : RCoRoutineBasicRunner(impl)
   {
   }
 

@@ -13,9 +13,10 @@
 #define RCR_YIELD()                PT_YIELD(&this->mPt)
 #define RCR_YIELD_UNTIL(condition) PT_YIELD_UNTIL(&this->mPt, (condition))
 #define RCR_EXIT()                 PT_EXIT(&this->mPt)
+#define RCR_SCHEDULE(cr, ...)      (cr).spawn(rThis, __VA_ARGS__)
 #define RCR_SPAWN(otherCR, ...) \
   do { \
-    if(!PT_SCHEDULE((otherCR)->spawn(__VA_ARGS__))) \
+    if(!RCR_SCHEDULE((otherCR), __VA_ARGS__)) \
     { \
       return PT_WAITING; \
     } \
@@ -64,7 +65,7 @@ private:
 private:
   friend class REventLoop;
 
-  RUniquePointer<RCoRoutineRunner> mRunner;
+  RUniquePointer<RCoRoutineBasicRunner> mRunner;
 };
 
 #endif // __INCLUDED_82D14FF80A1611E7AA6EA088B4D1658C

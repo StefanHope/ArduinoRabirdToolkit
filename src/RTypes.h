@@ -9,6 +9,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <boost/type_traits.hpp>
 
 // Include all FreeRTOS stuffs
 #if defined(ARDUINO)
@@ -328,8 +329,15 @@ private: \
   { \
   }
 
+#define R_MEMBER_TYPE_OF(astruct, member) \
+  boost::remove_cv< \
+    boost::remove_const< \
+      RRemoveReference< \
+        decltype(((astruct *)1)->member)>::Type > ::type > ::type
+
 #define R_RAW_TYPE_OF(code) \
   RRemoveReference<RRemovePointer<decltype(code)>::Type > ::Type
+
 #define rThis      pImpl()
 #define rThisClass R_RAW_TYPE_OF(rThis)
 
@@ -340,9 +348,22 @@ private: \
 #define R_CONNECT_THIS(sender, signal, slot) \
   R_CONNECT(sender, signal, rThis, slot)
 
+#define R_DESTRUCTOR_DECLARE() \
+private: \
+  struct __DestructorClass \
+  { \
+public: \
+    ~__DestructorClass(); \
+  }; \
+  friend __DestructorClass; \
+  __DestructorClass __destructor;
+
+#define R_DESTRUCTOR_IMPL(className) \
+  className::__DestructorClass::~__DestructorClass()
+
 template <typename T>
 static inline T *
-rGetPtrHelper(T *ptr)
+rGetPtrHelper(T * ptr)
 {
   return ptr;
 }

@@ -184,7 +184,7 @@ public:
 
       if(BlockedConnection == connection.mType)
       {
-        R_MAKE_SPINLOCKER();
+        // FIXME: We must lock both threads of sender and receiver here!
         connection.mDelegate(params ...);
       }
       else
@@ -346,7 +346,7 @@ public:
 
       if(BlockedConnection == connection.mType)
       {
-        R_MAKE_SPINLOCKER();
+        // FIXME: We must lock both threads of sender and receiver here!
         connection.mDelegate();
       }
       else if(ObjectConnection == connection.mType)

@@ -18,7 +18,7 @@ protected:
   void *
   _impl()
   {
-    return mImpl;
+    return const_cast<void *>(mImpl);
   }
 
 public:

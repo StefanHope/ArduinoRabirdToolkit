@@ -336,10 +336,7 @@ RThread::msleep(rtime msecs)
   else
   {
     // Simple delay
-    for(; msecs > 0; --msecs)
-    {
-      delayMicroseconds(1000);
-    }
+    delay(msecs);
   }
 }
 

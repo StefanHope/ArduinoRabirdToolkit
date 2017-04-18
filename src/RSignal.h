@@ -57,15 +57,15 @@ template <class R, class ... ParamTypes>
 class RSignal<R(ParamTypes ...)>
 {
 public:
-  typedef typename Rt::Slot<R(ParamTypes ...)>::BaseType _Slot;
-  typedef RConnection<_Slot>                             Connection;
+  typedef typename Rt::Slot<R(ParamTypes ...)>::BaseType Slot;
+  typedef RConnection<Slot>                              Connection;
 
 private:
   typedef RForwardList<Connection> ConnectionList;
 
 public:
   void
-  connect(const _Slot &slot)
+  connect(const Slot &slot)
   {
     R_MAKE_SPINLOCKER();
     mConnections.pushFront(Connection(slot));
@@ -129,7 +129,7 @@ public:
   }
 
   void
-  disconnect(_Slot slot)
+  disconnect(Slot slot)
   {
     R_MAKE_SPINLOCKER();
 
@@ -219,15 +219,15 @@ template <>
 class RSignal<void()>
 {
 public:
-  typedef typename Rt::Slot<void ()>::BaseType _Slot;
-  typedef RConnection<_Slot>                   Connection;
+  typedef typename Rt::Slot<void ()>::BaseType Slot;
+  typedef RConnection<Slot>                    Connection;
 
 private:
   typedef RForwardList<Connection> ConnectionList;
 
 public:
   void
-  connect(const _Slot &slot)
+  connect(const Slot &slot)
   {
     R_MAKE_SPINLOCKER();
     mConnections.pushFront(Connection(slot));
@@ -291,7 +291,7 @@ public:
   }
 
   void
-  disconnect(_Slot slot)
+  disconnect(Slot slot)
   {
     R_MAKE_SPINLOCKER();
 
@@ -352,7 +352,7 @@ public:
       else if(ObjectConnection == connection.mType)
       {
         auto closure =
-          (const _Slot::ClosureType &)(connection.mSlot.GetMemento());
+          (const Slot::ClosureType &)(connection.mSlot.GetMemento());
         auto closureThis = closure.GetClosureThis();
 
         // If type equal to ObjectConnection, that means it must be object type!

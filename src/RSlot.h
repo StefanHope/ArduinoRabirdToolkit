@@ -1288,6 +1288,7 @@ public:
 // GCC 3.2 and later won't compile this unless it's preceded by 'typename',
 // but VC6 doesn't allow 'typename' in this context.
 // So, I have to use a macro.
+} // namespace
 
 #ifdef RSLOT_VC6
 #define RSLOT_RET_TYPE detail::VoidToDefaultVoid<RetType>::type
@@ -1297,33 +1298,32 @@ public:
 
 //N=2
 template <class X, class Y, class RetType, class ... ParamTypes>
-SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>
-MakeSlot(Y *x, RetType (X::*func)(ParamTypes ...))
+Rt::SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>
+rMakeSlot(Y *x, RetType (X::*func)(ParamTypes ...))
 {
-  return SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>(x, func);
+  return Rt::SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>(x, func);
 }
 
 template <class X, class Y, class RetType, class ... ParamTypes>
-SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>
-MakeSlot(Y *x, RetType (X::*func)(ParamTypes ...) const)
+Rt::SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>
+rMakeSlot(Y *x, RetType (X::*func)(ParamTypes ...) const)
 {
-  return SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>(x, func);
+  return Rt::SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>(x, func);
 }
 
 // Support C++11 lambdas
 
-Slot<void()>
-MakeSlot(void (*func)());
+Rt::Slot<void()>
+rMakeSlot(void (*func)());
 
 template <class ... ParamTypes>
-Slot<void(ParamTypes ...)>
-MakeSlot(void (*func)(ParamTypes ...))
+Rt::Slot<void(ParamTypes ...)>
+rMakeSlot(void (*func)(ParamTypes ...))
 {
-  return Slot<void(ParamTypes ...)>(func);
+  return Rt::Slot<void(ParamTypes ...)>(func);
 }
 
 // clean up after ourselves...
 #undef RSLOT_RET_TYPE
-} // namespace
 
 #endif //_DELEGATES_H_

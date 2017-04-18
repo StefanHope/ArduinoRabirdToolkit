@@ -1,11 +1,7 @@
 #include "RSlot.h"
 
-namespace Rt
+Rt::Slot<void()>
+rMakeSlot(void (*func)())
 {
-
-Slot<void()>
-MakeSlot(void (*func)())
-{
-  return Slot<void()>(func);
-}
+  return Rt::Slot<void()>(func);
 }

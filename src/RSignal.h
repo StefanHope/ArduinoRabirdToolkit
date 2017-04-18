@@ -75,7 +75,7 @@ public:
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...))
   {
-    connect(Rt::MakeSlot(obj, func));
+    connect(rMakeSlot(obj, func));
   }
 
   template <class X>
@@ -91,7 +91,7 @@ public:
       connectionType = DirectConnection;
     }
 
-    mSlotList.pushFront(Connection(Rt::MakeSlot(
+    mSlotList.pushFront(Connection(rMakeSlot(
                                      static_cast<X *>(receiver), func),
                                    connectionType));
   }
@@ -100,7 +100,7 @@ public:
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
-    connect(Rt::MakeSlot(obj, func));
+    connect(rMakeSlot(obj, func));
   }
 
   template <class X>
@@ -117,7 +117,7 @@ public:
       connectionType = DirectConnection;
     }
 
-    mSlotList.pushFront(Connection(Rt::MakeSlot(
+    mSlotList.pushFront(Connection(rMakeSlot(
                                      static_cast<X *>(receiver), func),
                                    connectionType));
   }
@@ -158,14 +158,14 @@ public:
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...))
   {
-    disconnect(Rt::MakeSlot(obj, func));
+    disconnect(rMakeSlot(obj, func));
   }
 
   template <class X, class Y>
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
-    disconnect(Rt::MakeSlot(obj, func));
+    disconnect(rMakeSlot(obj, func));
   }
 
   void
@@ -237,7 +237,7 @@ public:
   void
   connect(Y *obj, void (X::*func)())
   {
-    connect(Rt::MakeSlot(obj, func));
+    connect(rMakeSlot(obj, func));
   }
 
   template <class X>
@@ -253,7 +253,7 @@ public:
       connectionType = ObjectConnection;
     }
 
-    mSlotList.pushFront(Connection(Rt::MakeSlot(
+    mSlotList.pushFront(Connection(rMakeSlot(
                                      static_cast<X *>(receiver), func),
                                    connectionType));
   }
@@ -262,7 +262,7 @@ public:
   void
   connect(Y *obj, void (X::*func)() const)
   {
-    connect(Rt::MakeSlot(obj, func));
+    connect(rMakeSlot(obj, func));
   }
 
   template <class X>
@@ -279,7 +279,7 @@ public:
       connectionType = ObjectConnection;
     }
 
-    mSlotList.pushFront(Connection(Rt::MakeSlot(
+    mSlotList.pushFront(Connection(rMakeSlot(
                                      static_cast<X *>(receiver), func),
                                    connectionType));
   }
@@ -320,14 +320,14 @@ public:
   void
   disconnect(Y *obj, void (X::*func)())
   {
-    disconnect(Rt::MakeSlot(obj, func));
+    disconnect(rMakeSlot(obj, func));
   }
 
   template <class X, class Y>
   void
   disconnect(Y *obj, void (X::*func)() const)
   {
-    disconnect(Rt::MakeSlot(obj, func));
+    disconnect(rMakeSlot(obj, func));
   }
 
   void

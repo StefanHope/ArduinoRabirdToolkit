@@ -1,14 +1,14 @@
 /*
  *  Signal.h
  *
- *  A lightweight signals and slots implementation using fast delegates
+ *  A lightweight signals and slots implementation using fast slots
  *
  */
 #ifndef __INCLUDED_C5173AA242B211E6AA6EA088B4D1658C
 #define __INCLUDED_C5173AA242B211E6AA6EA088B4D1658C
 
 #include "RTypes.h"
-#include "RDelegate.h"
+#include "RSlot.h"
 #include "RForwardList.h"
 #include "RSpinLocker.h"
 #include "RMain.h"
@@ -31,21 +31,21 @@ template <class T>
 class RConnection
 {
 public:
-  typedef T DelegateType;
+  typedef T SlotType;
 
-  RConnection(const DelegateType &delegate, uint8_t aType=AutoConnection)
+  RConnection(const SlotType &slot, uint8_t aType=AutoConnection)
 
-    : mDelegate(delegate), mType(aType)
+    : mSlot(slot), mType(aType)
   {
   }
 
   RConnection(const RConnection &other)
-    : mDelegate(other.mDelegate), mType(other.mType)
+    : mSlot(other.mSlot), mType(other.mType)
   {
   }
 
-  DelegateType mDelegate;
-  uint8_t      mType;
+  SlotType mSlot;
+  uint8_t  mType;
 };
 
 // Declare RSignal as a class template.  It will be specialized
@@ -57,25 +57,25 @@ template <class R, class ... ParamTypes>
 class RSignal<R(ParamTypes ...)>
 {
 public:
-  typedef typename Rt::Delegate<R(ParamTypes ...)>::BaseType _Delegate;
-  typedef RConnection<_Delegate>                             Connection;
+  typedef typename Rt::Slot<R(ParamTypes ...)>::BaseType _Slot;
+  typedef RConnection<_Slot>                             Connection;
 
 private:
-  typedef RForwardList<Connection> DelegateList;
+  typedef RForwardList<Connection> SlotList;
 
 public:
   void
-  connect(const _Delegate &delegate)
+  connect(const _Slot &slot)
   {
     R_MAKE_SPINLOCKER();
-    mDelegateList.pushFront(Connection(delegate));
+    mSlotList.pushFront(Connection(slot));
   }
 
   template <class X, class Y>
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...))
   {
-    connect(Rt::MakeDelegate(obj, func));
+    connect(Rt::MakeSlot(obj, func));
   }
 
   template <class X>
@@ -91,16 +91,16 @@ public:
       connectionType = DirectConnection;
     }
 
-    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
-                                         static_cast<X *>(receiver), func),
-                                       connectionType));
+    mSlotList.pushFront(Connection(Rt::MakeSlot(
+                                     static_cast<X *>(receiver), func),
+                                   connectionType));
   }
 
   template <class X, class Y>
   void
   connect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
-    connect(Rt::MakeDelegate(obj, func));
+    connect(Rt::MakeSlot(obj, func));
   }
 
   template <class X>
@@ -117,37 +117,37 @@ public:
       connectionType = DirectConnection;
     }
 
-    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
-                                         static_cast<X *>(receiver), func),
-                                       connectionType));
+    mSlotList.pushFront(Connection(Rt::MakeSlot(
+                                     static_cast<X *>(receiver), func),
+                                   connectionType));
   }
 
   void
   connect(R (*functionToBind)(ParamTypes ...))
   {
-    connect(Rt::Delegate<R(ParamTypes ...)>(functionToBind));
+    connect(Rt::Slot<R(ParamTypes ...)>(functionToBind));
   }
 
   void
-  disconnect(_Delegate delegate)
+  disconnect(_Slot slot)
   {
     R_MAKE_SPINLOCKER();
 
-    auto it = mDelegateList.beforeBegin();
-    typename DelegateList::iterator nextIt;
+    auto it = mSlotList.beforeBegin();
+    typename SlotList::iterator nextIt;
 
     while(1)
     {
       nextIt = it + 1;
 
-      if(nextIt == mDelegateList.end())
+      if(nextIt == mSlotList.end())
       {
         break;
       }
 
-      if((*nextIt).mDelegate == delegate)
+      if((*nextIt).mSlot == slot)
       {
-        mDelegateList.eraseAfter(it);
+        mSlotList.eraseAfter(it);
       }
 
       it = nextIt;
@@ -158,38 +158,38 @@ public:
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...))
   {
-    disconnect(Rt::MakeDelegate(obj, func));
+    disconnect(Rt::MakeSlot(obj, func));
   }
 
   template <class X, class Y>
   void
   disconnect(Y *obj, void (X::*func)(ParamTypes ...) const)
   {
-    disconnect(Rt::MakeDelegate(obj, func));
+    disconnect(Rt::MakeSlot(obj, func));
   }
 
   void
   clear()
   {
     R_MAKE_SPINLOCKER();
-    mDelegateList.clear();
+    mSlotList.clear();
   }
 
   void
   emit(ParamTypes ... params) const
   {
-    for(auto it = mDelegateList.begin(); it != mDelegateList.end(); )
+    for(auto it = mSlotList.begin(); it != mSlotList.end(); )
     {
       Connection &connection = *it;
 
       if(BlockedConnection == connection.mType)
       {
         // FIXME: We must lock both threads of sender and receiver here!
-        connection.mDelegate(params ...);
+        connection.mSlot(params ...);
       }
       else
       {
-        connection.mDelegate(params ...);
+        connection.mSlot(params ...);
       }
 
       it++;
@@ -205,11 +205,11 @@ public:
   bool
   empty() const
   {
-    return mDelegateList.empty();
+    return mSlotList.empty();
   }
 
 private:
-  DelegateList mDelegateList;
+  SlotList mSlotList;
 };
 
 /**
@@ -219,25 +219,25 @@ template <>
 class RSignal<void()>
 {
 public:
-  typedef typename Rt::Delegate<void ()>::BaseType _Delegate;
-  typedef RConnection<_Delegate>                   Connection;
+  typedef typename Rt::Slot<void ()>::BaseType _Slot;
+  typedef RConnection<_Slot>                   Connection;
 
 private:
-  typedef RForwardList<Connection> DelegateList;
+  typedef RForwardList<Connection> SlotList;
 
 public:
   void
-  connect(const _Delegate &delegate)
+  connect(const _Slot &slot)
   {
     R_MAKE_SPINLOCKER();
-    mDelegateList.pushFront(Connection(delegate));
+    mSlotList.pushFront(Connection(slot));
   }
 
   template <class X, class Y>
   void
   connect(Y *obj, void (X::*func)())
   {
-    connect(Rt::MakeDelegate(obj, func));
+    connect(Rt::MakeSlot(obj, func));
   }
 
   template <class X>
@@ -253,16 +253,16 @@ public:
       connectionType = ObjectConnection;
     }
 
-    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
-                                         static_cast<X *>(receiver), func),
-                                       connectionType));
+    mSlotList.pushFront(Connection(Rt::MakeSlot(
+                                     static_cast<X *>(receiver), func),
+                                   connectionType));
   }
 
   template <class X, class Y>
   void
   connect(Y *obj, void (X::*func)() const)
   {
-    connect(Rt::MakeDelegate(obj, func));
+    connect(Rt::MakeSlot(obj, func));
   }
 
   template <class X>
@@ -279,37 +279,37 @@ public:
       connectionType = ObjectConnection;
     }
 
-    mDelegateList.pushFront(Connection(Rt::MakeDelegate(
-                                         static_cast<X *>(receiver), func),
-                                       connectionType));
+    mSlotList.pushFront(Connection(Rt::MakeSlot(
+                                     static_cast<X *>(receiver), func),
+                                   connectionType));
   }
 
   void
   connect(void (*functionToBind)())
   {
-    connect(Rt::Delegate<void()>(functionToBind));
+    connect(Rt::Slot<void()>(functionToBind));
   }
 
   void
-  disconnect(_Delegate delegate)
+  disconnect(_Slot slot)
   {
     R_MAKE_SPINLOCKER();
 
-    auto it = mDelegateList.beforeBegin();
-    typename DelegateList::iterator nextIt;
+    auto it = mSlotList.beforeBegin();
+    typename SlotList::iterator nextIt;
 
     while(1)
     {
       nextIt = it + 1;
 
-      if(nextIt == mDelegateList.end())
+      if(nextIt == mSlotList.end())
       {
         break;
       }
 
-      if((*nextIt).mDelegate == delegate)
+      if((*nextIt).mSlot == slot)
       {
-        mDelegateList.eraseAfter(it);
+        mSlotList.eraseAfter(it);
       }
 
       it = nextIt;
@@ -320,49 +320,49 @@ public:
   void
   disconnect(Y *obj, void (X::*func)())
   {
-    disconnect(Rt::MakeDelegate(obj, func));
+    disconnect(Rt::MakeSlot(obj, func));
   }
 
   template <class X, class Y>
   void
   disconnect(Y *obj, void (X::*func)() const)
   {
-    disconnect(Rt::MakeDelegate(obj, func));
+    disconnect(Rt::MakeSlot(obj, func));
   }
 
   void
   clear()
   {
     R_MAKE_SPINLOCKER();
-    mDelegateList.clear();
+    mSlotList.clear();
   }
 
   void
   emit() const
   {
-    for(auto it = mDelegateList.begin(); it != mDelegateList.end(); )
+    for(auto it = mSlotList.begin(); it != mSlotList.end(); )
     {
       Connection &connection = *it;
 
       if(BlockedConnection == connection.mType)
       {
         // FIXME: We must lock both threads of sender and receiver here!
-        connection.mDelegate();
+        connection.mSlot();
       }
       else if(ObjectConnection == connection.mType)
       {
         auto closure =
-          (const _Delegate::ClosureType &)(connection.mDelegate.GetMemento());
+          (const _Slot::ClosureType &)(connection.mSlot.GetMemento());
         auto closureThis = closure.GetClosureThis();
 
         // If type equal to ObjectConnection, that means it must be object type!
         rPostEvent(reinterpret_cast<RObject *>(closureThis),
                    rMakeEvent<RMetaCallEvent,
-                              REvent::MetaCall>(connection.mDelegate));
+                              REvent::MetaCall>(connection.mSlot));
       }
       else
       {
-        connection.mDelegate();
+        connection.mSlot();
       }
 
       it++;
@@ -378,11 +378,11 @@ public:
   bool
   empty() const
   {
-    return mDelegateList.empty();
+    return mSlotList.empty();
   }
 
 private:
-  DelegateList mDelegateList;
+  SlotList mSlotList;
 };
 
 #endif //__INCLUDED_C5173AA242B211E6AA6EA088B4D1658C

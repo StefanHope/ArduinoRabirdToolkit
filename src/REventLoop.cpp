@@ -62,7 +62,7 @@ REventLoop::processEvents()
     }
     else if(eventData.event->type() == REvent::MetaCall)
     {
-      static_cast<RMetaCallEvent *>(eventData.event)->delegate()();
+      static_cast<RMetaCallEvent *>(eventData.event)->slot()();
     }
     else
     {

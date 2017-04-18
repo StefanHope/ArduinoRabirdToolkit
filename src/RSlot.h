@@ -1,80 +1,18 @@
 /*
- *	Delegate.h
- *	Efficient delegates in C++ that generate only two lines of asm code
+ * Slot.h
  *
- *	Created by Don Clugston.
- *	Contributions by Jody Hagins.
- *	Tweaked by Patrick Hogan on 5/18/09.
- *	http://www.codeproject.com/KB/cpp/FastDelegate.aspx
- *  http://www.codeproject.com/Articles/7150/Member-Function-Pointers-and-the-Fastest-Possible
+ * Efficient slots in C++ that generate only two lines of asm code.
  *
- *	License:
- *	As stated explicitly in the article linked above, this code is released into the public domain
- *	and may be used for any purpose.
+ * Converted from FastSlot design :
  *
+ * http://www.codeproject.com/KB/cpp/FastSlot.aspx
+ * http://www.codeproject.com/Articles/7150/Member-Function-Pointers-and-the-Fastest-Possible
+ *
+ * FastSlot code is released into the public domain.
  */
 
-//	Delegates.h
-//	Efficient delegates in C++ that generate only two lines of asm code!
-//	Documentation is found at http://www.codeproject.com/KB/cpp/FastDelegate.aspx
-//
-//	By Don Clugston, Mar 2004.
-//	Major contributions were made by Jody Hagins.
-//
-// History:
-//
-// 24-Apr-04 1.0  * Submitted to CodeProject.
-// 28-Apr-04 1.1  * Prevent most unsafe uses of evil static function hack.
-//				  * Improved syntax for horrible_cast (thanks Paul Bludov).
-//				  * Tested on Metrowerks MWCC and Intel ICL (IA32)
-//				  * Compiled, but not run, on Comeau C++ and Intel Itanium ICL.
-//	27-Jun-04 1.2 * Now works on Borland C++ Builder 5.5
-//				  * Now works on /clr "managed C++" code on VC7, VC7.1
-//				  * Comeau C++ now compiles without warnings.
-//				  * Prevent the virtual inheritance case from being used on
-//					  VC6 and earlier, which generate incorrect code.
-//				  * Improved warning and error messages. Non-standard hacks
-//					 now have compile-time checks to make them safer.
-//				  * implicit_cast used instead of static_cast in many cases.
-//				  * If calling a const member function, a const class pointer can be used.
-//				  * MakeDelegate() global helper function added to simplify pass-by-value.
-//				  * Added fastdelegate.clear()
-// 16-Jul-04 1.2.1* Workaround for gcc bug (const member function pointers in templates)
-// 30-Oct-04 1.3  * Support for (non-void) return values.
-//				  * No more workarounds in client code!
-//					 MSVC and Intel now use a clever hack invented by John Dlugosz:
-//					 - The FASTDELEGATEDECLARE workaround is no longer necessary.
-//					 - No more warning messages for VC6
-//				  * Less use of macros. Error messages should be more comprehensible.
-//				  * Added include guards
-//				  * Added delegate::empty() to test if invocation is safe (Thanks Neville Franks).
-//				  * Now tested on VS 2005 Express Beta, PGI C++
-// 24-Dec-04 1.4  * Added DelegateMemento, to allow collections of disparate delegates.
-//				  * <,>,<=,>= comparison operators to allow storage in ordered containers.
-//				  * Substantial reduction of code size, especially the 'Closure' class.
-//				  * Standardised all the compiler-specific workarounds.
-//				  * MFP conversion now works for CodePlay (but not yet supported in the full code).
-//				  * Now compiles without warnings on _any_ supported compiler, including BCC 5.5.1
-//				  * New syntax: delegate< int (char *, double) >.
-// 14-Feb-05 1.4.1* Now treats =0 as equivalent to .clear(), ==0 as equivalent to .empty(). (Thanks elfric).
-//				  * Now tested on Intel ICL for AMD64, VS2005 Beta for AMD64 and Itanium.
-// 30-Mar-05 1.5  * Safebool idiom: "if (dg)" is now equivalent to "if (!dg.empty())"
-//				  * Fully supported by CodePlay VectorC
-//				  * Bugfix for Metrowerks: empty() was buggy because a valid MFP can be 0 on MWCC!
-//				  * More optimal assignment,== and != operators for static function pointers.
-//
-// 19-May-09 1.5a Patrick Hogan:
-//				  * Bundled with Signals.h for signals and slots library
-//				  * Changed namespace to "Gallant"
-// 05-Jul-16 1.5b Hong-She Liang:
-//				  * Bundled with Signals.h for signals and slots library
-//				  * Changed namespace to "Rt"
-// 31-Mar-17 1.5b Hong-She Liang:
-//				  * Simply implementation by C++11
-//
-
-#ifndef _Delegate_H_
-#define _Delegate_H_
+#ifndef __INCLUDED_9E6D824423DA11E7AA6EA088B4D1658C
+#define __INCLUDED_9E6D824423DA11E7AA6EA088B4D1658C
 
 #if _MSC_VER > 1000
     #pragma once
@@ -88,17 +26,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// Uncomment the following #define for optimally-sized delegates.
+// Uncomment the following #define for optimally-sized slots.
 // In this case, the generated asm code is almost identical to the code you'd get
-// if the compiler had native support for delegates.
+// if the compiler had native support for slots.
 // It will not work on systems where sizeof(dataptr) < sizeof(codeptr).
 // Thus, it will not work for DOS compilers using the medium model.
 // It will also probably fail on some DSP systems.
-#define FASTDELEGATE_USESTATICFUNCTIONHACK
+#define RSLOT_USE_STATIC_FUNCTION_HACK
 
 // Uncomment the next line to allow function declarator syntax.
 // It is automatically enabled for those compilers where it is known to work.
-//#define FASTDELEGATE_ALLOW_FUNCTION_TYPE_SYNTAX
+//#define RSLOT_ALLOW_FUNCTION_TYPE_SYNTAX
 
 ////////////////////////////////////////////////////////////////////////////////
 //						Compiler identification for workarounds
@@ -109,10 +47,10 @@
 // many vendors fraudulently define Microsoft's identifiers.
 #if defined(_MSC_VER) && !defined(__MWERKS__) && !defined(__VECTOR_C) && \
   !defined(__ICL) && !defined(__BORLANDC__)
-#define FASTDLGT_ISMSVC
+#define RSLOT_IS_MSVC
 
 #if (_MSC_VER<1300)  // Many workarounds are required for VC6.
-#define FASTDLGT_VC6
+#define RSLOT_VC6
 #pragma warning(disable:4786) // disable this ridiculous warning
 #endif
 
@@ -123,33 +61,33 @@
 // Metrowerks CodeWarrior, Intel, and CodePlay fraudulently define Microsoft's
 // identifier, _MSC_VER. We need to filter Metrowerks out.
 #if defined(_MSC_VER) && !defined(__MWERKS__)
-#define FASTDLGT_MICROSOFT_MFP
+#define RSLOT_MICROSOFT_MFP
 
 #if !defined(__VECTOR_C)
 // CodePlay doesn't have the __single/multi/virtual_inheritance keywords
-#define FASTDLGT_HASINHERITANCE_KEYWORDS
+#define RSLOT_HASINHERITANCE_KEYWORDS
 #endif
 #endif
 
 // Does it allow function declarator syntax? The following compilers are known to work:
-#if defined(FASTDLGT_ISMSVC) && (_MSC_VER >= 1310) // VC 7.1
-#define FASTDELEGATE_ALLOW_FUNCTION_TYPE_SYNTAX
+#if defined(RSLOT_IS_MSVC) && (_MSC_VER >= 1310) // VC 7.1
+#define RSLOT_ALLOW_FUNCTION_TYPE_SYNTAX
 #endif
 
 // Gcc(2.95+), and versions of Digital Mars, Intel and Comeau in common use.
 #if defined (__DMC__) || defined(__GNUC__) || defined(__ICL) || \
   defined(__COMO__)
-#define FASTDELEGATE_ALLOW_FUNCTION_TYPE_SYNTAX
+#define RSLOT_ALLOW_FUNCTION_TYPE_SYNTAX
 #endif
 
 // It works on Metrowerks MWCC 3.2.2. From boost.Config it should work on earlier ones too.
 #if defined (__MWERKS__)
-#define FASTDELEGATE_ALLOW_FUNCTION_TYPE_SYNTAX
+#define RSLOT_ALLOW_FUNCTION_TYPE_SYNTAX
 #endif
 
 #ifdef __GNUC__ // Workaround GCC bug #8271
 // At present, GCC doesn't recognize constness of MFPs in templates
-#define FASTDELEGATE_GCC_BUG_8271
+#define RSLOT_GCC_BUG_8271
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +109,7 @@
 namespace Rt
 {
 
-namespace detail    // we'll hide the implementation details in a nested namespace.
+namespace Detail    // we'll hide the implementation details in a nested namespace.
 {//		implicit_cast< >
 // I believe this was originally going to be in the C++ standard but
 // was left out by accident. It's even milder than static_cast.
@@ -180,7 +118,7 @@ namespace detail    // we'll hide the implementation details in a nested namespa
 // Usage is identical to static_cast<>
 template <class OutputClass, class InputClass>
 inline OutputClass
-implicit_cast(InputClass input)
+implicitCast(InputClass input)
 {
   return input;
 }
@@ -196,7 +134,7 @@ implicit_cast(InputClass input)
 // This union is declared outside the horrible_cast because BCC 5.5.1
 // can't inline a function with a nested class, and gives a warning.
 template <class OutputClass, class InputClass>
-union horrible_union
+union horribleUnion
 {
   OutputClass out;
   InputClass  in;
@@ -204,9 +142,9 @@ union horrible_union
 
 template <class OutputClass, class InputClass>
 inline OutputClass
-horrible_cast(const InputClass input)
+horribleCast(const InputClass input)
 {
-  horrible_union<OutputClass, InputClass> u;
+  horribleUnion<OutputClass, InputClass> u;
   // Cause a compile-time error if in, out and u are not the same size.
   // If the compile fails here, it means the compiler has peculiar
   // unions which would prevent the cast from working.
@@ -225,11 +163,11 @@ horrible_cast(const InputClass input)
 
 // Backwards compatibility: This macro used to be necessary in the virtual inheritance
 // case for Intel and Microsoft. Now it just forward-declares the class.
-#define FASTDELEGATEDECLARE(CLASSNAME) class CLASSNAME;
+#define RSLOT_DECLARE(CLASSNAME) class CLASSNAME;
 
 // Prevent use of the static function hack with the DOS medium model.
 #ifdef __MEDIUM__
-#undef FASTDELEGATE_USESTATICFUNCTIONHACK
+#undef RSLOT_USE_STATIC_FUNCTION_HACK
 #endif
 
 //			DefaultVoid - a workaround for 'void' templates in VC6.
@@ -249,7 +187,7 @@ horrible_cast(const InputClass input)
 //	 in any automatic conversions. But on a 16-bit compiler it might
 //	 cause extra code to be generated, so we disable it for all compilers
 //	 except for VC6 (and VC5).
-#ifdef FASTDLGT_VC6
+#ifdef RSLOT_VC6
 // VC6 workaround
 typedef const void *DefaultVoid;
 
@@ -280,7 +218,7 @@ struct VoidToDefaultVoid<void> { typedef DefaultVoid type;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-//						Fast Delegates, part 1:
+//						Fast Slots, part 1:
 //
 //		Conversion of member function pointer to a standard form
 //
@@ -292,9 +230,9 @@ struct VoidToDefaultVoid<void> { typedef DefaultVoid type;
 // code if it knows the class only uses single inheritance.
 
 // Compilers using Microsoft's structure need to be treated as a special case.
-#ifdef  FASTDLGT_MICROSOFT_MFP
+#ifdef  RSLOT_MICROSOFT_MFP
 
-#ifdef FASTDLGT_HASINHERITANCE_KEYWORDS
+#ifdef RSLOT_HASINHERITANCE_KEYWORDS
 // For Microsoft and Intel, we want to ensure that it's the most efficient type of MFP
 // (4 bytes), even when the /vmg option is used. Declaring an empty class
 // would give 16 byte pointers in this case....
@@ -367,7 +305,7 @@ struct SimplifyMemFunc<SINGLE_MEMFUNCPTR_SIZE>
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-//						Fast Delegates, part 1b:
+//						Fast Slots, part 1b:
 //
 //					Workarounds for Microsoft and Intel
 //
@@ -375,7 +313,7 @@ struct SimplifyMemFunc<SINGLE_MEMFUNCPTR_SIZE>
 
 // Compilers with member function pointers which violate the standard (MSVC, Intel, Codeplay),
 // need to be treated as a special case.
-#ifdef FASTDLGT_MICROSOFT_MFP
+#ifdef RSLOT_MICROSOFT_MFP
 
 // We use unions to perform horrible_casts. I would like to use #pragma pack(push, 1)
 // at the start of each function for extra safety, but VC6 seems to ICE
@@ -594,22 +532,22 @@ struct SimplifyMemFunc<SINGLE_MEMFUNCPTR_SIZE + 3 *sizeof(int)>
 }  // namespace detail
 
 ////////////////////////////////////////////////////////////////////////////////
-//						Fast Delegates, part 2:
+//						Fast Slots, part 2:
 //
-//	Define the delegate storage, and cope with static functions
+//	Define the slot storage, and cope with static functions
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// DelegateMemento -- an opaque structure which can hold an arbitary delegate.
+// SlotMemento -- an opaque structure which can hold an arbitary slot.
 // It knows nothing about the calling convention or number of arguments used by
 // the function pointed to.
 // It supplies comparison operators so that it can be stored in STL collections.
 // It cannot be set to anything other than null, nor invoked directly:
-//	 it must be converted to a specific delegate.
+//	 it must be converted to a specific slot.
 
 // Implementation:
 // There are two possible implementations: the Safe method and the Evil method.
-//				DelegateMemento - Safe version
+//				SlotMemento - Safe version
 //
 // This implementation is standard-compliant, but a bit tricky.
 // A static function pointer is stored inside the class.
@@ -621,15 +559,15 @@ struct SimplifyMemFunc<SINGLE_MEMFUNCPTR_SIZE + 3 *sizeof(int)>
 // +--------------------+----------+------------+----------------+
 //	* For Metrowerks, this can be 0. (first virtual function in a
 //		 single_inheritance class).
-// When stored stored inside a specific delegate, the 'dontcare' entries are replaced
-// with a reference to the delegate itself. This complicates the = and == operators
-// for the delegate class.
+// When stored stored inside a specific slot, the 'dontcare' entries are replaced
+// with a reference to the slot itself. This complicates the = and == operators
+// for the slot class.
 
-//				DelegateMemento - Evil version
+//				SlotMemento - Evil version
 //
 // For compilers where data pointers are at least as big as code pointers, it is
 // possible to store the function pointer in the this pointer, using another
-// horrible_cast. In this case the DelegateMemento implementation is simple:
+// horrible_cast. In this case the SlotMemento implementation is simple:
 // +--pThis --+-- pMemFunc-+-- Meaning---------------------+
 // |	0	  |	 0		   | Empty						   |
 // |  !=0	  |	 !=0*	   | Static function or method call|
@@ -639,25 +577,25 @@ struct SimplifyMemFunc<SINGLE_MEMFUNCPTR_SIZE + 3 *sizeof(int)>
 // Note that the Sun C++ and MSVC documentation explicitly state that they
 // support static_cast between void * and function pointers.
 
-class DelegateMemento
+class SlotMemento
 {
 protected:
   // the data is protected, not private, because many
   // compilers have problems with template friends.
-  typedef void (detail::GenericClass::*GenericMemFuncType)();   // arbitrary MFP.
+  typedef void (Detail::GenericClass::*GenericMemFuncType)();   // arbitrary MFP.
 
-  detail::GenericClass *m_pthis;
+  Detail::GenericClass *m_pthis;
   GenericMemFuncType    m_pFunction;
 
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
   typedef void (*GenericFuncPtr)();   // arbitrary code pointer
   GenericFuncPtr m_pStaticFunction;
 
 #endif
 
 public:
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
-  DelegateMemento() : m_pthis(0), m_pFunction(0), m_pStaticFunction(0)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
+  SlotMemento() : m_pthis(0), m_pFunction(0), m_pStaticFunction(0)
   {
   }
 
@@ -671,7 +609,7 @@ public:
   }
 
 #else
-  DelegateMemento() : m_pthis(0), m_pFunction(0)
+  SlotMemento() : m_pthis(0), m_pFunction(0)
   {
   }
 
@@ -685,9 +623,9 @@ public:
 #endif
 
 public:
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
   inline bool
-  IsEqual(const DelegateMemento &x) const
+  IsEqual(const SlotMemento &x) const
   {
     // We have to cope with the static function pointers as a special case
     if(m_pFunction != x.m_pFunction)
@@ -713,18 +651,18 @@ public:
 
 #else // Evil Method
   inline bool
-  IsEqual(const DelegateMemento &x) const
+  IsEqual(const SlotMemento &x) const
   {
     return m_pthis == x.m_pthis && m_pFunction == x.m_pFunction;
   }
 
 #endif
-  // Provide a strict weak ordering for DelegateMementos.
+  // Provide a strict weak ordering for SlotMementos.
   inline bool
-  IsLess(const DelegateMemento &right) const
+  IsLess(const SlotMemento &right) const
   {
     // deal with static function pointers first
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
 
     if(m_pStaticFunction != 0 || right.m_pStaticFunction != 0)
     {
@@ -746,7 +684,7 @@ public:
 
   // BUGFIX (Mar 2005):
   // We can't just compare m_pFunction because on Metrowerks,
-  // m_pFunction can be zero even if the delegate is not empty!
+  // m_pFunction can be zero even if the slot is not empty!
   inline bool
   operator !() const                    // Is it bound to anything?
   {
@@ -760,28 +698,28 @@ public:
   }
 
 public:
-  DelegateMemento &
-  operator =(const DelegateMemento &right)
+  SlotMemento &
+  operator =(const SlotMemento &right)
   {
     SetMementoFrom(right);
     return *this;
   }
 
   inline bool
-  operator <(const DelegateMemento &right)
+  operator <(const SlotMemento &right)
   {
     return IsLess(right);
   }
 
   inline bool
-  operator >(const DelegateMemento &right)
+  operator >(const SlotMemento &right)
   {
     return right.IsLess(*this);
   }
 
-  DelegateMemento (const DelegateMemento &right)  :
+  SlotMemento (const SlotMemento &right)  :
     m_pthis(right.m_pthis), m_pFunction(right.m_pFunction)
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
     , m_pStaticFunction(right.m_pStaticFunction)
 #endif
   {
@@ -789,11 +727,11 @@ public:
 
 protected:
   void
-  SetMementoFrom(const DelegateMemento &right)
+  SetMementoFrom(const SlotMemento &right)
   {
     m_pFunction = right.m_pFunction;
     m_pthis     = right.m_pthis;
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
     m_pStaticFunction = right.m_pStaticFunction;
 #endif
   }
@@ -801,7 +739,7 @@ protected:
 
 //						ClosurePtr<>
 //
-// A private wrapper class that adds function signatures to DelegateMemento.
+// A private wrapper class that adds function signatures to SlotMemento.
 // It's the class that does most of the actual work.
 // The signatures are specified by:
 // GenericMemFunc: must be a type of GenericClass member function pointer.
@@ -810,18 +748,18 @@ protected:
 // UnvoidStaticFuncPtr: is the same as StaticFuncPtr, except on VC6
 //				   where it never returns void (returns DefaultVoid instead).
 
-// An outer class, delegateN<>, handles the invoking and creates the
+// An outer class, slotN<>, handles the invoking and creates the
 // necessary typedefs.
 // This class does everything else.
 
-namespace detail
+namespace Detail
 {
 
 template <class GenericMemFunc, class StaticFuncPtr, class UnvoidStaticFuncPtr>
-class ClosurePtr : public DelegateMemento
+class ClosurePtr : public SlotMemento
 {
 public:
-  // These functions are for setting the delegate to a member function.
+  // These functions are for setting the slot to a member function.
 
   // Here's the clever bit: we convert an arbitrary member function into a
   // standard form. XMemFunc should be a member function of class X, but I can't
@@ -832,7 +770,7 @@ public:
   {
     m_pthis = SimplifyMemFunc<sizeof(function_to_bind)>
                ::Convert(pthis, function_to_bind, m_pFunction);
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
     m_pStaticFunction = 0;
 #endif
   }
@@ -847,18 +785,18 @@ public:
   {
     m_pthis = SimplifyMemFunc<sizeof(function_to_bind)>
                ::Convert(const_cast<X *>(pthis), function_to_bind, m_pFunction);
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
     m_pStaticFunction = 0;
 #endif
   }
 
-#ifdef FASTDELEGATE_GCC_BUG_8271    // At present, GCC doesn't recognize constness of MFPs in templates
+#ifdef RSLOT_GCC_BUG_8271    // At present, GCC doesn't recognize constness of MFPs in templates
   template <class X, class XMemFunc>
   inline void
   bindmemfunc(const X *pthis, XMemFunc function_to_bind)
   {
     bindconstmemfunc(pthis, function_to_bind);
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
     m_pStaticFunction = 0;
 #endif
   }
@@ -883,13 +821,13 @@ public:
 // medium memory model. It's so evil that I can't recommend it, but I've
 // implemented it anyway because it produces very nice asm code.
 
-#if !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#if !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
 
 //				ClosurePtr<> - Safe version
 //
 // This implementation is standard-compliant, but a bit tricky.
-// I store the function pointer inside the class, and the delegate then
-// points to itself. Whenever the delegate is copied, these self-references
+// I store the function pointer inside the class, and the slot then
+// points to itself. Whenever the slot is copied, these self-references
 // must be transformed, and this complicates the = and == operators.
 
 public:
@@ -898,7 +836,7 @@ public:
   // they remain as self-references.
   template <class DerivedClass>
   inline void
-  CopyFrom(DerivedClass *pParent, const DelegateMemento &x)
+  CopyFrom(DerivedClass *pParent, const SlotMemento &x)
   {
     SetMementoFrom(x);
 
@@ -944,13 +882,13 @@ public:
 // possible to store the function pointer in the this pointer, using another
 // horrible_cast. Invocation isn't any faster, but it saves 4 bytes, and
 // speeds up comparison and assignment. If C++ provided direct language support
-// for delegates, they would produce asm code that was almost identical to this.
+// for slots, they would produce asm code that was almost identical to this.
 // Note that the Sun C++ and MSVC documentation explicitly state that they
 // support static_cast between void * and function pointers.
 
   template <class DerivedClass>
   inline void
-  CopyFrom(DerivedClass *pParent, const DelegateMemento &right)
+  CopyFrom(DerivedClass *pParent, const SlotMemento &right)
   {
     SetMementoFrom(right);
   }
@@ -979,11 +917,11 @@ public:
     // WARNING! Evil hack. We store the function in the 'this' pointer!
     // Ensure that there's a compilation failure if function pointers
     // and data pointers have different sizes.
-    // If you get this error, you need to #undef FASTDELEGATE_USESTATICFUNCTIONHACK.
+    // If you get this error, you need to #undef RSLOT_USE_STATIC_FUNCTION_HACK.
     typedef int ERROR_CantUseEvilMethod[sizeof(GenericClass *) ==
                                         sizeof(function_to_bind) ? 1 : -1];
 
-    m_pthis = horrible_cast<GenericClass *>(function_to_bind);
+    m_pthis = horribleCast<GenericClass *>(function_to_bind);
     // MSVC, SunC++ and DMC accept the following (non-standard) code:
 //		m_pthis = static_cast<GenericClass *>(static_cast<void *>(function_to_bind));
     // BCC32, Comeau and DMC accept this method. MSVC7.1 needs __int64 instead of long
@@ -999,14 +937,14 @@ public:
   {
     // Ensure that there's a compilation failure if function pointers
     // and data pointers have different sizes.
-    // If you get this error, you need to #undef FASTDELEGATE_USESTATICFUNCTIONHACK.
+    // If you get this error, you need to #undef RSLOT_USE_STATIC_FUNCTION_HACK.
     typedef int ERROR_CantUseEvilMethod[sizeof(UnvoidStaticFuncPtr) ==
                                         sizeof(this) ? 1 : -1];
 
-    return horrible_cast<UnvoidStaticFuncPtr>(this);
+    return horribleCast<UnvoidStaticFuncPtr>(this);
   }
 
-#endif // !defined(FASTDELEGATE_USESTATICFUNCTIONHACK)
+#endif // !defined(RSLOT_USE_STATIC_FUNCTION_HACK)
 
   // Does the closure contain this static function?
   inline bool
@@ -1027,7 +965,7 @@ public:
 } // namespace detail
 
 ////////////////////////////////////////////////////////////////////////////////
-//						Fast Delegates, part 3:
+//						Fast Slots, part 3:
 //
 //				Wrapper classes to ensure type safety
 //
@@ -1036,11 +974,11 @@ public:
 // Once we have the member function conversion templates, it's easy to make the
 // wrapper classes. So that they will work with as many compilers as possible,
 // the classes are of the form
-//	 Delegate3<int, char *, double>
+//	 Slot3<int, char *, double>
 // They can cope with any combination of parameters. The max number of parameters
 // allowed is 8, but it is trivial to increase this limit.
 // Note that we need to treat const member functions seperately.
-// All this class does is to enforce type safety, and invoke the delegate with
+// All this class does is to enforce type safety, and invoke the slot with
 // the correct list of parameters.
 
 // Because of the weird rule about the class of derived member function pointers,
@@ -1048,9 +986,9 @@ public:
 // This is the reason for the use of "implicit_cast<X*>(pthis)" in the code below.
 // If CDerivedClass is derived from CBaseClass, but doesn't override SimpleVirtualFunction,
 // without this trick you'd need to write:
-//		MyDelegate(static_cast<CBaseClass *>(&d), &CDerivedClass::SimpleVirtualFunction);
+//		MySlot(static_cast<CBaseClass *>(&d), &CDerivedClass::SimpleVirtualFunction);
 // but with the trick you can write
-//		MyDelegate(&d, &CDerivedClass::SimpleVirtualFunction);
+//		MySlot(&d, &CDerivedClass::SimpleVirtualFunction);
 
 // RetType is the type the compiler uses in compiling the template. For VC6,
 // it cannot be void. DesiredRetType is the real type which is returned from
@@ -1067,86 +1005,86 @@ public:
 //N=2
 // Default of RetType = detail::DefaultVoid
 template <class RetType, class ... ParamTypes>
-class DelegateCommon
+class SlotCommon
 {
 public:
-  typedef typename detail::DefaultVoidToVoid<RetType>::type DesiredRetType;
+  typedef typename Detail::DefaultVoidToVoid<RetType>::type DesiredRetType;
   typedef DesiredRetType
   (*StaticFunctionPtr)(ParamTypes ...);
   typedef RetType
   (*UnvoidStaticFunctionPtr)(ParamTypes ...);
   typedef RetType
-  (detail::GenericClass::*
+  (Detail::GenericClass::*
   GenericMemFn)(ParamTypes ...);
-  typedef detail::ClosurePtr<GenericMemFn, StaticFunctionPtr,
+  typedef Detail::ClosurePtr<GenericMemFn, StaticFunctionPtr,
                              UnvoidStaticFunctionPtr> ClosureType;
   ClosureType m_Closure;
 
 public:
   // Typedefs to aid generic programming
-  typedef DelegateCommon type;
+  typedef SlotCommon type;
 
   // Construction and comparison functions
-  DelegateCommon()
+  SlotCommon()
   {
     clear();
   }
 
-  DelegateCommon(const DelegateCommon &x)
+  SlotCommon(const SlotCommon &x)
   {
     m_Closure.CopyFrom(this, x.m_Closure);
   }
 
   void
-  operator =(const DelegateCommon &x)
+  operator =(const SlotCommon &x)
   {
     m_Closure.CopyFrom(this, x.m_Closure);
   }
 
   bool
-  operator ==(const DelegateCommon &x) const
+  operator ==(const SlotCommon &x) const
   {
     return m_Closure.IsEqual(x.m_Closure);
   }
 
   bool
-  operator !=(const DelegateCommon &x) const
+  operator !=(const SlotCommon &x) const
   {
     return !m_Closure.IsEqual(x.m_Closure);
   }
 
   bool
-  operator <(const DelegateCommon &x) const
+  operator <(const SlotCommon &x) const
   {
     return m_Closure.IsLess(x.m_Closure);
   }
 
   bool
-  operator >(const DelegateCommon &x) const
+  operator >(const SlotCommon &x) const
   {
     return x.m_Closure.IsLess(m_Closure);
   }
 
   // Binding to non-const member functions
   template <class X, class Y>
-  DelegateCommon(Y *pthis, DesiredRetType(X::*function_to_bind)(ParamTypes ...))
+  SlotCommon(Y *pthis, DesiredRetType(X::*function_to_bind)(ParamTypes ...))
   {
-    m_Closure.bindmemfunc(detail::implicit_cast<X *>(pthis), function_to_bind);
+    m_Closure.bindmemfunc(Detail::implicitCast<X *>(pthis), function_to_bind);
   }
 
   template <class X, class Y>
   inline void
   Bind(Y *pthis, DesiredRetType (X::*function_to_bind)(ParamTypes ...))
   {
-    m_Closure.bindmemfunc(detail::implicit_cast<X *>(pthis), function_to_bind);
+    m_Closure.bindmemfunc(Detail::implicitCast<X *>(pthis), function_to_bind);
   }
 
   // Binding to const member functions.
   template <class X, class Y>
-  DelegateCommon(const Y *pthis,
-                 DesiredRetType(X::*function_to_bind)(ParamTypes ...) const)
+  SlotCommon(const Y *pthis, DesiredRetType(X::*function_to_bind)(
+               ParamTypes ...) const)
   {
-    m_Closure.bindconstmemfunc(detail::implicit_cast<const X *>(
+    m_Closure.bindconstmemfunc(Detail::implicitCast<const X *>(
                                  pthis), function_to_bind);
   }
 
@@ -1155,13 +1093,13 @@ public:
   Bind(const Y *pthis, DesiredRetType (X::*function_to_bind)(
          ParamTypes ...) const)
   {
-    m_Closure.bindconstmemfunc(detail::implicit_cast<const X *>(
+    m_Closure.bindconstmemfunc(Detail::implicitCast<const X *>(
                                  pthis), function_to_bind);
   }
 
   // Static functions. We convert them into a member function call.
   // This constructor also provides implicit conversion
-  DelegateCommon(DesiredRetType(*function_to_bind)(ParamTypes ...))
+  SlotCommon(DesiredRetType(*function_to_bind)(ParamTypes ...))
   {
     Bind(function_to_bind);
   }
@@ -1176,11 +1114,11 @@ public:
   inline void
   Bind(DesiredRetType (*function_to_bind)(ParamTypes ...))
   {
-    m_Closure.bindstaticfunc(this, &DelegateCommon::InvokeStaticFunction,
+    m_Closure.bindstaticfunc(this, &SlotCommon::InvokeStaticFunction,
                              function_to_bind);
   }
 
-  // Invoke the delegate
+  // Invoke the slot
   RetType
   operator ()(ParamTypes ... args) const
   {
@@ -1234,15 +1172,15 @@ public:
     m_Closure.clear();
   }
 
-  // Conversion to and from the DelegateMemento storage class
-  const DelegateMemento &
+  // Conversion to and from the SlotMemento storage class
+  const SlotMemento &
   GetMemento()
   {
     return m_Closure;
   }
 
   void
-  SetMemento(const DelegateMemento &any)
+  SetMemento(const SlotMemento &any)
   {
     m_Closure.CopyFrom(this, any);
   }
@@ -1257,13 +1195,13 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-//						Fast Delegates, part 4:
+//						Fast Slots, part 4:
 //
-//				delegate<> class (Original author: Jody Hagins)
+//				slot<> class (Original author: Jody Hagins)
 //	Allows boost::function style syntax like:
-//			delegate< double (int, long) >
+//			slot< double (int, long) >
 // instead of:
-//			Delegate2< int, long, double >
+//			Slot2< int, long, double >
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1272,48 +1210,48 @@ private:
     #undef R
 #endif
 
-#ifdef FASTDELEGATE_ALLOW_FUNCTION_TYPE_SYNTAX
+#ifdef RSLOT_ALLOW_FUNCTION_TYPE_SYNTAX
 
-// Declare delegate as a class template.  It will be specialized
+// Declare slot as a class template.  It will be specialized
 // later for all number of arguments.
 template <typename Signature>
-class Delegate;
+class Slot;
 
 //N=2
 // Specialization to allow use of
-// delegate< R ( Param1, Param2 ) >
+// slot< R ( Param1, Param2 ) >
 // instead of
-// DelegateCommon <R, Param1, Param2>
+// SlotCommon <R, Param1, Param2>
 template <typename R, class ... ParamTypes>
-class Delegate<R(ParamTypes ...)>
-  // Inherit from DelegateCommon so that it can be treated just like a DelegateCommon
-  : public DelegateCommon<R, ParamTypes ...>
+class Slot<R(ParamTypes ...)>
+  // Inherit from SlotCommon so that it can be treated just like a SlotCommon
+  : public SlotCommon<R, ParamTypes ...>
 {
 public:
   // Make using the base type a bit easier via typedef.
-  typedef DelegateCommon<R, ParamTypes ...> BaseType;
+  typedef SlotCommon<R, ParamTypes ...> BaseType;
 
-  // Allow users access to the specific type of this delegate.
-  typedef Delegate SelfType;
+  // Allow users access to the specific type of this slot.
+  typedef Slot SelfType;
 
   // Mimic the base class constructors.
-  Delegate() : BaseType()
+  Slot() : BaseType()
   {
   }
 
   template <class X, class Y>
-  Delegate(Y *pthis, R(X::*function_to_bind)(ParamTypes ...))
+  Slot(Y *pthis, R(X::*function_to_bind)(ParamTypes ...))
     : BaseType(pthis, function_to_bind)
   {
   }
 
   template <class X, class Y>
-  Delegate(const Y *pthis, R(X::*function_to_bind)(ParamTypes ...) const)
+  Slot(const Y *pthis, R(X::*function_to_bind)(ParamTypes ...) const)
     : BaseType(pthis, function_to_bind)
   {
   }
 
-  Delegate(R(*function_to_bind)(ParamTypes ...))
+  Slot(R(*function_to_bind)(ParamTypes ...))
     : BaseType(function_to_bind)
   {
   }
@@ -1325,20 +1263,20 @@ public:
   }
 };
 
-#endif //FASTDELEGATE_ALLOW_FUNCTION_TYPE_SYNTAX
+#endif //RSLOT_ALLOW_FUNCTION_TYPE_SYNTAX
 
 ////////////////////////////////////////////////////////////////////////////////
-//						Fast Delegates, part 5:
+//						Fast Slots, part 5:
 //
-//				MakeDelegate() helper function
+//				MakeSlot() helper function
 //
-//			MakeDelegate(&x, &X::func) returns a fastdelegate of the type
+//			MakeSlot(&x, &X::func) returns a fastslot of the type
 //			necessary for calling x.func() with the correct number of arguments.
 //			This makes it possible to eliminate many typedefs from user code.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// Also declare overloads of a MakeDelegate() global function to
+// Also declare overloads of a MakeSlot() global function to
 // reduce the need for typedefs.
 // We need seperate overloads for const and non-const member functions.
 // Also, because of the weird rule about the class of derived member function pointers,
@@ -1351,41 +1289,41 @@ public:
 // but VC6 doesn't allow 'typename' in this context.
 // So, I have to use a macro.
 
-#ifdef FASTDLGT_VC6
-#define FASTDLGT_RETTYPE detail::VoidToDefaultVoid<RetType>::type
+#ifdef RSLOT_VC6
+#define RSLOT_RET_TYPE detail::VoidToDefaultVoid<RetType>::type
 #else
-#define FASTDLGT_RETTYPE RetType
+#define RSLOT_RET_TYPE RetType
 #endif
 
 //N=2
 template <class X, class Y, class RetType, class ... ParamTypes>
-DelegateCommon<FASTDLGT_RETTYPE, ParamTypes ...>
-MakeDelegate(Y *x, RetType (X::*func)(ParamTypes ...))
+SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>
+MakeSlot(Y *x, RetType (X::*func)(ParamTypes ...))
 {
-  return DelegateCommon<FASTDLGT_RETTYPE, ParamTypes ...>(x, func);
+  return SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>(x, func);
 }
 
 template <class X, class Y, class RetType, class ... ParamTypes>
-DelegateCommon<FASTDLGT_RETTYPE, ParamTypes ...>
-MakeDelegate(Y *x, RetType (X::*func)(ParamTypes ...) const)
+SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>
+MakeSlot(Y *x, RetType (X::*func)(ParamTypes ...) const)
 {
-  return DelegateCommon<FASTDLGT_RETTYPE, ParamTypes ...>(x, func);
+  return SlotCommon<RSLOT_RET_TYPE, ParamTypes ...>(x, func);
 }
 
 // Support C++11 lambdas
 
-Delegate<void()>
-MakeDelegate(void (*func)());
+Slot<void()>
+MakeSlot(void (*func)());
 
 template <class ... ParamTypes>
-Delegate<void(ParamTypes ...)>
-MakeDelegate(void (*func)(ParamTypes ...))
+Slot<void(ParamTypes ...)>
+MakeSlot(void (*func)(ParamTypes ...))
 {
-  return Delegate<void(ParamTypes ...)>(func);
+  return Slot<void(ParamTypes ...)>(func);
 }
 
 // clean up after ourselves...
-#undef FASTDLGT_RETTYPE
+#undef RSLOT_RET_TYPE
 } // namespace
 
 #endif //_DELEGATES_H_

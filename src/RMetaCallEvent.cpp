@@ -1,12 +1,12 @@
 #include "RMetaCallEvent.h"
 
-RMetaCallEvent::RMetaCallEvent(const rcount &type, Delegate aDelegate)
-  : REvent(type), mDelegate(aDelegate)
+RMetaCallEvent::RMetaCallEvent(const rcount &type, Slot slot)
+  : REvent(type), mSlot(slot)
 {
 }
 
-const RMetaCallEvent::Delegate &
-RMetaCallEvent::delegate()
+const RMetaCallEvent::Slot &
+RMetaCallEvent::slot()
 {
-  return mDelegate;
+  return mSlot;
 }

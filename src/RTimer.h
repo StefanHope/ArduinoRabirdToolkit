@@ -12,9 +12,9 @@ public:
   bool
   event(REvent *e);
 
-  template <class DelegateType>
+  template <class SlotType>
   static void
-  singleShot(int msec, const DelegateType &delegate);
+  singleShot(int msec, const SlotType &slot);
 
   RSignal<void()> timeout;
 
@@ -27,12 +27,12 @@ private:
   _redirectEvents();
 };
 
-template <class DelegateType>
+template <class SlotType>
 void
-RTimer::singleShot(int msec, const DelegateType &delegate)
+RTimer::singleShot(int msec, const SlotType &slot)
 {
   auto timer = new RTimer();
-  timer->timeout.connect(delegate);
+  timer->timeout.connect(slot);
   timer->timeout.connect(timer, &RTimer::deleteLater);
   timer->setSingleShot(true);
   timer->setInterval(msec);

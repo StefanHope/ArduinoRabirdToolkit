@@ -61,14 +61,14 @@ public:
   typedef RConnection<_Slot>                             Connection;
 
 private:
-  typedef RForwardList<Connection> SlotList;
+  typedef RForwardList<Connection> ConnectionList;
 
 public:
   void
   connect(const _Slot &slot)
   {
     R_MAKE_SPINLOCKER();
-    mSlotList.pushFront(Connection(slot));
+    mConnections.pushFront(Connection(slot));
   }
 
   template <class X, class Y>
@@ -91,9 +91,9 @@ public:
       connectionType = DirectConnection;
     }
 
-    mSlotList.pushFront(Connection(rMakeSlot(
-                                     static_cast<X *>(receiver), func),
-                                   connectionType));
+    mConnections.pushFront(Connection(rMakeSlot(
+                                        static_cast<X *>(receiver), func),
+                                      connectionType));
   }
 
   template <class X, class Y>
@@ -117,9 +117,9 @@ public:
       connectionType = DirectConnection;
     }
 
-    mSlotList.pushFront(Connection(rMakeSlot(
-                                     static_cast<X *>(receiver), func),
-                                   connectionType));
+    mConnections.pushFront(Connection(rMakeSlot(
+                                        static_cast<X *>(receiver), func),
+                                      connectionType));
   }
 
   void
@@ -133,21 +133,21 @@ public:
   {
     R_MAKE_SPINLOCKER();
 
-    auto it = mSlotList.beforeBegin();
-    typename SlotList::iterator nextIt;
+    auto it = mConnections.beforeBegin();
+    typename ConnectionList::iterator nextIt;
 
     while(1)
     {
       nextIt = it + 1;
 
-      if(nextIt == mSlotList.end())
+      if(nextIt == mConnections.end())
       {
         break;
       }
 
       if((*nextIt).mSlot == slot)
       {
-        mSlotList.eraseAfter(it);
+        mConnections.eraseAfter(it);
       }
 
       it = nextIt;
@@ -172,13 +172,13 @@ public:
   clear()
   {
     R_MAKE_SPINLOCKER();
-    mSlotList.clear();
+    mConnections.clear();
   }
 
   void
   emit(ParamTypes ... params) const
   {
-    for(auto it = mSlotList.begin(); it != mSlotList.end(); )
+    for(auto it = mConnections.begin(); it != mConnections.end(); )
     {
       Connection &connection = *it;
 
@@ -205,11 +205,11 @@ public:
   bool
   empty() const
   {
-    return mSlotList.empty();
+    return mConnections.empty();
   }
 
 private:
-  SlotList mSlotList;
+  ConnectionList mConnections;
 };
 
 /**
@@ -223,14 +223,14 @@ public:
   typedef RConnection<_Slot>                   Connection;
 
 private:
-  typedef RForwardList<Connection> SlotList;
+  typedef RForwardList<Connection> ConnectionList;
 
 public:
   void
   connect(const _Slot &slot)
   {
     R_MAKE_SPINLOCKER();
-    mSlotList.pushFront(Connection(slot));
+    mConnections.pushFront(Connection(slot));
   }
 
   template <class X, class Y>
@@ -253,9 +253,9 @@ public:
       connectionType = ObjectConnection;
     }
 
-    mSlotList.pushFront(Connection(rMakeSlot(
-                                     static_cast<X *>(receiver), func),
-                                   connectionType));
+    mConnections.pushFront(Connection(rMakeSlot(
+                                        static_cast<X *>(receiver), func),
+                                      connectionType));
   }
 
   template <class X, class Y>
@@ -279,9 +279,9 @@ public:
       connectionType = ObjectConnection;
     }
 
-    mSlotList.pushFront(Connection(rMakeSlot(
-                                     static_cast<X *>(receiver), func),
-                                   connectionType));
+    mConnections.pushFront(Connection(rMakeSlot(
+                                        static_cast<X *>(receiver), func),
+                                      connectionType));
   }
 
   void
@@ -295,21 +295,21 @@ public:
   {
     R_MAKE_SPINLOCKER();
 
-    auto it = mSlotList.beforeBegin();
-    typename SlotList::iterator nextIt;
+    auto it = mConnections.beforeBegin();
+    typename ConnectionList::iterator nextIt;
 
     while(1)
     {
       nextIt = it + 1;
 
-      if(nextIt == mSlotList.end())
+      if(nextIt == mConnections.end())
       {
         break;
       }
 
       if((*nextIt).mSlot == slot)
       {
-        mSlotList.eraseAfter(it);
+        mConnections.eraseAfter(it);
       }
 
       it = nextIt;
@@ -334,13 +334,13 @@ public:
   clear()
   {
     R_MAKE_SPINLOCKER();
-    mSlotList.clear();
+    mConnections.clear();
   }
 
   void
   emit() const
   {
-    for(auto it = mSlotList.begin(); it != mSlotList.end(); )
+    for(auto it = mConnections.begin(); it != mConnections.end(); )
     {
       Connection &connection = *it;
 
@@ -378,11 +378,11 @@ public:
   bool
   empty() const
   {
-    return mSlotList.empty();
+    return mConnections.empty();
   }
 
 private:
-  SlotList mSlotList;
+  ConnectionList mConnections;
 };
 
 #endif //__INCLUDED_C5173AA242B211E6AA6EA088B4D1658C

@@ -12,3 +12,9 @@ rIsObjectInSameThread(const RObject *left, const RObject *right)
 
   return (left->thread()->id() == right->thread()->id());
 }
+
+bool
+rIsObjectInCurrentThread(const RObject *object)
+{
+  return RThread::currentThreadId() == object->thread()->id();
+}

@@ -213,6 +213,9 @@ struct RRemovePointer<T **>
 bool
 rIsObjectInSameThread(const RObject *left, const RObject *right);
 
+bool
+rIsObjectInCurrentThread(const RObject *object);
+
 /**
  * Calculate how much elements in the array
  *

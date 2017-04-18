@@ -33,7 +33,7 @@ RTimer::singleShot(int msec, const SlotType &slot)
 {
   auto timer = new RTimer();
   timer->timeout.connect(slot);
-  timer->timeout.connect(timer, &RTimer::deleteLater);
+  R_CONNECT(timer, timeout, timer, deleteLater);
   timer->setSingleShot(true);
   timer->setInterval(msec);
   timer->start();

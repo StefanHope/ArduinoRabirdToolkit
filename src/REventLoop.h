@@ -8,7 +8,7 @@
 
 class RAbstractCoRoutine;
 class RCoreApplication;
-class RCoRoutine;
+class RBasicCoRoutine;
 class REventLoop : public RObject
 {
 private:
@@ -49,10 +49,10 @@ public:
   processEvents();
 
   void
-  _attachCR(RCoRoutine *cr);
+  _attachCR(RBasicCoRoutine *cr);
 
   void
-  _detachCR(RCoRoutine *cr);
+  _detachCR(RBasicCoRoutine *cr);
 
   RSignal<void()> idle;
 
@@ -69,9 +69,9 @@ protected:
 private:
   // FIXME: Events are not be protected by mutex, they will be crashed during
   // access.
-  std::list<EventData>    mEvents;
-  std::list<RCoRoutine *> mCoRoutines;
-  std::list<RObject *>    mDeferredObjects;
+  std::list<EventData>         mEvents;
+  std::list<RBasicCoRoutine *> mCoRoutines;
+  std::list<RObject *>         mDeferredObjects;
   int  mReturnCode;
   bool mIsInterrupt;
 

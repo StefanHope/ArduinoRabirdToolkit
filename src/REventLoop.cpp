@@ -105,6 +105,11 @@ LABEL_EXIT:
       // Detach coroutines if it's exited!
       if(ret >= PT_EXITED)
       {
+        if((*oldIt)->type() == RBasicCoRoutine::Detached)
+        {
+          delete *oldIt;
+        }
+
         mCoRoutines.erase(oldIt);
       }
     }
@@ -119,7 +124,7 @@ LABEL_EXIT:
 }
 
 void
-REventLoop::_attachCR(RCoRoutine *cr)
+REventLoop::_attachCR(RBasicCoRoutine *cr)
 {
   if((NULL == cr) || (cr->thread()->id() != thread()->id()))
   {
@@ -132,7 +137,7 @@ REventLoop::_attachCR(RCoRoutine *cr)
 }
 
 void
-REventLoop::_detachCR(RCoRoutine *cr)
+REventLoop::_detachCR(RBasicCoRoutine *cr)
 {
   mCoRoutines.remove(cr);
 }

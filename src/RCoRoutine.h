@@ -32,7 +32,7 @@
   BOOST_PP_COMMA_IF(BOOST_PP_SUB(data, BOOST_PP_DEC(r)))
 
 #define RCR_PP_ARGUMENT_FUNC_IMPL(r, data, elem) \
-  BOOST_PP_IF(BOOST_PP_SUB(r, 2), , :) \
+  BOOST_PP_IF(BOOST_PP_SUB(r, 2), BOOST_PP_EMPTY, BOOST_PP_COMMA)() \
   BOOST_PP_CAT(a, BOOST_PP_TUPLE_ELEM(1, elem))( \
     BOOST_PP_CAT(in, BOOST_PP_TUPLE_ELEM(1, elem))) \
   BOOST_PP_COMMA_IF(BOOST_PP_SUB(data, BOOST_PP_DEC(r)))
@@ -54,16 +54,19 @@
   { \
 public: \
     RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_CLASS_DECL, __VA_ARGS__) \
-    crName(RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_DECL, __VA_ARGS__)) \
-    RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_IMPL, __VA_ARGS__) \
+    crName( \
+      implClassName * impl, \
+      RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_DECL, __VA_ARGS__)) \
+      : RCoRoutine<implClassName>(impl) \
+      RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_IMPL, __VA_ARGS__) \
     { \
-    } \
+    }; \
 public:
 #define RCR_IMPL() \
   char run() \
   { RCR_IMPL_BEGIN();
 
-#define RCR_END() RCR_IMPL_END(); } }
+#define RCR_END() RCR_IMPL_END(); }; };
 
 class RBasicCoRoutine : public RObject
 {

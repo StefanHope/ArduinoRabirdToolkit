@@ -4,11 +4,12 @@
 #include "RObject.h"
 #include "RUniquePointer.h"
 #include <pt/pt.h>
+#include <boost/preprocessor.hpp>
 
-#define RCR_BEGIN() \
+#define RCR_IMPL_BEGIN() \
   if(_isTerminated()) {return PT_EXITED; }; \
   PT_BEGIN(&this->mPt)
-#define RCR_END()                  PT_END(&this->mPt)
+#define RCR_IMPL_END()             PT_END(&this->mPt)
 #define RCR_WAIT_UNITL(condition)  PT_WAIT_UNTIL(&this->mPt, (condition))
 #define RCR_WAIT_WHILE(condition)  PT_WAIT_WHILE(&this->mPt, (condition))
 #define RCR_YIELD()                PT_YIELD(&this->mPt)
@@ -20,6 +21,49 @@
   RCoRoutineSpawner<className>::spawnDetached(rThis, __VA_ARGS__)
 #define RCR_WAIT_CR(otherCR) \
   PT_WAIT_THREAD((&this->mPt), (otherCR)->run())
+
+#define RCR_PP_EMPTY(...)
+
+#define RCR_PP_ARGUMENT_CLASS_DECL(r, data, elem) \
+  BOOST_PP_TUPLE_ELEM(0, elem) BOOST_PP_CAT(a, BOOST_PP_TUPLE_ELEM(1, elem));
+
+#define RCR_PP_ARGUMENT_FUNC_DECL(r, data, elem) \
+  BOOST_PP_TUPLE_ELEM(0, elem) BOOST_PP_CAT(in, BOOST_PP_TUPLE_ELEM(1, elem)) \
+  BOOST_PP_COMMA_IF(BOOST_PP_SUB(data, BOOST_PP_DEC(r)))
+
+#define RCR_PP_ARGUMENT_FUNC_IMPL(r, data, elem) \
+  BOOST_PP_IF(BOOST_PP_SUB(r, 2), , :) \
+  BOOST_PP_CAT(a, BOOST_PP_TUPLE_ELEM(1, elem))( \
+    BOOST_PP_CAT(in, BOOST_PP_TUPLE_ELEM(1, elem))) \
+  BOOST_PP_COMMA_IF(BOOST_PP_SUB(data, BOOST_PP_DEC(r)))
+
+#define RCR_PP_ARGUMENTS_FOR_EACH(macro, seq) \
+  BOOST_PP_SEQ_FOR_EACH( \
+    macro, \
+    BOOST_PP_SEQ_SIZE(seq), \
+    seq)
+
+#define RCR_PP_ARGUMENTS_EXPAND(macro, ...) \
+  BOOST_PP_IF( \
+    BOOST_PP_IS_EMPTY(__VA_ARGS__), \
+    RCR_PP_EMPTY, \
+    RCR_PP_ARGUMENTS_FOR_EACH)(macro, BOOST_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
+
+#define RCR_BEGIN(implClassName, crName, ...) \
+  class crName : public RCoRoutine<implClassName> \
+  { \
+public: \
+    RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_CLASS_DECL, __VA_ARGS__) \
+    crName(RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_DECL, __VA_ARGS__)) \
+    RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_IMPL, __VA_ARGS__) \
+    { \
+    } \
+public:
+#define RCR_IMPL() \
+  char run() \
+  { RCR_IMPL_BEGIN();
+
+#define RCR_END() RCR_IMPL_END(); } }
 
 class RBasicCoRoutine : public RObject
 {

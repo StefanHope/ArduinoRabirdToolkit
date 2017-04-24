@@ -24,6 +24,7 @@ public:
   explicit
   REvent(const rcount &type=None);
 
+  virtual
   ~REvent();
 
   void

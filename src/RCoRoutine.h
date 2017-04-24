@@ -50,14 +50,14 @@
     RCR_PP_ARGUMENTS_FOR_EACH)(macro, BOOST_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
 
 #define RCR_BEGIN(implClassName, crName, ...) \
-  class crName : public RCoRoutine<implClassName> \
+  class crName : public RCoRoutineImpl<implClassName> \
   { \
 public: \
     RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_CLASS_DECL, __VA_ARGS__) \
     crName( \
       implClassName * impl, \
       RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_DECL, __VA_ARGS__)) \
-      : RCoRoutine<implClassName>(impl) \
+      : RCoRoutineImpl<implClassName>(impl) \
       RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_IMPL, __VA_ARGS__) \
     { \
     }; \
@@ -68,7 +68,7 @@ public:
 
 #define RCR_END() RCR_IMPL_END(); }; };
 
-class RBasicCoRoutine : public RObject
+class RCoRoutine : public RObject
 {
 public:
   enum Type
@@ -77,9 +77,9 @@ public:
     Detached,
   };
 
-  RBasicCoRoutine(void *impl);
+  RCoRoutine(void *impl);
 
-  ~RBasicCoRoutine();
+  ~RCoRoutine();
 
   void
   setType(Type aType);
@@ -113,10 +113,10 @@ private:
 };
 
 template <class ImplementationType>
-class RCoRoutine : public RBasicCoRoutine
+class RCoRoutineImpl : public RCoRoutine
 {
 protected:
-  RCoRoutine(ImplementationType *impl) : RBasicCoRoutine(impl)
+  RCoRoutineImpl(ImplementationType *impl) : RCoRoutine(impl)
   {
   }
 
@@ -151,7 +151,7 @@ public:
   {
     auto cr = new T(params ...);
 
-    cr->setType(RBasicCoRoutine::Detached);
+    cr->setType(RCoRoutine::Detached);
   }
 };
 

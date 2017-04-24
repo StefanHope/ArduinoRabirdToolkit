@@ -2,13 +2,13 @@
 #include "RThread.h"
 #include "REventLoop.h"
 
-RBasicCoRoutine::RBasicCoRoutine(void *impl) : mImpl(impl), mType(Attached)
+RCoRoutine::RCoRoutine(void *impl) : mImpl(impl), mType(Attached)
 {
   PT_INIT(&mPt);
   thread()->eventLoop()->_attachCR(this);
 }
 
-RBasicCoRoutine::~RBasicCoRoutine()
+RCoRoutine::~RCoRoutine()
 {
   // Detached coroutines will be remove automatically while coroutine finished.
   if(type() == Attached)
@@ -18,26 +18,26 @@ RBasicCoRoutine::~RBasicCoRoutine()
 }
 
 void
-RBasicCoRoutine::setType(RBasicCoRoutine::Type aType)
+RCoRoutine::setType(RCoRoutine::Type aType)
 {
   mType = aType;
 }
 
-RBasicCoRoutine::Type
-RBasicCoRoutine::type()
+RCoRoutine::Type
+RCoRoutine::type()
 {
   return static_cast<Type>(mType);
 }
 
 void
-RBasicCoRoutine::terminate()
+RCoRoutine::terminate()
 {
   PT_INIT(&mPt);
   mIsTerminated = true;
 }
 
 bool
-RBasicCoRoutine::_isTerminated()
+RCoRoutine::_isTerminated()
 {
   return mIsTerminated;
 }

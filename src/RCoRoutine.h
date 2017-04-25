@@ -108,8 +108,7 @@ public:
 
 private:
   const void *mImpl;
-  int8_t      mType         : 2;
-  bool        mIsTerminated : 1;
+  int8_t      mType : 2;
 };
 
 template <class ImplementationType>

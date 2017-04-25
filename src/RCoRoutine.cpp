@@ -1,6 +1,7 @@
 #include "RCoRoutine.h"
 #include "RThread.h"
 #include "REventLoop.h"
+#include "RLimits.h"
 
 RCoRoutine::RCoRoutine(void *impl) : mImpl(impl), mType(Attached)
 {
@@ -32,12 +33,11 @@ RCoRoutine::type()
 void
 RCoRoutine::terminate()
 {
-  PT_INIT(&mPt);
-  mIsTerminated = true;
+  mPt.lc = RNumericLimits<R_RAW_TYPE_OF(mPt.lc)>::sMax;
 }
 
 bool
 RCoRoutine::_isTerminated()
 {
-  return mIsTerminated;
+  return (RNumericLimits<R_RAW_TYPE_OF(mPt.lc)>::sMax == mPt.lc);
 }

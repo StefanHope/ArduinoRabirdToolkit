@@ -32,7 +32,8 @@
     BOOST_PP_CAT(in, BOOST_PP_TUPLE_ELEM(1, elem))) \
   BOOST_PP_COMMA_IF(BOOST_PP_SUB(data, BOOST_PP_DEC(r)))
 
-#define RPP_ARGUMENTS_EXTRACT(macro, ...) \
+#define RPP_ARGUMENTS_EXTRACT(prefixMacro, macro, ...) \
+  RPP_IF_ARGS_NOT_EMPTY(prefixMacro, __VA_ARGS__)() \
   BOOST_PP_IF( \
     BOOST_PP_IS_EMPTY(__VA_ARGS__), \
     RPP_EMPTY, \

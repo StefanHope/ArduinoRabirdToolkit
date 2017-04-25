@@ -22,14 +22,12 @@
   class crName : public RCoRoutineImpl<implClassName> \
   { \
 public: \
-    RPP_ARGUMENTS_EXTRACT(RPP_CLASS_MEMBER, __VA_ARGS__) \
+    RPP_ARGUMENTS_EXTRACT(RPP_EMPTY, RPP_CLASS_MEMBER, __VA_ARGS__) \
     crName( \
       implClassName * impl \
-      RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
-      RPP_ARGUMENTS_EXTRACT(RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
+      RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
       : RCoRoutineImpl<implClassName>(impl) \
-      RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
-      RPP_ARGUMENTS_EXTRACT(RPP_FUNC_INIT_LIST, __VA_ARGS__) \
+      RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_INIT_LIST, __VA_ARGS__) \
     { \
     }; \
 public:

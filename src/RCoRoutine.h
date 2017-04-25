@@ -6,10 +6,6 @@
 #include <pt/pt.h>
 #include <boost/preprocessor.hpp>
 
-#define RCR_IMPL_BEGIN() \
-  if(_isTerminated()) {return PT_EXITED; }; \
-  PT_BEGIN(&this->mPt)
-#define RCR_IMPL_END()             PT_END(&this->mPt)
 #define RCR_WAIT_UNITL(condition)  PT_WAIT_UNTIL(&this->mPt, (condition))
 #define RCR_WAIT_WHILE(condition)  PT_WAIT_WHILE(&this->mPt, (condition))
 #define RCR_YIELD()                PT_YIELD(&this->mPt)
@@ -64,9 +60,10 @@ public: \
 public:
 #define RCR_IMPL() \
   char run() \
-  { RCR_IMPL_BEGIN();
+  { if(_isTerminated()) {return PT_EXITED; }; \
+    PT_BEGIN(&this->mPt);
 
-#define RCR_END() RCR_IMPL_END(); }; };
+#define RCR_END() PT_END(&this->mPt); }; };
 
 class RCoRoutine : public RObject
 {

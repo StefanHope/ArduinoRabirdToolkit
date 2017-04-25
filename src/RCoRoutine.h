@@ -18,41 +18,18 @@
 #define RCR_WAIT_CR(otherCR) \
   PT_WAIT_THREAD((&this->mPt), (otherCR)->run())
 
-#define RCR_PP_ARGUMENT_CLASS_DECL(r, data, elem) \
-  BOOST_PP_TUPLE_ELEM(0, elem) BOOST_PP_CAT(a, BOOST_PP_TUPLE_ELEM(1, elem));
-
-#define RCR_PP_ARGUMENT_FUNC_DECL(r, data, elem) \
-  BOOST_PP_TUPLE_ELEM(0, elem) BOOST_PP_CAT(in, BOOST_PP_TUPLE_ELEM(1, elem)) \
-  BOOST_PP_COMMA_IF(BOOST_PP_SUB(data, BOOST_PP_DEC(r)))
-
-#define RCR_PP_ARGUMENT_FUNC_IMPL(r, data, elem) \
-  BOOST_PP_IF(BOOST_PP_SUB(r, 2), RPP_EMPTY, RPP_COMMA)() \
-  BOOST_PP_CAT(a, BOOST_PP_TUPLE_ELEM(1, elem))( \
-    BOOST_PP_CAT(in, BOOST_PP_TUPLE_ELEM(1, elem))) \
-  BOOST_PP_COMMA_IF(BOOST_PP_SUB(data, BOOST_PP_DEC(r)))
-
-#define RCR_PP_ARGUMENTS_FOR_EACH(macro, seq) \
-  BOOST_PP_SEQ_FOR_EACH( \
-    macro, \
-    BOOST_PP_SEQ_SIZE(seq), \
-    seq)
-
-#define RCR_PP_ARGUMENTS_EXPAND(macro, ...) \
-  BOOST_PP_IF( \
-    BOOST_PP_IS_EMPTY(__VA_ARGS__), \
-    RPP_EMPTY, \
-    RCR_PP_ARGUMENTS_FOR_EACH)(macro, BOOST_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
-
 #define RCR_BEGIN(implClassName, crName, ...) \
   class crName : public RCoRoutineImpl<implClassName> \
   { \
 public: \
-    RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_CLASS_DECL, __VA_ARGS__) \
+    RPP_ARGUMENTS_EXTRACT(RPP_CLASS_MEMBER, __VA_ARGS__) \
     crName( \
-      implClassName * impl, \
-      RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_DECL, __VA_ARGS__)) \
+      implClassName * impl \
+      RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
+      RPP_ARGUMENTS_EXTRACT(RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
       : RCoRoutineImpl<implClassName>(impl) \
-      RCR_PP_ARGUMENTS_EXPAND(RCR_PP_ARGUMENT_FUNC_IMPL, __VA_ARGS__) \
+      RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
+      RPP_ARGUMENTS_EXTRACT(RPP_FUNC_INIT_LIST, __VA_ARGS__) \
     { \
     }; \
 public:

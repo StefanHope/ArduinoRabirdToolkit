@@ -41,3 +41,12 @@ RCoRoutine::_isTerminated()
 {
   return (RNumericLimits<R_RAW_TYPE_OF(mPt.lc)>::sMax == mPt.lc);
 }
+
+class A : public RObject
+{
+public:
+};
+
+RCR_BEGIN(A, rcTest, (int, Var))
+RCR_IMPL()
+RCR_END()

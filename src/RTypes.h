@@ -12,11 +12,14 @@
 
 #include <ArduinouClibcpp.h>
 #include <RabirdToolkitThirdParties.h>
-#include <FreeRTOSMallocFixer.h>
 #include <config/RConfig.h>
 
-#include <boost/type_traits.hpp>
+#ifdef R_OS_FREERTOS
+#include <FreeRTOSMallocFixer.h>
 #include <semphr.h>
+#endif // #ifdef R_OS_FREERTOS
+
+#include <boost/type_traits.hpp>
 
 #ifdef __cplusplus
 #define R_EXTERN_C             extern "C"

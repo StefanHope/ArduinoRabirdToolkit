@@ -20,8 +20,9 @@ public:
   unlock();
 
 private:
-  rcount       mCount;
-  TaskHandle_t mThreadId;
+  rcount mCount;
+
+  RThread::Id mThreadId;
 
   R_DISABLE_COPY(RMutexRecursive)
 };

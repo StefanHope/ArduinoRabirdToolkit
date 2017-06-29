@@ -11,6 +11,8 @@ class RCoreApplication;
 class RThread : public RObject
 {
 public:
+  typedef TaskHandle_t Id;
+
   /**
    * This enum type indicates how the operating system should schedule newly
    * created threads.
@@ -36,7 +38,7 @@ public:
   };
 
 private:
-  RThread(TaskHandle_t handle);
+  RThread(RThread::Id handle);
 
 public:
   RThread();
@@ -65,7 +67,7 @@ public:
   setStackSize(size_t stackSize);
   size_t
   stackSize() const;
-  TaskHandle_t
+  Id
   id() const;
   bool
   wait(unsigned long time=std::numeric_limits<unsigned long>::max());
@@ -80,7 +82,7 @@ public:
   eventLoop();
   static RThread *
   currentThread();
-  static TaskHandle_t
+  static RThread::Id
   currentThreadId();
   static void
   yieldCurrentThread();
@@ -102,10 +104,11 @@ protected:
   run();
 
 private:
-  size_t       mStackSize;
-  TaskHandle_t mHandle;
-  bool         mIsOwnded;
-  REventLoop * mEventLoop;
+  size_t mStackSize;
+
+  RThread::Id mHandle;
+  bool        mIsOwnded;
+  REventLoop *mEventLoop;
 
   friend RThreadPrivate;
   friend REventLoop;

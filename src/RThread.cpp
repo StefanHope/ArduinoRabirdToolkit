@@ -37,7 +37,7 @@ RThreadPrivate::run(void *arg)
   vTaskDelete(NULL);
 }
 
-RThread::RThread(TaskHandle_t handle)
+RThread::RThread(RThread::Id handle)
 // So that RObject won't create another RThread lead infinite looping
   : RObject(this)
   , mStackSize(configMINIMAL_STACK_SIZE * sizeof(word))
@@ -146,7 +146,7 @@ RThread::stackSize() const
   return mStackSize;
 }
 
-TaskHandle_t
+RThread::Id
 RThread::id() const
 {
   return mHandle;
@@ -198,7 +198,7 @@ void
 RThread::start(RThread::Priority priority)
 {
   /* Create the task, storing the handle. */
-  TaskHandle_t handle = NULL;
+  RThread::Id handle = NULL;
 
   if(isRunning())
   {
@@ -270,7 +270,7 @@ RThread::eventLoop()
 RThread *
 RThread::currentThread()
 {
-  TaskHandle_t handle = currentThreadId();
+  RThread::Id handle = currentThreadId();
 
   for(auto it = sThreads.begin(); it != sThreads.end(); ++it)
   {
@@ -284,7 +284,7 @@ RThread::currentThread()
   return new RThread(handle);
 }
 
-TaskHandle_t
+RThread::Id
 RThread::currentThreadId()
 {
   return xTaskGetCurrentTaskHandle();

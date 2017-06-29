@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_E4C4EA7CFFB111E6AA6EA088B4D1658C
 #define __INCLUDED_E4C4EA7CFFB111E6AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 
 class RThread;
 class RMutexRecursive

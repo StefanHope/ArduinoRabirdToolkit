@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_CB5671DA425011E6932B00F1F38F93EF
 #define __INCLUDED_CB5671DA425011E6932B00F1F38F93EF
 
-#include "RTypes.h"
+#include "RGlobal.h"
 #include "RRawPointer.h"
 #include <Print.h>
 #include <Printable.h>

@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_DFE14DD2645911E6BAE000F1F38F93EF
 #define __INCLUDED_DFE14DD2645911E6BAE000F1F38F93EF
 
-#include <RTypes.h>
+#include "RGlobal.h"
 
 template <class DerivedType_, class T, class StorageType_ = T *>
 class RBasicPointer

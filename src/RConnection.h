@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_FBA4579423DF11E7AA6EA088B4D1658C
 #define __INCLUDED_FBA4579423DF11E7AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 
 enum RConnectionType
 {

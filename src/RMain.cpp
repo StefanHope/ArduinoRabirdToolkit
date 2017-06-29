@@ -1,5 +1,5 @@
 #include "RMain.h"
-#include "RTypes.h"
+#include "RGlobal.h"
 #include "RThread.h"
 #include "REventLoop.h"
 #include "RCoreApplication.h"

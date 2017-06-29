@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_D484B6DA826E11E6AA6EA088B4D1658C
 #define __INCLUDED_D484B6DA826E11E6AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 
 template <class Functor>
 class RScopedExit

@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_BE81AF72390F11E5AA6EA088B4D1658C
 #define __INCLUDED_BE81AF72390F11E5AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 
 class RCpuTimer
 {

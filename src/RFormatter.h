@@ -8,7 +8,7 @@
 #ifndef __INCLUDED_DB42F20C7AF911E5AA6EA088B4D1658C
 #define __INCLUDED_DB42F20C7AF911E5AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 #include "RAbstractStringRef.h"
 #include "RUniquePointer.h"
 #include <Print.h>

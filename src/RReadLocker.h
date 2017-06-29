@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_ABD23D008EF011E6AA6EA088B4D1658C
 #define __INCLUDED_ABD23D008EF011E6AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 
 class RReadWriteLock;
 class RReadLocker

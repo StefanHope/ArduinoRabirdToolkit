@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_AE64810C67B511E6AA6EA088B4D1658C
 #define __INCLUDED_AE64810C67B511E6AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 #include "RObject.h"
 #include <list>
 #include <Print.h>

@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_288D29285F8911E68BCF00F1F38F93EF
 #define __INCLUDED_288D29285F8911E68BCF00F1F38F93EF
 
-#include "RTypes.h"
+#include "RGlobal.h"
 
 /**
  * A simple class to wrap around the FreeRTOS suspend/resume pairs.

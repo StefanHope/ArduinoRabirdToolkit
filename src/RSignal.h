@@ -7,7 +7,7 @@
 #ifndef __INCLUDED_C5173AA242B211E6AA6EA088B4D1658C
 #define __INCLUDED_C5173AA242B211E6AA6EA088B4D1658C
 
-#include "RTypes.h"
+#include "RGlobal.h"
 #include "RSlot.h"
 #include "RForwardList.h"
 #include "RSpinLocker.h"

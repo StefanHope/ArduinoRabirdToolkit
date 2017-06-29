@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_B56797CC644611E6933700F1F38F93EF
 #define __INCLUDED_B56797CC644611E6933700F1F38F93EF
 
-#include "RTypes.h"
+#include "RGlobal.h"
 #include "RRawPointer.h"
 #include "RAtomicInteger.h"
 

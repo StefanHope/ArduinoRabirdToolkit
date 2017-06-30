@@ -1,3 +1,5 @@
+#ifdef R_OS_FREERTOS
+
 #include "RRealtimeTimer.h"
 #include "RScopedPointer.h"
 #include "RIsr.h"
@@ -217,3 +219,5 @@ RRealtimeTimer::_callback(TimerHandle_t handle)
 
   xTimerStart(self->mHandle, 0);
 }
+
+#endif // #ifdef R_OS_FREERTOS

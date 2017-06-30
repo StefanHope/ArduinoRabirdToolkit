@@ -12,11 +12,20 @@ public:
   run(void *arg);
 };
 
+#ifdef R_OS_NONOS
+static RThread::Id sNonOSThreadId = NULL;
+
+#endif
+
 static const rtime sTimeBlockMax = std::numeric_limits<rtime>::max() /
                                    1000;
+
+#ifdef R_OS_FREERTOS
 static const rtime sTickBlock     = sTimeBlockMax / portTICK_PERIOD_MS;  /**< ms value matched ticks */
 static const rtime sTickBlockToMS = sTickBlock * portTICK_PERIOD_MS;  /**< ms value */
 static const rtime sTickBlockToUS = sTickBlockToMS * 1000;  /**< us value */
+
+#endif // #ifdef R_OS_FREERTOS
 
 // FIXME: Thread list not guarded by mutex now !
 static RForwardList<RThread *> sThreads;
@@ -32,15 +41,21 @@ RThreadPrivate::run(void *arg)
     thread->finished.emit();
   }
 
+#ifdef R_OS_FREERTOS
   // We must delete self when want to exit a task.
   // Reference to "Implementing a Task" section of FreeRTOS.
   vTaskDelete(NULL);
+#endif // #ifdef R_OS_FREERTOS
 }
 
 RThread::RThread(RThread::Id handle)
 // So that RObject won't create another RThread lead infinite looping
   : RObject(this)
+#ifdef R_OS_FREERTOS
   , mStackSize(configMINIMAL_STACK_SIZE * sizeof(word))
+#else
+  , mStackSize(85 * sizeof(word))
+#endif
   , mHandle(handle)
   , mIsOwnded(false)
   , mEventLoop(NULL)
@@ -65,7 +80,11 @@ RThread::RThread(RThread::Id handle)
 
 RThread::RThread()
   : RObject(this)
+#ifdef R_OS_FREERTOS
   , mStackSize(configMINIMAL_STACK_SIZE * sizeof(word))
+#else
+  , mStackSize(85 * sizeof(word))
+#endif
   , mHandle(NULL)
   , mIsOwnded(false)
   , mEventLoop(NULL)
@@ -207,6 +226,8 @@ RThread::start(RThread::Priority priority)
 
   terminate();
 
+#ifdef R_OS_FREERTOS
+
   if(InheritPriority == priority)
   {
     priority =
@@ -226,6 +247,12 @@ RThread::start(RThread::Priority priority)
     mIsOwnded = true;
     mHandle   = handle;
   }
+
+#else // #ifdef R_OS_FREERTOS
+  mIsOwnded = false;
+  mHandle   = &sNonOSThreadId;
+
+#endif // #ifdef R_OS_FREERTOS
 }
 
 void
@@ -239,7 +266,10 @@ RThread::terminate()
       R_MAKE_SPINLOCKER();
       delete mEventLoop;
       mEventLoop = NULL;
+
+#ifdef R_OS_FREERTOS
       vTaskDelete(mHandle);
+#endif // #ifdef R_OS_FREERTOS
     }
 
     terminated.emit();
@@ -287,18 +317,25 @@ RThread::currentThread()
 RThread::Id
 RThread::currentThreadId()
 {
+#ifdef R_OS_FREERTOS
   return xTaskGetCurrentTaskHandle();
+#else // #ifdef R_OS_FREERTOS
+  return &sNonOSThreadId;
+#endif // #ifdef R_OS_FREERTOS
 }
 
 void
 RThread::yieldCurrentThread()
 {
+#ifdef R_OS_FREERTOS
+
   if(_rIsrExecuting())
   {
     return;
   }
 
   taskYIELD();
+#endif // #ifdef R_OS_FREERTOS
 }
 
 int
@@ -318,6 +355,8 @@ RThread::msleep(rtime msecs)
 {
   // I don't know why, but we can't use vTaskDelay() inside the idle task !
   // Otherwise the program crash!
+#ifdef R_OS_FREERTOS
+
   if(currentThreadId() && (currentThreadId() != rGetMainThread()->id()))
   {
     while(msecs > 0)
@@ -334,6 +373,7 @@ RThread::msleep(rtime msecs)
     }
   }
   else
+#endif // #ifdef R_OS_FREERTOS
   {
     // Simple delay
     delay(msecs);
@@ -363,6 +403,8 @@ RThread::sleep(rtime secs)
 void
 RThread::usleep(rtime usecs)
 {
+#ifdef R_OS_FREERTOS
+
   // I don't know why, but we can't use vTaskDelay() inside the idle task !
   // Otherwise the program crash!
   if(currentThreadId() && (currentThreadId() != rGetMainThread()->id()))
@@ -381,6 +423,7 @@ RThread::usleep(rtime usecs)
     }
   }
   else
+#endif // #ifdef R_OS_FREERTOS
   {
     delayMicroseconds(usecs);
   }

@@ -11,7 +11,18 @@ class RCoreApplication;
 class RThread : public RObject
 {
 public:
+#ifdef R_OS_FREERTOS
   typedef TaskHandle_t Id;
+
+#else
+  struct IdContext
+  {
+    int value;
+  };
+
+  typedef struct IdContext *Id;
+
+#endif // #ifdef R_OS_FREERTOS
 
   /**
    * This enum type indicates how the operating system should schedule newly

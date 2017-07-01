@@ -1,3 +1,5 @@
+#include <RGlobal.h>
+
 #ifdef R_OS_FREERTOS
 
 #include "RRealtimeTimer.h"

@@ -3,7 +3,6 @@
 
 #include "RObject.h"
 #include "RSignal.h"
-#include "timers.h"
 #include "RAtomicInteger.h"
 #include "RTimerQueue.h"
 #include <list>

@@ -126,16 +126,16 @@ typedef Rt::RTypeSignTraits<uintptr_t>::Signed rnumber;
  *
  * It's designed for fewer memory size and signed type.
  */
-typedef BaseType_t   rcount;
-typedef signed char  rbool;
-typedef unsigned int ruint;
+typedef RPortBaseType rcount;
+typedef signed char   rbool;
+typedef unsigned int  ruint;
 
 /**
  * @brief Time related counter
  *
  * Just like seconds, milliseconds, microseconds, nanoseconds or ticks.
  */
-typedef TickType_t rtime;
+typedef RPortTickType rtime;
 
 /**
  * Flash char type (Rabird Flash Char). An alias of __FlashStringHelper.

@@ -4,4 +4,7 @@
 #define RPORT_TICK_PERIOD_MS portTICK_PERIOD_MS
 #define RPORT_MAX_DELAY      portMAX_DELAY
 
+typedef BaseType_t RPortBaseType;
+typedef TickType_t RPortTickType;
+
 #endif // __INCLUDED_335F0A5C5EC911E7AA6EA088B4D1658C

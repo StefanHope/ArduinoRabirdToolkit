@@ -4,11 +4,13 @@
 #include "RObject.h"
 #include "REvent.h"
 #include "RSignal.h"
+#include "RTimerQueue.h"
 #include <list>
 
 class RAbstractCoRoutine;
 class RCoreApplication;
 class RCoRoutine;
+class RRealtimeTimer;
 class REventLoop : public RObject
 {
 private:
@@ -67,6 +69,19 @@ protected:
   hasPendingEvents();
 
 private:
+  void
+  execTimerQueue();
+
+#if defined(R_OS_NONOS)
+  void
+  startTimer(RRealtimeTimer *timer);
+  void
+  stopTimer(RRealtimeTimer *timer);
+
+  RTimerQueue mTimerQueue;
+
+#endif // #if defined(R_OS_NONOS)
+
   // FIXME: Events are not be protected by mutex, they will be crashed during
   // access.
   std::list<EventData>    mEvents;
@@ -76,6 +91,7 @@ private:
   bool mIsInterrupt;
 
   friend RThread;
+  friend RRealtimeTimer;
   friend RCoreApplication;
 };
 

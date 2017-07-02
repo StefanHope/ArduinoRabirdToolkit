@@ -2,6 +2,9 @@
 #include "RThread.h"
 #include "RSpinLocker.h"
 #include "RCoRoutine.h"
+#include "RRealtimeTimer.h"
+
+static uint32_t sMaxExpiry = RNumericLimits<uint32_t>::sMax / 2;
 
 REventLoop::REventLoop() : mReturnCode(0), mIsInterrupt(false)
 {
@@ -46,9 +49,13 @@ REventLoop::processEvents()
 {
   bool result = true;
 
+  execTimerQueue();
+
   while(!mEvents.empty())
   {
     EventData eventData;
+
+    execTimerQueue();
 
     {
       R_MAKE_SPINLOCKER();
@@ -97,6 +104,8 @@ LABEL_EXIT:
   {
     for(auto it = mCoRoutines.begin(); it != mCoRoutines.end(); )
     {
+      execTimerQueue();
+
       auto ret   = (*it)->run();
       auto oldIt = it;
 
@@ -167,3 +176,85 @@ REventLoop::hasPendingEvents()
 {
   return !mEvents.empty();
 }
+
+void
+REventLoop::execTimerQueue()
+{
+#if defined(R_OS_NONOS)
+  auto it = mTimerQueue.begin();
+
+  if(it == mTimerQueue.end())
+  {
+    return;
+  }
+
+  if((millis() - it->expiry) > sMaxExpiry)
+  {
+    // Expired!
+    auto item = *it;
+
+    mTimerQueue.erase(it);
+
+    if(item.timer->_isRestartFromCallback())
+    {
+      item.timer->run();
+
+      if(!item.timer->isSingleShot())
+      {
+        startTimer(item.timer);   // Restart timer for next round
+      }
+    }
+    else
+    {
+      // Do restart action inside event loop
+      item.timer->_redirectEvents();
+    }
+  }
+
+#endif // #if defined(R_OS_NONOS)
+}
+
+#if defined(R_OS_NONOS)
+void
+REventLoop::startTimer(RRealtimeTimer *timer)
+{
+  RTimerQueueItem item;
+
+  item.timer  = timer;
+  item.expiry = static_cast<uint32_t>(
+    millis() + static_cast<unsigned long>(timer->interval()));
+
+  if(timer->mIt != mTimerQueue.end())
+  {
+    mTimerQueue.erase(timer->mIt);
+  }
+
+  for(auto it = mTimerQueue.begin(); it != mTimerQueue.end(); ++it)
+  {
+    if((item.expiry - it->expiry) <= sMaxExpiry)
+    {
+      // Expiry after it->expiry
+      continue;
+    }
+
+    mTimerQueue.insert(it, item);
+    timer->mIt = --it;
+    return;
+  }
+
+  // Can't found any place to insert, append to the end.
+  mTimerQueue.push_back(item);
+  timer->mIt = --mTimerQueue.end();
+}
+
+void
+REventLoop::stopTimer(RRealtimeTimer *timer)
+{
+  if(timer->mIt != mTimerQueue.end())
+  {
+    mTimerQueue.erase(timer->mIt);
+    timer->mIt = mTimerQueue.end();
+  }
+}
+
+#endif // #if defined(R_OS_NONOS)

@@ -1,0 +1,10 @@
+#ifndef __INCLUDED_1DC9890A5F1511E7AA6EA088B4D1658C
+#define __INCLUDED_1DC9890A5F1511E7AA6EA088B4D1658C
+
+#include "RGlobal.h"
+
+#if defined(R_OS_NONOS)
+#include "portable/nonos/RTimerQueue.h"
+#endif
+
+#endif // __INCLUDED_1DC9890A5F1511E7AA6EA088B4D1658C

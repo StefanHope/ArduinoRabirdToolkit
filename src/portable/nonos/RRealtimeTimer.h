@@ -5,6 +5,8 @@
 #include "RSignal.h"
 #include "timers.h"
 #include "RAtomicInteger.h"
+#include "RTimerQueue.h"
+#include <list>
 
 class RRealtimeTimer : public RObject
 {
@@ -59,22 +61,21 @@ private:
   virtual
   void
   _redirectEvents();
-  static void
-  _callback(TimerHandle_t handle);
-  TimerHandle_t mHandle;
 
-  class
-  {
-public:
-    bool    mIsSingleShot : 1;
-    uint8_t mExtended     : 7;
-  };
+private:
+  bool    mIsSingleShot;
+  int32_t mInterval;
 
-#if (configUSE_16_BIT_TICKS == 1)
-  RAtomicInteger<uint8_t> mExtendedCounter;
+  /**
+   * @brief mIt
+   *
+   * The iterator of the timer inside timer queue of event loop.
+   * So that we could fast start / stop the specific timer.
+   */
+  RTimerQueue::iterator mIt;
 
-#endif
   friend class RTimer;
+  friend class REventLoop;
 };
 
 #endif // __INCLUDED_D098FB305D5611E7AA6EA088B4D1658C

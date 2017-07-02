@@ -28,6 +28,7 @@ public:
    * This enum type indicates how the operating system should schedule newly
    * created threads.
    */
+#if defined(R_OS_FREERTOS)
   enum Priority
   {
     /// scheduled only when no other threads are running.
@@ -47,6 +48,29 @@ public:
     /// use the same priority as the creating thread. This is the default.
     InheritPriority,
   };
+
+#else // #if defined(R_OS_FREERTOS)
+  enum Priority
+  {
+    /// scheduled only when no other threads are running.
+    IdlePriority = 0 /* = tskIDLE_PRIORITY */,
+    /// scheduled less often than LowPriority.
+    LowestPriority,
+    /// scheduled less often than NormalPriority.
+    LowPriority,
+    /// the default priority of the operating system.
+    NormalPriority,
+    /// scheduled more often than NormalPriority.
+    HighPriority,
+    /// scheduled more often than HighPriority.
+    HighestPriority,
+    /// scheduled as often as possible.
+    TimeCriticalPriority,
+    /// use the same priority as the creating thread. This is the default.
+    InheritPriority,
+  };
+
+#endif // #if defined(R_OS_FREERTOS)
 
 private:
   RThread(RThread::Id handle);

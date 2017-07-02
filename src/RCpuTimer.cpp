@@ -1,5 +1,4 @@
 #include "RCpuTimer.h"
-#include <Arduino.h>
 
 RCpuTimer::RCpuTimer() :
   mLastTime(0)
@@ -13,7 +12,7 @@ RCpuTimer::~RCpuTimer()
 void
 RCpuTimer::start()
 {
-  mLastTime = xTaskGetTickCount();
+  mLastTime = millis();
 }
 
 void
@@ -21,26 +20,8 @@ RCpuTimer::stop()
 {
 }
 
-rtime
+uint32_t
 RCpuTimer::elapsed()
 {
-  return elapsedTicks() * portTICK_PERIOD_MS;
-}
-
-rtime
-RCpuTimer::elapsedTicks()
-{
-  rtime currentTime = xTaskGetTickCount();
-  rtime elapsed     = 0;
-
-  if(currentTime >= mLastTime)
-  {
-    elapsed = currentTime - mLastTime;
-  }
-  else
-  {
-    elapsed = portMAX_DELAY - mLastTime + currentTime;
-  }
-
-  return elapsed;
+  return millis() - mLastTime;
 }

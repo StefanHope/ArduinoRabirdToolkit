@@ -18,14 +18,11 @@ public:
    *
    * Unit in milliseconds.
    */
-  rtime
+  uint32_t
   elapsed();
 
-  rtime
-  elapsedTicks();
-
 private:
-  rtime mLastTime;
+  uint32_t mLastTime;
 };
 
 #endif /* __INCLUDED_BE81AF72390F11E5AA6EA088B4D1658C */

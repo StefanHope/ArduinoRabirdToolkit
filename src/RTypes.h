@@ -17,6 +17,9 @@
 #ifdef R_OS_FREERTOS
 #include <FreeRTOSMallocFixer.h>
 #include <semphr.h>
+#include "portable/freertos/RPort.h"
+#elif defined(R_OS_NONOS)
+#include "portable/nonos/RPort.h"
 #endif // #ifdef R_OS_FREERTOS
 
 #include <boost/type_traits.hpp>

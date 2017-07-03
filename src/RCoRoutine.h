@@ -12,9 +12,15 @@
 #define RCR_YIELD_UNTIL(condition) PT_YIELD_UNTIL(&this->mPt, (condition))
 #define RCR_EXIT()                 PT_EXIT(&this->mPt)
 #define RCR_SPAWN(className, ...) \
-  RCoRoutineSpawner<className>::spawn(rThis, __VA_ARGS__)
+  RCoRoutineSpawner<className>::spawn( \
+    rThis \
+    RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
+    __VA_ARGS__)
 #define RCR_SPAWN_DETACHED(className, ...) \
-  RCoRoutineSpawner<className>::spawnDetached(rThis, __VA_ARGS__)
+  RCoRoutineSpawner<className>::spawnDetached( \
+    rThis \
+    RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
+    __VA_ARGS__)
 #define RCR_WAIT_CR(otherCR) \
   PT_WAIT_THREAD((&this->mPt), (otherCR)->run())
 

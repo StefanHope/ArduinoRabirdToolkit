@@ -117,7 +117,12 @@ RThread::isFinished() const
     return true;
   }
 
+#if defined(R_OS_FREERTOS)
   return (eDeleted == eTaskGetState(mHandle));
+#else // #if defined(R_OS_FREERTOS)
+  // FIXME: Not implemented
+  return false;
+#endif // #if defined(R_OS_FREERTOS)
 }
 
 bool
@@ -128,7 +133,12 @@ RThread::isRunning() const
     return false;
   }
 
+#if defined(R_OS_FREERTOS)
   return (eDeleted != eTaskGetState(mHandle));
+#else // #if defined(R_OS_FREERTOS)
+  // FIXME: Not implemented
+  return true;
+#endif // #if defined(R_OS_FREERTOS)
 }
 
 RThread::Priority
@@ -139,7 +149,12 @@ RThread::priority() const
     return IdlePriority;
   }
 
+#if defined(R_OS_FREERTOS)
   return static_cast<RThread::Priority>(uxTaskPriorityGet(mHandle));
+#else // #if defined(R_OS_FREERTOS)
+  // FIXME: Not implemented
+  return NormalPriority;
+#endif // #if defined(R_OS_FREERTOS)
 }
 
 void
@@ -150,7 +165,11 @@ RThread::setPriority(RThread::Priority priority)
     return;
   }
 
+#if defined(R_OS_FREERTOS)
   vTaskPrioritySet(mHandle, static_cast<UBaseType_t>(priority));
+#else // #if defined(R_OS_FREERTOS)
+  // FIXME: Not implemented
+#endif // #if defined(R_OS_FREERTOS)
 }
 
 void
@@ -250,7 +269,7 @@ RThread::start(RThread::Priority priority)
 
 #else // #ifdef R_OS_FREERTOS
   mIsOwnded = false;
-  mHandle   = &sNonOSThreadId;
+  mHandle   = sNonOSThreadId;
 
 #endif // #ifdef R_OS_FREERTOS
 }
@@ -320,7 +339,7 @@ RThread::currentThreadId()
 #ifdef R_OS_FREERTOS
   return xTaskGetCurrentTaskHandle();
 #else // #ifdef R_OS_FREERTOS
-  return &sNonOSThreadId;
+  return sNonOSThreadId;
 #endif // #ifdef R_OS_FREERTOS
 }
 

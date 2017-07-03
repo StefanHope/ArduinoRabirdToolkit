@@ -29,14 +29,14 @@ public: \
       : RCoRoutineImpl<implClassName>(impl) \
       RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_INIT_LIST, __VA_ARGS__) \
     { \
-    }; \
+    } \
 public:
 #define RCR_IMPL() \
   char run() \
   { if(_isTerminated()) {return PT_EXITED; }; \
     PT_BEGIN(&this->mPt);
 
-#define RCR_END() PT_END(&this->mPt); }; };
+#define RCR_END() PT_END(&this->mPt); } };
 
 class RCoRoutine : public RObject
 {

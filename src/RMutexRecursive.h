@@ -2,8 +2,8 @@
 #define __INCLUDED_E4C4EA7CFFB111E6AA6EA088B4D1658C
 
 #include "RGlobal.h"
+#include "RThread.h"
 
-class RThread;
 class RMutexRecursive
 {
 public:

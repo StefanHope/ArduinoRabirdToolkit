@@ -15,10 +15,11 @@ public:
 
 protected:
   // Don't allow create RScopedPointer without any argument!
+  explicit
   RScopedPointer();
 
 public:
-  RScopedPointer(T *ptr) : BaseType(ptr)
+  explicit RScopedPointer(T *ptr) : BaseType(ptr)
   {
   }
 

@@ -12,16 +12,15 @@ public:
   typedef StorageType_                                       StorageType;
   typedef RBasicPointer<DerivedType, ValueType, StorageType> ThisType;
 
-  RBasicPointer() : mPtr(0)
+  explicit RBasicPointer() : mPtr(0)
   {
   }
 
-  RBasicPointer(const T *ptr) : mPtr(0)
+  explicit RBasicPointer(const T *ptr) : mPtr(getDerived()->toStorageType(ptr))
   {
-    getDerived()->reset(const_cast<T *>(ptr));
   }
 
-  RBasicPointer(const DerivedType &other) : mPtr(other.mPtr)
+  explicit RBasicPointer(const DerivedType &other) : mPtr(other.mPtr)
   {
   }
 

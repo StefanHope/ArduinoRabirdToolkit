@@ -11,7 +11,7 @@ template <class T, class Counter, class Deleter>
 struct RSharedPointerContext
 {
 public:
-  RSharedPointerContext() : ptr(NULL)
+  explicit RSharedPointerContext() : ptr(NULL)
   {
   }
 
@@ -35,22 +35,22 @@ public:
   typedef Rt::RSharedPointerContext<T, Counter, Deleter> Context;
 
 public:
-  RBasicSharedPointer()
+  explicit RBasicSharedPointer()
   {
     BaseType::getDerived()->reset(NULL, &DefaultDeleterType::cleanup);
   }
 
-  RBasicSharedPointer(T *ptr)
+  explicit RBasicSharedPointer(T *ptr)
   {
     BaseType::getDerived()->reset(ptr, &DefaultDeleterType::cleanup);
   }
 
-  RBasicSharedPointer(T *ptr, Deleter deleter)
+  explicit RBasicSharedPointer(T *ptr, Deleter deleter)
   {
     BaseType::getDerived()->reset(ptr, deleter);
   }
 
-  RBasicSharedPointer(const DerivedType &other) : BaseType(other)
+  explicit RBasicSharedPointer(const DerivedType &other) : BaseType(other)
   {
     auto context = getContext();
 

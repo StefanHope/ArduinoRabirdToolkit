@@ -47,15 +47,15 @@ public:
   typedef typename BaseType::DerivedType DerivedType;
 
 public:
-  RBasicRawPointer() : BaseType()
+  explicit RBasicRawPointer() : BaseType()
   {
   }
 
-  RBasicRawPointer(const T *ptr) : BaseType(ptr)
+  explicit RBasicRawPointer(const T *ptr) : BaseType(ptr)
   {
   }
 
-  RBasicRawPointer(const DerivedType &other) : BaseType(other)
+  explicit RBasicRawPointer(const DerivedType &other) : BaseType(other)
   {
   }
 

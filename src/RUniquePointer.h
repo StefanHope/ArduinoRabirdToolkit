@@ -13,11 +13,11 @@ public:
   typedef typename BaseType::DerivedType    DerivedType;
 
 public:
-  RBasicUniquePointer() : BaseType()
+  explicit RBasicUniquePointer() : BaseType()
   {
   }
 
-  RBasicUniquePointer(T *ptr) : BaseType(ptr)
+  explicit RBasicUniquePointer(T *ptr) : BaseType(ptr)
   {
   }
 
@@ -69,11 +69,11 @@ public:
   typedef typename BaseType::DerivedType DerivedType;
 
 public:
-  RUniquePointer() : BaseType()
+  explicit RUniquePointer() : BaseType()
   {
   }
 
-  RUniquePointer(T *ptr) : BaseType(ptr)
+  explicit RUniquePointer(T *ptr) : BaseType(ptr)
   {
   }
 };

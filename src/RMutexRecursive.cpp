@@ -46,13 +46,13 @@ RMutexRecursive::tryLock(int timeout)
     {
       // Loop infinite ...
     }
-    else if(timeout < portTICK_PERIOD_MS)
+    else if(timeout < RPORT_TICK_PERIOD_MS)
     {
       return false;
     }
     else
     {
-      timeout -= portTICK_PERIOD_MS;
+      timeout -= RPORT_TICK_PERIOD_MS;
     }
 
     RThread::yieldCurrentThread();

@@ -57,13 +57,13 @@ RSemaphore::tryAcquire(rcount n, int ms)
     {
       // Loop infinite ...
     }
-    else if(ms < portTICK_PERIOD_MS)
+    else if(ms < RPORT_TICK_PERIOD_MS)
     {
       return false;
     }
     else
     {
-      ms -= portTICK_PERIOD_MS;
+      ms -= RPORT_TICK_PERIOD_MS;
     }
 
     RThread::yieldCurrentThread();

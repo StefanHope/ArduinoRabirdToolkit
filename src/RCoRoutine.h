@@ -111,7 +111,7 @@ public:
   static RUniquePointer<T>
   spawn(ParamTypes ... params)
   {
-    return new T(params ...);
+    return RUniquePointer<T>(new T(params ...));
   }
 
   template <class ... ParamTypes>

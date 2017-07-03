@@ -188,7 +188,7 @@ REventLoop::execTimerQueue()
     return;
   }
 
-  if((millis() - it->expiry) > sMaxExpiry)
+  if((it->expiry - millis()) > sMaxExpiry)
   {
     // Expired!
     auto item = *it;

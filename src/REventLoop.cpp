@@ -181,12 +181,13 @@ void
 REventLoop::execTimerQueue()
 {
 #if defined(R_OS_NONOS)
-  auto it = mTimerQueue.begin();
 
-  if(it == mTimerQueue.end())
+  if(mTimerQueue.size() <= 0)
   {
     return;
   }
+
+  auto it = mTimerQueue.begin();
 
   if((it->expiry - millis()) > sMaxExpiry)
   {
@@ -194,6 +195,10 @@ REventLoop::execTimerQueue()
     auto item = *it;
 
     mTimerQueue.erase(it);
+
+    // NOTICE: If we don't clear this iterator, it will erase again inside
+    // startTimer(), that will lead program crash!
+    item.timer->mIt = mTimerQueue.end();
 
     if(item.timer->_isRestartFromCallback())
     {

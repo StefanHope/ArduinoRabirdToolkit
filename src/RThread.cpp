@@ -5,6 +5,13 @@
 #include "RIsr.h"
 #include "RMain.h"
 
+struct EventLoopItem
+{
+  REventLoop *loop;
+
+  RThread::Id threadId;
+};
+
 class RThreadPrivate
 {
 public:
@@ -13,7 +20,8 @@ public:
 };
 
 #ifdef R_OS_NONOS
-static RThread::Id sNonOSThreadId = NULL;
+static RThread::Id sNonOSThreadId =
+  reinterpret_cast<RThread::Id>(&sNonOSThreadId);
 
 #endif
 
@@ -28,7 +36,8 @@ static const rtime sTickBlockToUS = sTickBlockToMS * 1000;  /**< us value */
 #endif // #ifdef R_OS_FREERTOS
 
 // FIXME: Thread list not guarded by mutex now !
-static RForwardList<RThread *> sThreads;
+static RForwardList<RThread *>     sThreads;
+static RForwardList<EventLoopItem> sEventLoops;
 void
 RThreadPrivate::run(void *arg)
 {
@@ -283,6 +292,23 @@ RThread::terminate()
     // destruction.
     {
       R_MAKE_SPINLOCKER();
+
+      { // Remove event loop from event loop list
+        auto prevIt = sEventLoops.beforeBegin();
+        auto it     = sEventLoops.begin();
+
+        for(; it != sEventLoops.end(); ++it)
+        {
+          if(mHandle == it->threadId)
+          {
+            sEventLoops.eraseAfter(prevIt);
+            break;
+          }
+
+          prevIt = it;
+        }
+      }
+
       delete mEventLoop;
       mEventLoop = NULL;
 
@@ -300,6 +326,11 @@ RThread::terminate()
 REventLoop *
 RThread::eventLoop()
 {
+  if(NULL == mHandle)
+  {
+    return NULL;
+  }
+
   if(NULL == mEventLoop)
   {
     R_MAKE_SPINLOCKER();
@@ -309,8 +340,28 @@ RThread::eventLoop()
       return mEventLoop;
     }
 
-    mEventLoop = new REventLoop();
-    mEventLoop->moveToThread(const_cast<RThread *>(this));
+    { // Find if there already matched event loop .
+      for(auto it = sEventLoops.begin(); it != sEventLoops.end(); ++it)
+      {
+        if(mHandle == it->threadId)
+        {
+          mEventLoop = it->loop;
+          break;
+        }
+      }
+    }
+
+    if(NULL == mEventLoop)
+    {
+      mEventLoop = new REventLoop();
+      mEventLoop->moveToThread(const_cast<RThread *>(this));
+
+      EventLoopItem item;
+
+      item.loop     = mEventLoop;
+      item.threadId = mHandle;
+      sEventLoops.pushFront(item);
+    }
   }
 
   return mEventLoop;

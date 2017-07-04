@@ -4,6 +4,7 @@
 #include "RObject.h"
 #include "RUniquePointer.h"
 #include "RPreprocessor.h"
+#include "RCpuTimer.h"
 #include <pt/pt.h>
 
 #define RCR_WAIT_UNITL(condition)  PT_WAIT_UNTIL(&this->mPt, (condition))
@@ -11,6 +12,11 @@
 #define RCR_YIELD()                PT_YIELD(&this->mPt)
 #define RCR_YIELD_UNTIL(condition) PT_YIELD_UNTIL(&this->mPt, (condition))
 #define RCR_EXIT()                 PT_EXIT(&this->mPt)
+#define RCR_SLEEP(ms) \
+  do { \
+    pCpuTimer.start(); \
+    RCR_WAIT_UNTIL(pCpuTimer.elapsed() > ms); \
+  } while(0)
 #define RCR_SPAWN(className, ...) \
   RCoRoutineSpawner<className>::spawn( \
     rThis \
@@ -28,10 +34,10 @@
   class crName : public RCoRoutineImpl<implClassName> \
   { \
 public: \
+    RCpuTimer pCpuTimer; \
     RPP_ARGUMENTS_EXTRACT(RPP_EMPTY, RPP_CLASS_MEMBER, __VA_ARGS__) \
-    crName( \
-      implClassName * impl \
-      RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
+    crName(implClassName * impl \
+           RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
       : RCoRoutineImpl<implClassName>(impl) \
       RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_INIT_LIST, __VA_ARGS__) \
     { \

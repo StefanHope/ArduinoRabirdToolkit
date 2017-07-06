@@ -63,6 +63,7 @@ private:
 
 private:
   bool    mIsSingleShot;
+  bool    mIsActive;
   int32_t mInterval;
 
   /**

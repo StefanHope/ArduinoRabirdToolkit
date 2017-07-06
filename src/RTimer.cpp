@@ -25,7 +25,7 @@ RTimer::event(REvent *e)
 
     timeout.emit();
 
-    if(!isSingleShot())
+    if((!isSingleShot()) && isActive())
     {
       start(); // Restart timer for next round
     }

@@ -10,6 +10,7 @@
 
 RRealtimeTimer::RRealtimeTimer()
   : mIsSingleShot(false)
+  , mIsActive(false)
 {
   mIt = thread()->eventLoop()->mTimerQueue.end();
 }
@@ -27,7 +28,7 @@ RRealtimeTimer::interval() const
 bool
 RRealtimeTimer::isActive() const
 {
-  return (mIt != thread()->eventLoop()->mTimerQueue.end());
+  return mIsActive;
 }
 
 bool
@@ -59,6 +60,7 @@ void
 RRealtimeTimer::start()
 {
   thread()->eventLoop()->startTimer(this);
+  mIsActive = true;
 }
 
 void
@@ -71,6 +73,7 @@ RRealtimeTimer::start(int32_t msec)
 void
 RRealtimeTimer::stop()
 {
+  mIsActive = false;
   thread()->eventLoop()->stopTimer(this);
 }
 

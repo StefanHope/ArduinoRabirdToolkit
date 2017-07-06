@@ -204,7 +204,7 @@ REventLoop::execTimerQueue()
     {
       item.timer->run();
 
-      if(!item.timer->isSingleShot())
+      if((!item.timer->isSingleShot()) && item.timer->isActive())
       {
         startTimer(item.timer);   // Restart timer for next round
       }

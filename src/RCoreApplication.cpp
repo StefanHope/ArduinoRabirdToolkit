@@ -51,3 +51,9 @@ RCoreApplication::postEvent(RObject *receiver, REvent *event)
   R_MAKE_SPINLOCKER();
   receiver->thread()->eventLoop()->postEvent(receiver, event);
 }
+
+RSignal<void()> &
+RCoreApplication::idle()
+{
+  return RThread::currentThread()->eventLoop()->idle;
+}

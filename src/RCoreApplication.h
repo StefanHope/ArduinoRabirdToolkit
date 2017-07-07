@@ -48,6 +48,16 @@ public:
     _rIsrAttach(params ...);
   }
 
+  /**
+   * @brief idle
+   *
+   * Convenient way to get the current event loop's idle signal for connect to
+   *
+   * @return
+   */
+  RSignal<void()> &
+  idle();
+
 private:
   RUniquePointer<RNullStream> mNullStream;
 };

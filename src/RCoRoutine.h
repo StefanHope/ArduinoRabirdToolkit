@@ -18,37 +18,73 @@
     RCR_WAIT_UNTIL(pCpuTimer.elapsed() > ms); \
   } while(0)
 #define RCR_SPAWN(className, ...) \
-  RCoRoutineSpawner<className>::spawn( \
+  rSpawn##className( \
     rThis \
     RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
     __VA_ARGS__)
 #define RCR_SPAWN_DETACHED(className, ...) \
-  RCoRoutineSpawner<className>::spawnDetached( \
+  rSpawnDetached##className( \
     rThis \
     RPP_IF_ARGS_NOT_EMPTY(RPP_COMMA, __VA_ARGS__)() \
     __VA_ARGS__)
 #define RCR_WAIT_CR(otherCR) \
   PT_WAIT_THREAD((&this->mPt), (otherCR)->run())
 
-#define RCR_BEGIN(implClassName, crName, ...) \
+#define RCRR_PP_ASSIGN_VARS(r, data, elem) \
+  BOOST_PP_CAT(self->a, BOOST_PP_TUPLE_ELEM(1, elem)) = \
+    BOOST_PP_CAT(in, BOOST_PP_TUPLE_ELEM(1, elem));
+
+#define RCR_DECLARE(crName, implClassName, ...) \
+  class crName; \
+  extern RUniquePointer<crName> rSpawn##crName( \
+    implClassName * impl \
+    RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__)); \
+  extern void rSpawnDetached##crName( \
+    implClassName * impl \
+    RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__));
+
+#define RCR_BEGIN(crName, implClassName, ...) \
   class crName : public RCoRoutineImpl<implClassName> \
   { \
 public: \
     RCpuTimer pCpuTimer; \
     RPP_ARGUMENTS_EXTRACT(RPP_EMPTY, RPP_CLASS_MEMBER, __VA_ARGS__) \
-    crName(implClassName * impl \
-           RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
+    crName(implClassName * impl) \
       : RCoRoutineImpl<implClassName>(impl) \
-      RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_INIT_LIST, __VA_ARGS__) \
     { \
     } \
+    ~crName() \
+    { \
+    } \
+    char run(); \
 public:
-#define RCR_IMPL() \
-  char run() \
-  { if(_isTerminated()) {return PT_EXITED; }; \
+#define RCR_IMPL(crName, implClassName, ...) \
+  }; \
+  RUniquePointer<crName> rSpawn##crName( \
+    implClassName * impl \
+    RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
+  { \
+    RUniquePointer<crName> self(new crName(impl)); \
+    RPP_ARGUMENTS_EXTRACT(RPP_EMPTY, RCRR_PP_ASSIGN_VARS, __VA_ARGS__); \
+    return self; \
+  } \
+  void rSpawnDetached##crName( \
+    implClassName * impl \
+    RPP_ARGUMENTS_EXTRACT(RPP_COMMA, RPP_FUNC_ARGUMENT, __VA_ARGS__)) \
+  { \
+    auto self(new crName(impl)); \
+    self->setType(RCoRoutine::Detached); \
+    RPP_ARGUMENTS_EXTRACT(RPP_EMPTY, RCRR_PP_ASSIGN_VARS, __VA_ARGS__); \
+  } \
+  char crName::run() \
+  { \
+    if(_isTerminated()) \
+    { \
+      return PT_EXITED; \
+    } \
     PT_BEGIN(&this->mPt);
 
-#define RCR_END() PT_END(&this->mPt); } };
+#define RCR_END() PT_END(&this->mPt); }
 
 class RCoRoutine : public RObject
 {
@@ -112,27 +148,6 @@ protected:
   pImpl() const
   {
     return static_cast<ImplementationType *>(_impl());
-  }
-};
-
-template <class T>
-class RCoRoutineSpawner
-{
-public:
-  template <class ... ParamTypes>
-  static RUniquePointer<T>
-  spawn(ParamTypes ... params)
-  {
-    return RUniquePointer<T>(new T(params ...));
-  }
-
-  template <class ... ParamTypes>
-  static void
-  spawnDetached(ParamTypes ... params)
-  {
-    auto cr = new T(params ...);
-
-    cr->setType(RCoRoutine::Detached);
   }
 };
 

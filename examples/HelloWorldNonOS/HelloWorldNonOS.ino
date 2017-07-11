@@ -6,6 +6,10 @@
 #include <RSlot.h>
 #include <RTimer.h>
 
+class Application;
+
+RCR_DECLARE(CrKknd, Application);
+
 class Application : public RApplication
 {
 public:
@@ -27,8 +31,8 @@ struct ApplicationPrivate
 public:
 };
 
-RCR_BEGIN(Application, CrKknd)
-RCR_IMPL()
+RCR_BEGIN(CrKknd, Application)
+RCR_IMPL(CrKknd, Application)
 
 while(1)
 {

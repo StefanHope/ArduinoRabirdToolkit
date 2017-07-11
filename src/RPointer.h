@@ -49,10 +49,10 @@ public:
   }
 
   void
-  reset(T *ptr=0)
+  reset(const T *ptr=0)
   {
     getDerived()->clear();
-    mPtr = getDerived()->toStorageType(ptr);
+    rawReset(ptr);
   }
 
   void
@@ -110,20 +110,26 @@ public:
   }
 
   inline
-  StorageType
-  toStorageType(const T *ptr)
+  const StorageType
+  toStorageType(const T *ptr) const
   {
-    return reinterpret_cast<StorageType>(ptr);
+    return reinterpret_cast<const StorageType>(ptr);
   }
 
   inline
   T *
-  fromStorageType(StorageType ptr)
+  fromStorageType(StorageType ptr) const
   {
     return reinterpret_cast<T *>(ptr);
   }
 
 protected:
+  void
+  rawReset(const T *ptr=0) const
+  {
+    mPtr = const_cast<DerivedType *>(getDerived())->toStorageType(ptr);
+  }
+
   inline
   DerivedType *
   getDerived()
@@ -139,13 +145,13 @@ protected:
   }
 
   StorageType &
-  internalStorage()
+  internalStorage() const
   {
     return mPtr;
   }
 
 private:
-  StorageType mPtr;
+  mutable StorageType mPtr;
 };
 
 #endif // __INCLUDED_DFE14DD2645911E6BAE000F1F38F93EF

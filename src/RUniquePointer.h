@@ -21,6 +21,10 @@ public:
   {
   }
 
+  RBasicUniquePointer(const DerivedType &other) : BaseType(other.take())
+  {
+  }
+
   ~RBasicUniquePointer()
   {
     BaseType::getDerived()->clear();
@@ -36,25 +40,17 @@ public:
   }
 
   T *
-  take()
+  take() const
   {
     T *ptr = BaseType::getDerived()->data();
 
     // WARNING: Only clear the ptr, don't delete it!
-    BaseType::clear();
+    BaseType::rawReset();
 
     return ptr;
   }
 
-  DerivedType &
-  operator =(const DerivedType &other)
-  {
-    BaseType::getDerived()->reset(other.take());
-
-    return *this;
-  }
-
-protected:
+private:
   friend BaseType;
 };
 
@@ -75,6 +71,19 @@ public:
 
   explicit RUniquePointer(T *ptr) : BaseType(ptr)
   {
+  }
+
+  RUniquePointer(const DerivedType &other) : BaseType(other)
+  {
+  }
+
+  DerivedType &
+  operator =(const DerivedType &other)
+  {
+    // NOTE: We must implement operator=() in RUniquePointer class, otherwise
+    // operator=() won't take effect on values return from function!
+    BaseType::getDerived()->reset(other.take());
+    return *this;
   }
 };
 

@@ -449,7 +449,7 @@ RThread::currentThread()
 {
 #if defined(R_OS_NONOS)
 
-  if(sThread)
+  if(NULL == sThread)
   {
     sThread = new RThread(sNonOSThreadId);
   }

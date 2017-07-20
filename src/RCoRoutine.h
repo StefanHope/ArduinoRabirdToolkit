@@ -7,7 +7,7 @@
 #include "RCpuTimer.h"
 #include <pt/pt.h>
 
-#define RCR_WAIT_UNITL(condition)  PT_WAIT_UNTIL(&this->mPt, (condition))
+#define RCR_WAIT_UNTIL(condition)  PT_WAIT_UNTIL(&this->mPt, (condition))
 #define RCR_WAIT_WHILE(condition)  PT_WAIT_WHILE(&this->mPt, (condition))
 #define RCR_YIELD()                PT_YIELD(&this->mPt)
 #define RCR_YIELD_UNTIL(condition) PT_YIELD_UNTIL(&this->mPt, (condition))

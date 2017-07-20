@@ -38,6 +38,29 @@ static const rtime sTickBlockToUS = sTickBlockToMS * 1000;  /**< us value */
 // FIXME: Thread list not guarded by mutex now !
 static RForwardList<RThread *>     sThreads;
 static RForwardList<EventLoopItem> sEventLoops;
+
+/**
+ * @brief findThread
+ *
+ * Find matched thread object with specific id.
+ *
+ * @param target
+ * @return
+ */
+static RThread *
+findThread(RThread::Id target)
+{
+  for(auto it = sThreads.begin(); it != sThreads.end(); ++it)
+  {
+    if(target == (*it)->id())
+    {
+      return *it;
+    }
+  }
+
+  return NULL;
+}
+
 void
 RThreadPrivate::run(void *arg)
 {
@@ -70,18 +93,16 @@ RThread::RThread(RThread::Id handle)
   , mEventLoop(NULL)
 {
   // Find matched event loop for specific task.
-  for(auto it = sThreads.begin(); it != sThreads.end(); ++it)
-  {
-    if(handle == (*it)->mHandle)
-    {
-      mEventLoop = (*it)->eventLoop();
-      break;
-    }
-  }
+  auto thread = findThread(handle);
 
-  // FIXME: New event loop will generated for task 0 and without free!
-  if(NULL == mEventLoop)
+  if(thread)
   {
+    mEventLoop = thread->eventLoop();
+  }
+  else
+  {
+    // FIXME: New event loop will generated for task 0 and without free inside
+    // eventLoop() !
     R_MAKE_SPINLOCKER();
     sThreads.pushFront(this);
   }
@@ -372,12 +393,11 @@ RThread::currentThread()
 {
   RThread::Id handle = currentThreadId();
 
-  for(auto it = sThreads.begin(); it != sThreads.end(); ++it)
+  auto thread = findThread(handle);
+
+  if(thread)
   {
-    if(handle == (*it)->mHandle)
-    {
-      return *it;
-    }
+    return thread;
   }
 
   // FIXME: Here generated an orphan RThread object!

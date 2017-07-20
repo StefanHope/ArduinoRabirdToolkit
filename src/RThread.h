@@ -11,7 +11,7 @@ class RCoreApplication;
 class RThread : public RObject
 {
 public:
-#ifdef R_OS_FREERTOS
+#if defined(R_OS_FREERTOS)
   typedef TaskHandle_t Id;
 
 #else
@@ -22,7 +22,7 @@ public:
 
   typedef struct IdContext *Id;
 
-#endif // #ifdef R_OS_FREERTOS
+#endif // #if defined(R_OS_FREERTOS)
 
   /**
    * This enum type indicates how the operating system should schedule newly
@@ -141,9 +141,13 @@ protected:
 private:
   size_t mStackSize;
 
+#if defined(R_OS_NONOS)
+#else
   RThread::Id mHandle;
-  bool        mIsOwnded;
   REventLoop *mEventLoop;
+
+#endif
+  bool mIsOwnded;
 
   friend RThreadPrivate;
   friend REventLoop;

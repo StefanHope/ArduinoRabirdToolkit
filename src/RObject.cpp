@@ -4,12 +4,16 @@
 #include "RCoreApplication.h"
 
 RObject::RObject(RThread *targetThread)
+#if !defined(R_OS_NONOS)
   : mThread(targetThread)
+#endif
 {
 }
 
 RObject::RObject()
+#if !defined(R_OS_NONOS)
   : mThread(RThread::currentThread())
+#endif
 {
 }
 
@@ -40,13 +44,19 @@ RObject::event(REvent *e)
 RThread *
 RObject::thread() const
 {
+#if defined(R_OS_NONOS)
+  return RThread::currentThread();
+#else
   return mThread.data();
+#endif
 }
 
 void
 RObject::moveToThread(RThread *targetThread)
 {
+#if !defined(R_OS_NONOS)
   mThread.reset(targetThread);
+#endif
 }
 
 void

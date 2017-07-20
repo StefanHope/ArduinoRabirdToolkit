@@ -35,7 +35,9 @@ public:
   deleteLater();
 
 private:
+#if !defined(R_OS_NONOS)
   RRawPointer<RThread> mThread;
+#endif // #if !defined(R_OS_NONOS)
 
   friend RThread;
 };

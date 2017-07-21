@@ -7,6 +7,14 @@ RBufferStream::RBufferStream()
 {
 }
 
+void
+RBufferStream::setBuffer(uint8_t *buffer, rsize maxSize)
+{
+  mBuffer  = buffer;
+  mMaxSize = maxSize;
+  mPos     = 0;
+}
+
 int
 RBufferStream::available()
 {

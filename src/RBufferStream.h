@@ -30,6 +30,12 @@ public:
   void
   reset();
 
+  rsize
+  pos();
+
+  rsize
+  maxSize();
+
 private:
   uint8_t *mBuffer;
   rsize    mMaxSize;

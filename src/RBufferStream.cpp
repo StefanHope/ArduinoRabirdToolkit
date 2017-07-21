@@ -74,3 +74,15 @@ RBufferStream::reset()
 {
   mPos = 0;
 }
+
+rsize
+RBufferStream::pos()
+{
+  return mPos;
+}
+
+rsize
+RBufferStream::maxSize()
+{
+  return mMaxSize;
+}

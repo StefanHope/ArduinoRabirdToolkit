@@ -3,32 +3,34 @@
 RBufferStream::RBufferStream()
   : mBuffer(NULL)
   , mMaxSize(0)
-  , mPos(0)
+  , mReadPos(0)
+  , mWritePos(0)
 {
 }
 
 void
 RBufferStream::setBuffer(uint8_t *buffer, rsize maxSize)
 {
-  mBuffer  = buffer;
-  mMaxSize = maxSize;
-  mPos     = 0;
+  mBuffer   = buffer;
+  mMaxSize  = maxSize;
+  mReadPos  = 0;
+  mWritePos = 0;
 }
 
 int
 RBufferStream::available()
 {
-  return static_cast<int>(mMaxSize - mPos);
+  return static_cast<int>(mWritePos - mReadPos);
 }
 
 int
 RBufferStream::read()
 {
-  if(mPos < mMaxSize)
+  if(mReadPos < mWritePos)
   {
-    int result = static_cast<int>(mBuffer[mPos]);
+    int result = static_cast<int>(mBuffer[mReadPos]);
 
-    mPos++;
+    mReadPos++;
 
     return result;
   }
@@ -39,9 +41,9 @@ RBufferStream::read()
 int
 RBufferStream::peek()
 {
-  if(mPos < mMaxSize)
+  if(mReadPos < mWritePos)
   {
-    int result = static_cast<int>(mBuffer[mPos]);
+    int result = static_cast<int>(mBuffer[mReadPos]);
 
     return result;
   }
@@ -57,11 +59,11 @@ RBufferStream::flush()
 size_t
 RBufferStream::write(uint8_t c)
 {
-  if(mPos < mMaxSize)
+  if(mWritePos < mMaxSize)
   {
-    mBuffer[mPos] = c;
+    mBuffer[mWritePos] = c;
 
-    mPos++;
+    mWritePos++;
 
     return 1;
   }
@@ -72,13 +74,8 @@ RBufferStream::write(uint8_t c)
 void
 RBufferStream::reset()
 {
-  mPos = 0;
-}
-
-rsize
-RBufferStream::pos()
-{
-  return mPos;
+  mReadPos  = 0;
+  mWritePos = 0;
 }
 
 rsize

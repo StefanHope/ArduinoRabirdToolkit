@@ -31,15 +31,13 @@ public:
   reset();
 
   rsize
-  pos();
-
-  rsize
   maxSize();
 
 private:
   uint8_t *mBuffer;
   rsize    mMaxSize;
-  rsize    mPos;
+  rsize    mReadPos;
+  rsize    mWritePos;
 
   R_DISABLE_COPY(RBufferStream)
 };

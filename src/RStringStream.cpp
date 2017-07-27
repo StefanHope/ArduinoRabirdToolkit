@@ -22,7 +22,7 @@ RStringStream::read()
   {
     int result = static_cast<int>(static_cast<uint8_t>(mStrPtr->charAt(0)));
 
-    mStrPtr->remove(0);
+    mStrPtr->remove(0, 1);
     return result;
   }
 

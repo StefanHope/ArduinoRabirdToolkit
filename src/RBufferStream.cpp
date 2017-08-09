@@ -83,3 +83,16 @@ RBufferStream::maxSize()
 {
   return mMaxSize;
 }
+
+void
+RBufferStream::setWritePos(rsize pos)
+{
+  if(pos > mMaxSize)
+  {
+    mWritePos = mMaxSize;
+  }
+  else
+  {
+    mWritePos = pos;
+  }
+}

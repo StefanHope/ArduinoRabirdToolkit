@@ -33,6 +33,9 @@ public:
   rsize
   maxSize();
 
+  void
+  setWritePos(rsize pos);
+
 private:
   uint8_t *mBuffer;
   rsize    mMaxSize;
